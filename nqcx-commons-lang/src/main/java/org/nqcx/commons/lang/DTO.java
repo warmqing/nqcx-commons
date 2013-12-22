@@ -23,8 +23,6 @@ import org.nqcx.commons.lang.sort.SortBase;
  */
 public class DTO<O> extends EntityBase {
 
-	private static final long serialVersionUID = -1811800044452931549L;
-
 	// 成功标记
 	private boolean success = false;
 

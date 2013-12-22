@@ -8,8 +8,6 @@
 
 package org.nqcx.commons.lang.domain;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
@@ -17,9 +15,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * @author nqcx 2013-4-3 下午6:02:53
  * 
  */
-public class EntityBase implements Serializable {
-
-	private static final long serialVersionUID = -7339324118507199449L;
+public class EntityBase {
 
 	@Override
 	public String toString() {
