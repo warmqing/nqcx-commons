@@ -10,7 +10,7 @@ package org.nqcx.commons.service;
 
 /**
  * 
- * @author nqcx 2013-4-3 下午5:07:12
+ * @author naqichuan Dec 23, 2013 11:06:38 PM
  * 
  */
 public class ServiceException extends Exception {

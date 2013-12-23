@@ -8,16 +8,14 @@
 
 package org.nqcx.commons.lang.page;
 
-import org.nqcx.commons.lang.domain.EntityBase;
+import org.nqcx.commons.lang.EntityBase;
 
 /**
  * 
- * @author nqcx Apr 7, 2013
+ * @author naqichuan Dec 23, 2013 10:13:41 PM
  * 
  */
 public class PageBase extends EntityBase implements PageBuilder {
-
-	private static final long serialVersionUID = -7792407794436647838L;
 
 	// 记录总数
 	private long totalCount = 0L;

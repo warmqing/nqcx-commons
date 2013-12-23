@@ -10,25 +10,33 @@ package org.nqcx.commons.lang.enums;
 
 /**
  * 
- * @author nqcx 2013-4-3 下午6:02:53
+ * @author naqichuan Dec 23, 2013 10:12:45 PM
  * 
  */
-public enum BoolEnum {
+public enum BoolEnum implements BoolInterface {
 
-	FALSE(0, "否"), TRUE(1, "是");
+	FALSE(0, false, "否"), TRUE(1, true, "是");
 
 	private int value;
+	private boolean bool;
 	private String text;
 
-	private BoolEnum(int value, String text) {
+	private BoolEnum(int value, boolean bool, String text) {
 		this.value = value;
+		this.bool = bool;
 		this.text = text;
 	}
 
+	@Override
 	public int getValue() {
 		return value;
 	}
 
+	public boolean isTrue() {
+		return bool;
+	}
+
+	@Override
 	public String getText() {
 		return text;
 	}

@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * 
- * @author nqcx Apr 7, 2013
+ * @author naqichuan Dec 23, 2013 10:14:23 PM
  * 
  */
 public class SortBase {
@@ -28,7 +28,7 @@ public class SortBase {
 	 * 
 	 * @return
 	 */
-	public static SortBase getNewInstance() {
+	public static SortBase newInstance() {
 		return new SortBase();
 	}
 
@@ -170,7 +170,7 @@ public class SortBase {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(SortBase.getNewInstance().putField("0", "id")
+		System.out.println(SortBase.newInstance().putField("0", "id")
 				.putField("1", "id1").putField("2", "id2").setSort("_1,_2")
 				.getOrder());
 	}

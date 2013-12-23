@@ -8,74 +8,73 @@
 
 package org.nqcx.commons.service;
 
-import org.nqcx.commons.lang.Transfer;
+import java.util.List;
+
+import org.nqcx.commons.lang.DTO;
 
 /**
  * 
- * @author nqcx 2013-4-3 下午5:08:36
- * 
+ * @author naqichuan Dec 23, 2013 11:06:25 PM
+ *
  */
 public interface ServiceInterface {
 
 	/**
 	 * 插入数据
 	 * 
-	 * @param o
+	 * <p>
+	 * 该方法不能返回插入的自增 ID，需要 ID 可以从对象中取
+	 * 
+	 * @param t
 	 * @return
-	 * @throws ServiceException
 	 */
-	public <O> Transfer<O> add(O o) throws ServiceException;
+	public <T> DTO add(T t);
 
 	/**
 	 * 更新数据
 	 * 
-	 * @param o
+	 * @param t
 	 * @return
-	 * @throws ServiceException
 	 */
-	public <O> Transfer<O> modify(O o) throws ServiceException;
+	public <T> DTO modify(T t);
 
 	/**
 	 * 删除数据
 	 * 
-	 * @param transfer
+	 * @param dto
 	 * @return
-	 * @throws ServiceException
 	 */
-	public <O> Transfer<O> delOne(Transfer<O> transfer) throws ServiceException;
+	public void delOne(DTO dto);
 
 	/**
 	 * 删除多条数据
 	 * 
-	 * @param transfer
-	 * @return
-	 * @throws ServiceException
+	 * @param dto
 	 */
-	public <O> Transfer<O> delAll(Transfer<O> transfer) throws ServiceException;
+	public void delAll(DTO dto);
 
 	/**
 	 * 执行查询
 	 * 
-	 * @param transfer
-	 * @throws ServiceException
+	 * @param dto
+	 * @return
 	 */
-	public <O> void query(Transfer<O> transfer) throws ServiceException;
+	public <T> List<T> query(DTO dto);
 
 	/**
 	 * 查询总数
 	 * 
-	 * @param transfer
+	 * @param dto
 	 * @return
-	 * @throws ServiceException
 	 */
-	public <O> long queryCount(Transfer<O> transfer) throws ServiceException;
+	public long queryCount(DTO dto);
 
 	/**
 	 * 根据ID取得详情
 	 * 
 	 * @param id
 	 * @return
-	 * @throws ServiceException
 	 */
-	public <O> O getById(long id) throws ServiceException;
+	public <T> T getById(long id);
+
 }

@@ -1,72 +1,105 @@
-/* 
- * Copyright 2012-2013 nqcx.org All right reserved. This software is the 
- * confidential and proprietary information of nqcx.org ("Confidential 
+/*
+ * Copyright 1998-2013 jd.com All right reserved. This software is the
+ * confidential and proprietary information of jd.com ("Confidential
  * Information"). You shall not disclose such Confidential Information and shall
  * use it only in accordance with the terms of the license agreement you entered
- * into with nqcx.org.
+ * into with jd.com.
  */
 
 package org.nqcx.commons.lang;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nqcx.commons.lang.domain.EntityBase;
 import org.nqcx.commons.lang.page.PageBuilder;
 import org.nqcx.commons.lang.sort.SortBase;
 
 /**
+ * Data transfer object
  * 
- * @author nqcx 2013-4-3 下午6:02:53
- * 
+ * @author naqichuan Dec 23, 2013 10:11:59 PM
  */
-public class DTO<O> extends EntityBase {
+public class DTO extends EntityBase {
 
-	// 成功标记
+	/**
+	 * 成功标记
+	 */
 	private boolean success = false;
 
-	// id
+	/**
+	 * id
+	 */
 	protected long id;
-	// ids
-	protected long[] ids;
-	// 实体对象
-	protected O object;
-	// 实体对象列表
-	protected List<O> list;
 
-	// 参数列表
+	/**
+	 * ids
+	 */
+	protected long[] ids;
+
+	/**
+	 * 实体对象
+	 */
+	protected Object object;
+
+	/**
+	 * 实例对象列表
+	 */
+	protected List<Object> list;
+
+	/**
+	 * 参数列表
+	 */
 	protected Map<String, Object> paramsMap;
-	// 返回结果
+
+	/**
+	 * 返回结果
+	 */
 	protected Map<String, Object> resultMap;
 
-	// 分页
+	/**
+	 * 分页
+	 */
 	protected PageBuilder page;
-	// 排序
+
+	/**
+	 * 排序
+	 */
 	protected SortBase sort;
+
+	public DTO() {
+
+	}
+
+	public DTO(boolean success) {
+		this.success = success;
+	}
 
 	public boolean isSuccess() {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
+	public DTO setSuccess(boolean success) {
 		this.success = success;
+		return this;
 	}
 
 	public long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public DTO setId(long id) {
 		this.id = id;
+		return this;
 	}
 
 	public long[] getIds() {
 		return ids;
 	}
 
-	public void setIds(long[] ids) {
+	public DTO setIds(long[] ids) {
 		this.ids = ids;
+		return this;
 	}
 
 	/**
@@ -74,12 +107,14 @@ public class DTO<O> extends EntityBase {
 	 * 
 	 * @return object
 	 */
-	public O getObject() {
-		return object;
+	@SuppressWarnings("unchecked")
+	public <T> T getObject() {
+		return (T) object;
 	}
 
-	public void setObject(O object) {
+	public DTO setObject(Object object) {
 		this.object = object;
+		return this;
 	}
 
 	/**
@@ -87,30 +122,35 @@ public class DTO<O> extends EntityBase {
 	 * 
 	 * @return 实体对象的List
 	 */
-	public List<O> getList() {
-		return list;
+	@SuppressWarnings("unchecked")
+	public <T> List<T> getList() {
+		return (List<T>) list;
 	}
 
-	public void setList(List<O> list) {
+	public DTO setList(List<Object> list) {
 		this.list = list;
+		return this;
 	}
 
 	public Map<String, Object> getParamsMap() {
 		return paramsMap;
 	}
 
-	public void setParamsMap(Map<String, Object> paramsMap) {
+	public DTO setParamsMap(Map<String, Object> paramsMap) {
 		this.paramsMap = paramsMap;
+		return this;
 	}
 
-	public void putParam(String key, Object value) {
+	public DTO putParam(String key, Object value) {
 		if (this.paramsMap == null)
-			this.paramsMap = new HashMap<String, Object>();
+			this.paramsMap = new LinkedHashMap<String, Object>();
 		this.paramsMap.put(key, value);
+		return this;
 	}
 
-	public Object getParam(String key) {
-		return this.paramsMap == null ? null : this.paramsMap.get(key);
+	@SuppressWarnings("unchecked")
+	public <T> T getParam(String key) {
+		return this.paramsMap == null ? null : (T) this.paramsMap.get(key);
 	}
 
 	public void removeParam(String key) {
@@ -122,18 +162,21 @@ public class DTO<O> extends EntityBase {
 		return resultMap;
 	}
 
-	public void setResultMap(Map<String, Object> resultMap) {
+	public DTO setResultMap(Map<String, Object> resultMap) {
 		this.resultMap = resultMap;
+		return this;
 	}
 
-	public void putResult(String key, Object value) {
+	public DTO putResult(String key, Object value) {
 		if (this.resultMap == null)
-			this.resultMap = new HashMap<String, Object>();
+			this.resultMap = new LinkedHashMap<String, Object>();
 		this.resultMap.put(key, value);
+		return this;
 	}
 
-	public Object getResult(String key) {
-		return this.resultMap == null ? null : this.resultMap.get(key);
+	@SuppressWarnings("unchecked")
+	public <T> T getResult(String key) {
+		return this.resultMap == null ? null : (T) this.resultMap.get(key);
 	}
 
 	public void removeResult(String key) {
@@ -145,8 +188,9 @@ public class DTO<O> extends EntityBase {
 		return page;
 	}
 
-	public void setPage(PageBuilder page) {
+	public DTO setPage(PageBuilder page) {
 		this.page = page;
+		return this;
 	}
 
 	public long getTotalCount() {
@@ -157,7 +201,8 @@ public class DTO<O> extends EntityBase {
 		return sort;
 	}
 
-	public void setSort(SortBase sort) {
+	public DTO setSort(SortBase sort) {
 		this.sort = sort;
+		return this;
 	}
 }

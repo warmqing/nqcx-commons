@@ -6,18 +6,16 @@
  * into with nqcx.org.
  */
 
-package org.nqcx.commons.lang.domain;
+package org.nqcx.commons.lang;
 
 import java.util.Date;
 
 /**
  * 
- * @author nqcx 2013-4-3 下午6:02:53
- * 
+ * @author naqichuan Dec 23, 2013 10:11:47 PM
+ *
  */
-public class EntityDB extends EntityBase {
-
-	private static final long serialVersionUID = -7327673225635624581L;
+public abstract class EntityDB extends EntityBase {
 
 	protected Date createTime;
 

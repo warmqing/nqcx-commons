@@ -1,21 +1,21 @@
-/* 
- * Copyright 2012-2013 nqcx.org All right reserved. This software is the 
- * confidential and proprietary information of nqcx.org ("Confidential 
+/*
+ * Copyright 1998-2013 jd.com All right reserved. This software is the
+ * confidential and proprietary information of jd.com ("Confidential
  * Information"). You shall not disclose such Confidential Information and shall
  * use it only in accordance with the terms of the license agreement you entered
- * into with nqcx.org.
+ * into with jd.com.
  */
 
-package org.nqcx.commons.lang.domain;
+package org.nqcx.commons.lang;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * 
- * @author nqcx 2013-4-3 下午6:02:53
- * 
+ * @author naqichuan Dec 23, 2013 10:12:15 PM
+ *
  */
-public class EntityBase {
+public abstract class EntityBase {
 
 	@Override
 	public String toString() {

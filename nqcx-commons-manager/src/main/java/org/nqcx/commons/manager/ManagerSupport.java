@@ -12,27 +12,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nqcx.commons.lang.Transfer;
-import org.nqcx.commons.mapper.MapperSupport;
+import org.nqcx.commons.dao.DaoInterface;
+import org.nqcx.commons.lang.DTO;
+import org.nqcx.commons.mapper.MapperInterface;
 
 /**
- * ManagerInterface接口的基本实现
  * 
- * @author nqcx 2013-4-3 下午5:07:34
+ * @author naqichuan Dec 23, 2013 10:28:43 PM
  * 
  */
-public abstract class ManagerSupport extends ManagerBase {
+public abstract class ManagerSupport implements ManagerInterface {
 
-	protected abstract MapperSupport getMapper();
+	protected DaoInterface getDao() {
+		return null;
+	}
+
+	protected abstract MapperInterface getMapper();
 
 	/**
 	 * 添加一条数据到数据库中，如果需要处理业务逻辑，子类中重写该方法
-	 * 
-	 * @param o
-	 * @return
 	 */
-	public <O> long add(O o) {
-		return this.insert(o);
+	@Override
+	public <T> long add(T t) {
+		return this.insert(t);
 	}
 
 	/**
@@ -46,34 +48,14 @@ public abstract class ManagerSupport extends ManagerBase {
 	}
 
 	/**
-	 * 根据ID修改数据一条数据，如果需要添加业务逻辑，子类中重写该方法
-	 * 
-	 * @param o
-	 * @return
-	 */
-	public <O> int modify(O o) {
-		return this.update(o);
-	}
-
-	/**
-	 * 根据ID（取transfer中的id属性）从数据库中删除一条数据，如果需要处理业务逻辑，子类中重写del方法
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public final <O> int delOne(long id) {
-		return this.del(id);
-	}
-
-	/**
-	 * 根据IDS（取transfer中的ids属性）从数据库中删除多条数据，如果需要处理业务逻辑，子类中重写del方法
+	 * 从数据库中删除多条数据，如果需要处理业务逻辑，子类中重写该方法
 	 * 
 	 * @param ids
 	 * @return
 	 */
-	public final <O> long delAll(long[] ids) {
+	protected int del(long[] ids) {
 		if (ids != null) {
-			long returns = 0;
+			int returns = 0;
 			for (long id : ids) {
 				returns += del(id);
 			}
@@ -83,54 +65,80 @@ public abstract class ManagerSupport extends ManagerBase {
 	}
 
 	/**
-	 * 根据ID查询一条数据
-	 * 
-	 * @param id
-	 * @return
+	 * 根据ID修改一条数据，如果需要添加业务逻辑，子类中重写该方法
 	 */
-	@SuppressWarnings("unchecked")
-	public final <O> O getById(long id) {
-		return (O) getMapper().getById(id);
+	@Override
+	public <T> int modify(T t) {
+		return this.update(t);
 	}
 
 	/**
-	 * 根据条件查询数据列表
-	 * 
-	 * @param transfer
+	 * 根据ID（取dto中的id属性）从数据库中删除一条数据，如果需要处理业务逻辑，子类中重写del方法
 	 */
-	@SuppressWarnings("unchecked")
-	public final <O> void query(Transfer<O> transfer) {
-		if (transfer.getPage() != null) {
-			transfer.getPage().setTotalCount(this.queryCount(transfer));
-		}
-		transfer.setList((List<O>) getMapper().query(getParams(transfer)));
+	@Override
+	public final int delOne(DTO dto) {
+		dto.setSuccess(true);
+		return this.del(dto.getId());
 	}
 
 	/**
-	 * 根据条件查询数据总数
-	 * 
-	 * @param transfer
-	 * @return
+	 * 根据IDS（取dto中的ids属性）从数据库中删除多条数据，如果需要处理业务逻辑，子类中重写del方法
 	 */
-	public final <O> long queryCount(Transfer<O> transfer) {
-		return getMapper().queryCount(getParams(transfer));
+	@Override
+	public final int delAll(DTO dto) {
+		dto.setSuccess(true);
+		return this.del(dto.getIds());
 	}
 
-	private <O> Map<String, Object> getParams(Transfer<O> transfer) {
-		if (transfer == null)
+	@Override
+	public final <T> T getById(long id) {
+		if (getDao() != null)
+			return getDao().getById(id);
+		else
+			return getMapper().getById(id);
+	}
+
+	@Override
+	public final <T> List<T> query(DTO dto) {
+		dto.setSuccess(true);
+
+		if (dto.getPage() != null)
+			dto.getPage().setTotalCount(this.queryCount(dto));
+
+		dto.setList(getDao() != null ? getDao().query(getParams(dto))
+				: getMapper().query(getParams(dto)));
+
+		return dto.getList();
+	}
+
+	@Override
+	public final long queryCount(DTO dto) {
+		dto.setSuccess(true);
+		return getDao() != null ? getDao().queryCount(getParams(dto))
+				: getMapper().queryCount(getParams(dto));
+	}
+
+	/**
+	 * 解析参数，返回 mapper 需要的参数
+	 * 
+	 * @param dto
+	 * @return
+	 */
+	protected <T> Map<String, Object> getParams(DTO dto) {
+		if (dto == null)
 			return null;
 
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (transfer.getParamsMap() != null)
-			map.putAll(transfer.getParamsMap());
-		if (transfer.getSort() != null)
-			map.put("order", transfer.getSort().getOrder());
+		if (dto.getParamsMap() != null)
+			map.putAll(dto.getParamsMap());
+		if (dto.getSort() != null)
+			map.put("order", dto.getSort().getOrder());
 		else
 			map.put("order", "");
 
-		if (transfer.getPage() != null) {
+		if (dto.getPage() != null) {
 			map.put("pageTag", 1);
-			map.put("position", transfer.getPage().getPosition());
+			map.put("position", dto.getPage().getPosition());
 		} else {
 			map.put("pageTag", 0);
 			map.put("position", "");
@@ -139,32 +147,33 @@ public abstract class ManagerSupport extends ManagerBase {
 	}
 
 	/**
-	 * 插入一条数据到表中，这个方法直接操作Mapper，子类里不可覆盖
+	 * 插入一条数据到表中，这个方法直接操作Dao，子类里不可覆盖
 	 * 
-	 * @param o
+	 * @param t
 	 * @return
 	 */
-	private <O> long insert(O o) {
-		return getMapper().insert(o);
+	private <T> long insert(T t) {
+		return getDao() != null ? getDao().insert(t) : getMapper().insert(t);
 	}
 
 	/**
-	 * 根据ID从数据库中删除一条数据，这个方法直接操作Mapper，子类里不可覆盖
+	 * 根据ID从数据库中删除一条数据，这个方法直接操作Dao，子类里不可覆盖
 	 * 
 	 * @param id
 	 * @return
 	 */
 	private int delete(long id) {
-		return getMapper().delete(id);
+		return getDao() != null ? getDao().deleteById(id) : getMapper()
+				.deleteById(id);
 	}
 
 	/**
-	 * 根据ID修改数据表中的一条数据，这个方法直接操作Mapper，子类里不可覆盖
+	 * 根据ID修改数据表中的一条数据，这个方法直接操作Dao，子类里不可覆盖
 	 * 
-	 * @param o
+	 * @param t
 	 * @return
 	 */
-	private <O> int update(O o) {
-		return getMapper().update(o);
+	private <T> int update(T t) {
+		return getDao() != null ? getDao().update(t) : getMapper().update(t);
 	}
 }

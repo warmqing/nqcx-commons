@@ -8,11 +8,13 @@
 
 package org.nqcx.commons.manager;
 
-import org.nqcx.commons.lang.Transfer;
+import java.util.List;
+
+import org.nqcx.commons.lang.DTO;
 
 /**
  * 
- * @author nqcx 2013-4-8 上午11:41:08
+ * @author naqichuan Dec 23, 2013 10:26:26 PM
  * 
  */
 public interface ManagerInterface {
@@ -23,7 +25,7 @@ public interface ManagerInterface {
 	 * @param o
 	 * @return
 	 */
-	public <O> long add(O o);
+	public <T> long add(T t);
 
 	/**
 	 * 更新数据
@@ -31,38 +33,38 @@ public interface ManagerInterface {
 	 * @param o
 	 * @return
 	 */
-	public <O> int modify(O o);
+	public <T> int modify(T t);
 
 	/**
-	 * 删除一条记录
 	 * 
-	 * @param id
+	 * @param dto
 	 * @return
 	 */
-	public <O> int delOne(long id);
+	public int delOne(DTO dto);
 
 	/**
-	 * 删除多条记录
+	 * 删除数据
 	 * 
-	 * @param ids
+	 * @param dto
 	 * @return
 	 */
-	public <O> long delAll(long[] ids);
+	public int delAll(DTO dto);
 
 	/**
 	 * 执行查询
 	 * 
-	 * @param transfer
+	 * @param dto
+	 * @return
 	 */
-	public <O> void query(Transfer<O> transfer);
+	public <T> List<T> query(DTO dto);
 
 	/**
 	 * 查询总数
 	 * 
-	 * @param transfer
+	 * @param dto
 	 * @return
 	 */
-	public <O> long queryCount(Transfer<O> transfer);
+	public long queryCount(DTO dto);
 
 	/**
 	 * 根据ID取得详情
@@ -70,5 +72,5 @@ public interface ManagerInterface {
 	 * @param id
 	 * @return
 	 */
-	public <O> O getById(long id);
+	public <T> T getById(long id);
 }

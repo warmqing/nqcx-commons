@@ -8,140 +8,118 @@
 
 package org.nqcx.commons.service;
 
-import org.nqcx.commons.lang.Transfer;
+import java.util.List;
+
+import org.nqcx.commons.lang.DTO;
 import org.nqcx.commons.manager.ManagerInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author nqcx 2013-4-3 下午5:08:57
+ * @author naqichuan Dec 23, 2013 10:39:11 PM
  * 
  */
-public abstract class ServiceSupport {
+public abstract class ServiceSupport implements ServiceInterface {
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	protected abstract ManagerInterface getManager();
 
 	/**
 	 * 添加一条数据到数据库中
-	 * 
-	 * @param o
-	 * @return
-	 * @throws ServiceException
 	 */
-	public <O> Transfer<O> add(O o) throws ServiceException {
-		Transfer<O> transfer = new Transfer<O>();
+	@Override
+	public <T> DTO add(T t) {
+		DTO dto = new DTO();
 		try {
-			long id = getManager().add(o);
-			if (id > 0) {
-				transfer.setSuccess(true);
-				transfer.setId(id);
-			}
+			dto.setSuccess(getManager().add(t) > 0);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			logger.error("ServiceSupport add error", e);
 		}
-		return transfer;
+		return dto;
 	}
 
 	/**
-	 * 根据ID修改数据一条数据
-	 * 
-	 * @param o
-	 * @return
-	 * @throws ServiceException
+	 * 根据ID修改一条数据
 	 */
-	public <O> Transfer<O> modify(O o) throws ServiceException {
-		Transfer<O> transfer = new Transfer<O>();
+	@Override
+	public <T> DTO modify(T t) {
+		DTO dto = new DTO();
 		try {
-			int rs = getManager().modify(o);
-			transfer.setSuccess(true);
-			transfer.putResult("rs", rs);
+			int rs = getManager().modify(t);
+			dto.setSuccess(true);
+			dto.putResult("rs", rs); // 如果返回0，表示数据未被修改
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			logger.error("ServiceSupport modify error", e);
 		}
-		return transfer;
+		return dto;
 	}
 
 	/**
-	 * 根据ID（取transfer中的id属性）从数据库中删除一条数据
-	 * 
-	 * @param transfer
-	 * @return
-	 * @throws ServiceException
+	 * 根据ID（取dto中的id属性）从数据库中删除一条数据
 	 */
-	public <O> Transfer<O> delOne(Transfer<O> transfer) throws ServiceException {
+	@Override
+	public void delOne(DTO dto) {
 		try {
-			if (transfer != null) {
-				int rs = getManager().delOne(transfer.getId());
-				transfer.setSuccess(true);
-				transfer.putResult("rs", rs);
-			}
+			int rs = getManager().delOne(dto);
+			dto.setSuccess(true);
+			dto.putResult("rs", rs); // 如果返回0，表示数据未被删除
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			logger.error("ServiceSupport delOne error", e);
 		}
-		return transfer;
 	}
 
 	/**
-	 * 根据IDS（取transfer中的ids属性）从数据库中删除多条数据
-	 * 
-	 * @param transfer
-	 * @return
-	 * @throws ServiceException
+	 * 根据IDS（取dto中的ids属性）从数据库中删除多条数据
 	 */
-	public <O> Transfer<O> delAll(Transfer<O> transfer) throws ServiceException {
+	@Override
+	public void delAll(DTO dto) {
 		try {
-			if (transfer != null) {
-				long rs = getManager().delAll(transfer.getIds());
-				transfer.setSuccess(true);
-				transfer.putResult("rs", rs);
-			}
+			long rs = getManager().delAll(dto);
+			dto.setSuccess(true);
+			dto.putResult("rs", rs); // 如果返回0，表示数据未被删除
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			logger.error("ServiceSupport delAll error", e);
 		}
-		return transfer;
 	}
 
 	/**
 	 * 根据ID查询一条数据
-	 * 
-	 * @param id
-	 * @return
-	 * @throws ServiceException
 	 */
-	@SuppressWarnings("unchecked")
-	public <O> O getById(long id) throws ServiceException {
+	@Override
+	public <T> T getById(long id) {
 		try {
-			return (O) getManager().getById(id);
+			return getManager().getById(id);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			logger.error("ServiceSupport getById error", e);
 		}
+		return null;
 	}
 
 	/**
 	 * 根据条件查询数据列表
-	 * 
-	 * @param transfer
-	 * @throws ServiceException
 	 */
-	public <O> void query(Transfer<O> transfer) throws ServiceException {
+	@Override
+	public <T> List<T> query(DTO dto) {
 		try {
-			getManager().query(transfer);
+			return getManager().query(dto);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			logger.error("ServiceSupport query error", e);
 		}
+		return null;
 	}
 
 	/**
 	 * 根据条件查询数据总数
-	 * 
-	 * @param transfer
-	 * @return
-	 * @throws ServiceException
 	 */
-	public <O> long queryCount(Transfer<O> transfer) throws ServiceException {
+	@Override
+	public long queryCount(DTO dto) {
 		try {
-			return getManager().queryCount(transfer);
+			return getManager().queryCount(dto);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			logger.error("ServiceSupport queryCount error", e);
 		}
+		return 0;
 	}
 }

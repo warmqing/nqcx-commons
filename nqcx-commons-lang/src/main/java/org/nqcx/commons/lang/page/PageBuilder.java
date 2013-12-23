@@ -10,7 +10,7 @@ package org.nqcx.commons.lang.page;
 
 /**
  * 
- * @author nqcx Apr 7, 2013
+ * @author naqichuan Dec 23, 2013 10:13:54 PM
  * 
  */
 public interface PageBuilder {

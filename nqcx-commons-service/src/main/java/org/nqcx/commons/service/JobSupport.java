@@ -8,14 +8,14 @@
 
 package org.nqcx.commons.service;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author nqcx 2013-4-3 下午5:08:23
- *
+ * @author naqichuan Dec 23, 2013 11:06:49 PM
+ * 
  */
 public class JobSupport {
-	protected final Logger logger = Logger.getLogger(this.getClass());
-	// protected final String ip = ServerUtil.serverIp();
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 }
