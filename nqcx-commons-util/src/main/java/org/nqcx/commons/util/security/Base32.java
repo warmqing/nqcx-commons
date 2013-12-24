@@ -10,7 +10,7 @@ package org.nqcx.commons.util.security;
 
 /**
  * 
- * @author nqcx 2013-4-3 下午6:02:53
+ * @author naqichuan 2013-4-3 下午6:02:53
  * 
  */
 public class Base32 {

@@ -11,18 +11,19 @@ package org.nqcx.commons.web.cookie;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.nqcx.commons.util.security.Base32;
 import org.nqcx.commons.util.security.DESCoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author nqcx 2013-4-8 下午4:07:04
+ * @author naqichuan 2013-4-8 下午4:07:04
  * 
  */
 public class CookieCipherTools {
 
-	private final Logger log = Logger.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private String charsetName;
 
@@ -33,7 +34,7 @@ public class CookieCipherTools {
 				try {
 					data = value.getBytes(charsetName);
 				} catch (Exception e1) {
-					log.error("charset " + charsetName + " Unsupported!", e1);
+					logger.error("charset " + charsetName + " Unsupported!", e1);
 					data = value.getBytes();
 				}
 			} else {
@@ -42,7 +43,7 @@ public class CookieCipherTools {
 			byte[] bytes = encrypt(key, data);
 			return encoding(bytes);
 		} catch (Exception e) {
-			log.error("encrypt error", e);
+			logger.error("encrypt error", e);
 			return null;
 		}
 	}
@@ -71,14 +72,14 @@ public class CookieCipherTools {
 				try {
 					return new String(bytes, charsetName);
 				} catch (UnsupportedEncodingException e1) {
-					log.error("charset " + charsetName + " Unsupported!", e1);
+					logger.error("charset " + charsetName + " Unsupported!", e1);
 					return new String(bytes);
 				}
 			} else {
 				return new String(bytes);
 			}
 		} catch (Exception e) {
-			log.error("encrypt error", e);
+			logger.error("encrypt error", e);
 			return null;
 		}
 	}

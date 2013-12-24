@@ -22,7 +22,7 @@ import org.apache.commons.lang.time.DateUtils;
 
 /**
  * 
- * @author nqcx 2013-4-8 下午4:07:04
+ * @author naqichuan 2013-4-8 下午4:07:04
  * 
  */
 public class LoginTicketUtils {

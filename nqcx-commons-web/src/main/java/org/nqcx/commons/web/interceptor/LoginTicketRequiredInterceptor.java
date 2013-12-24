@@ -11,17 +11,18 @@ package org.nqcx.commons.web.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.nqcx.commons.web.login.LoginTicket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author nqcx 2013-4-10 下午5:41:47
+ * @author naqichuan 2013-4-10 下午5:41:47
  * 
  */
 public class LoginTicketRequiredInterceptor extends LoginRequiredInterceptor {
 
-	private final Logger logger = Logger.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public boolean preHandle(HttpServletRequest request,
@@ -34,7 +35,7 @@ public class LoginTicketRequiredInterceptor extends LoginRequiredInterceptor {
 				logger.info("RemoteAddr [" + request.getRemoteAddr()
 						+ "] from ajax check ticket false!");
 
-				responseOutWithJson(response, NEED_LOGIN_JSON);
+				responseJsonResult(response, NEED_LOGIN_JSON);
 			} else {
 				logger.info("RemoteAddr [" + request.getRemoteAddr()
 						+ "] from normal way check ticket false!");

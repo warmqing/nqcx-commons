@@ -11,19 +11,20 @@ package org.nqcx.commons.web.handler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.nqcx.commons.web.login.LoginContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 /**
  * 
- * @author nqcx 2013-4-8 下午5:22:17
+ * @author naqichuan 2013-4-8 下午5:22:17
  * 
  */
 public class NqcxExceptionResolver extends SimpleMappingExceptionResolver {
 
-	protected Logger logger = Logger.getLogger("controller_error");
+	protected Logger logger = LoggerFactory.getLogger("controller_error");
 
 	@Override
 	protected ModelAndView doResolveException(HttpServletRequest request,

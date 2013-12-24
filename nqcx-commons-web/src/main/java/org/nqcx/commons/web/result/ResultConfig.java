@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * 
- * @author nqcx 2013-4-8 下午4:07:04
+ * @author naqichuan 2013-4-8 下午4:07:04
  * 
  */
 public class ResultConfig {
@@ -47,7 +47,7 @@ public class ResultConfig {
 		Result rs = null;
 		if ((rs = results.get(t + c)) == null) {
 			rs = new Result();
-			rs.setType(t);
+			rs.setType(type);
 			rs.setCode(c);
 			rs.setSubject("R" + t + "." + c + ".SUBJECT");
 		}

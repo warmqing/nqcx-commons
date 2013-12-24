@@ -10,12 +10,17 @@ package org.nqcx.commons.web.result;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
- * @author nqcx 2013-4-8 下午4:07:04
+ * @author naqichuan 2013-4-8 下午4:07:04
  * 
  */
 public class Result implements Cloneable {
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private String code;
 
@@ -109,7 +114,7 @@ public class Result implements Cloneable {
 		try {
 			result = (Result) super.clone();
 		} catch (CloneNotSupportedException e) {
-			// nothing to do
+			logger.error("Result.clone", e);
 		}
 		return result;
 	}

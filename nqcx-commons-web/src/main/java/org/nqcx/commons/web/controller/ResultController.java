@@ -12,9 +12,11 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.nqcx.commons.web.WebSupport;
 import org.nqcx.commons.web.result.Result;
 import org.nqcx.commons.web.url.UrlBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,13 +28,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * 
- * @author nqcx 2013-4-8 下午4:07:04
+ * @author naqichuan 2013-4-8 下午4:07:04
  * 
  */
 @Controller
-public class ResultController extends MainSupport {
+public class ResultController extends WebSupport {
 
-	private final Logger logger = Logger.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private Result rs;
 
@@ -87,19 +89,19 @@ public class ResultController extends MainSupport {
 		try {
 			rs.setIndex(homeUrl.forPath(null).build());
 		} catch (MalformedURLException e) {
-			logger.error(e);
+			logger.error("ResultController.result", e);
 		}
 
 		if (url != null && url.length() > 0)
 			rs.setUrl(url);
 
 		model.addAttribute("type", rs.getType());
-		model.addAttribute("title", getValue(rs.getTitle(), null));
-		model.addAttribute("subject", getValue(rs.getSubject(), null));
+		model.addAttribute("title", getPropertyValue(rs.getTitle(), null));
+		model.addAttribute("subject", getPropertyValue(rs.getSubject(), null));
 
 		if (rs.getSuggestTitle() != null)
 			model.addAttribute("suggestTitle",
-					getValue(rs.getSuggestTitle(), null));
+					getPropertyValue(rs.getSuggestTitle(), null));
 		else
 			model.addAttribute("suggestTitle", "");
 
@@ -108,17 +110,23 @@ public class ResultController extends MainSupport {
 		else
 			model.addAttribute("suggest", null);
 
-		model.addAttribute("auto", getValue(rs.getAuto(), null));
+		model.addAttribute("auto", getPropertyValue(rs.getAuto(), null));
 		model.addAttribute("index", rs.getIndex());
 		model.addAttribute("url", rs.getUrl());
 
 		return "msg";
 	}
 
+	/**
+	 * 
+	 * @author naqichuan Dec 24, 2013 9:37:54 PM
+	 * @param list
+	 * @return
+	 */
 	private Object getValue(List<String> list) {
 		List<String> rl = new ArrayList<String>();
 		for (String code : list) {
-			rl.add((String) getValue(code, null));
+			rl.add((String) getPropertyValue(code, null));
 		}
 		return rl;
 	}

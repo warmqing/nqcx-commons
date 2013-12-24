@@ -15,7 +15,7 @@ import org.nqcx.commons.mapper.MapperInterface;
 
 /**
  * 
- * @author 黄保光 Oct 18, 2013 3:59:23 PM
+ * @author naqichuan Oct 18, 2013 3:59:23 PM
  * 
  */
 public abstract class DaoSupport implements DaoInterface {
@@ -41,7 +41,7 @@ public abstract class DaoSupport implements DaoInterface {
 	/**
 	 * 根据ID修改一条数据，如果需要添加业务逻辑，子类中重写该方法
 	 * 
-	 * @author 黄保光 Oct 18, 2013 4:28:20 PM
+	 * @author naqichuan Oct 18, 2013 4:28:20 PM
 	 * @param id
 	 * @return
 	 */

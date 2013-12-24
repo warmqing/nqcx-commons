@@ -10,18 +10,24 @@ package org.nqcx.commons.web.login;
 
 import java.util.Date;
 
-import org.nqcx.commons.lang.domain.EntityBase;
+import org.nqcx.commons.lang.EntityBase;
 
 /**
  * 
- * @author nqcx 2013-4-8 下午4:07:04
+ * @author naqichuan 2013-4-8 下午4:07:04
  * 
  */
 public class LoginTicket extends EntityBase {
 
-	private static final long serialVersionUID = -6083814675881453153L;
+	private final static ThreadLocal<LoginTicket> holder = new ThreadLocal<LoginTicket>() {
 
-	private final static ThreadLocal<LoginTicket> holder = new ThreadLocal<LoginTicket>();
+		@Override
+		protected LoginTicket initialValue() {
+			// TODO 需要处理
+			return super.initialValue();
+		}
+
+	};
 
 	/**
 	 * 指定的版本号

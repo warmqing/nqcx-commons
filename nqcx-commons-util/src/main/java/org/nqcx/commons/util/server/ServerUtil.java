@@ -18,7 +18,7 @@ import java.util.Set;
 
 /**
  * 
- * @author nqcx 2013-4-3 下午6:02:53
+ * @author naqichuan 2013-4-3 下午6:02:53
  * 
  */
 public class ServerUtil {

@@ -17,15 +17,13 @@ import org.nqcx.commons.web.cookie.NqcxCookie;
 import org.nqcx.commons.web.login.LoginContext;
 import org.nqcx.commons.web.login.LoginTicket;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * 
- * @author nqcx Apr 10, 2013
+ * @author naqichuan Apr 10, 2013
  * 
  */
-public class LoginContextInterceptor extends HandlerInterceptorAdapter {
+public class LoginContextInterceptor extends WebContextInterceptor {
 
 	@Autowired
 	private NqcxCookie loginCookie;
@@ -97,20 +95,8 @@ public class LoginContextInterceptor extends HandlerInterceptorAdapter {
 		return true;
 	}
 
-	@Override
-	public void postHandle(HttpServletRequest request,
-			HttpServletResponse response, Object handler,
-			ModelAndView modelAndView) throws Exception {
-	}
-
-	@Override
-	public void afterCompletion(HttpServletRequest request,
-			HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
-	}
-
 	/**
-	 * 从dotnet 的 ticket中重构出logincontext
+	 * 从 LoginTicket 中重构出 LoginContext
 	 * 
 	 * @param ticket
 	 * @return

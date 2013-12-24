@@ -8,31 +8,26 @@
 
 package org.nqcx.commons.web.interceptor;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.nqcx.commons.web.login.LoginContext;
 import org.nqcx.commons.web.url.UrlBuilder;
 import org.nqcx.commons.web.url.UrlBuilder.Builder;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author nqcx Apr 10, 2013
+ * @author naqichuan Apr 10, 2013
  * 
  */
-public class LoginRequiredInterceptor extends HandlerInterceptorAdapter {
+public class LoginRequiredInterceptor extends WebContextInterceptor {
 
-	private final Logger logger = Logger.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	protected static final String XHR_OBJECT_NAME = "XMLHttpRequest";
-	protected static final String HEADER_REQUEST_WITH = "x-requested-with";
 	protected static final String NEED_LOGIN_JSON = "{\"success\": false, \"needLogin\": true}";
 
 	protected UrlBuilder homeUrl;
@@ -50,7 +45,7 @@ public class LoginRequiredInterceptor extends HandlerInterceptorAdapter {
 				logger.info("RemoteAddr [" + request.getRemoteAddr()
 						+ "] from ajax check login false!");
 
-				responseOutWithJson(response, NEED_LOGIN_JSON);
+				responseJsonResult(response, NEED_LOGIN_JSON);
 			} else {
 				logger.info("RemoteAddr [" + request.getRemoteAddr()
 						+ "] from normal way check login false!");
@@ -84,16 +79,6 @@ public class LoginRequiredInterceptor extends HandlerInterceptorAdapter {
 	}
 
 	/**
-	 * 检查是否通过ajax访问
-	 * 
-	 * @param request
-	 * @return
-	 */
-	protected boolean isAjax(HttpServletRequest request) {
-		return XHR_OBJECT_NAME.equals(request.getHeader(HEADER_REQUEST_WITH));
-	}
-
-	/**
 	 * 取出登录的信息
 	 * 
 	 * @return
@@ -113,42 +98,6 @@ public class LoginRequiredInterceptor extends HandlerInterceptorAdapter {
 		loginUrlBuilder.put("returnUrl", currentUrlBuilder.build());
 
 		return loginUrlBuilder.build();
-	}
-
-	/**
-	 * 以JSON格式输出
-	 * 
-	 * @param response
-	 */
-	protected void responseOutWithJson(HttpServletResponse response,
-			String needLogin) {
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-			out.append(needLogin);
-		} catch (IOException e) {
-			logger.error(e);
-		} finally {
-			if (out != null) {
-				out.close();
-			}
-		}
-	}
-
-	@Override
-	public void postHandle(HttpServletRequest request,
-			HttpServletResponse response, Object handler,
-			ModelAndView modelAndView) throws Exception {
-		super.postHandle(request, response, handler, modelAndView);
-	}
-
-	@Override
-	public void afterCompletion(HttpServletRequest request,
-			HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
-		super.afterCompletion(request, response, handler, ex);
 	}
 
 	public void setHomeUrl(UrlBuilder homeUrl) {

@@ -14,7 +14,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * 
- * @author nqcx 2013-4-8 下午4:07:04
+ * @author naqichuan 2013-4-8 下午4:07:04
  * 
  */
 public class NqcxCookie {

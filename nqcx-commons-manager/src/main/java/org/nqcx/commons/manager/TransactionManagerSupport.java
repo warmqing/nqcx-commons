@@ -27,7 +27,7 @@ public abstract class TransactionManagerSupport extends ManagerSupport {
 	/**
 	 * 取得事务模板
 	 * 
-	 * @author 黄保光 Sep 24, 2013 2:21:35 PM
+	 * @author naqichuan Sep 24, 2013 2:21:35 PM
 	 * @return
 	 */
 	public TransactionTemplate getTransactionTemplate() {
@@ -37,7 +37,7 @@ public abstract class TransactionManagerSupport extends ManagerSupport {
 	/**
 	 * del重名，在事务回调中使用 this 和 supper 不能正确调用方法，用于中转
 	 * 
-	 * @author 黄保光 Sep 24, 2013 3:00:23 PM
+	 * @author naqichuan Sep 24, 2013 3:00:23 PM
 	 * @param id
 	 * @return
 	 */
@@ -48,7 +48,7 @@ public abstract class TransactionManagerSupport extends ManagerSupport {
 	/**
 	 * del重名，在事务回调中使用 this 和 supper 不能正确调用方法，用于中转
 	 * 
-	 * @author 黄保光 Sep 24, 2013 3:02:27 PM
+	 * @author naqichuan Sep 24, 2013 3:02:27 PM
 	 * @param ids
 	 * @return
 	 */

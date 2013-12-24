@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 系统中所有用到的cookie 都需要通过 CookieUtils操作，在配置文件中通过用 cookieName 作为 key 注册到cookieMap
  * 
- * @author nqcx 2013-4-8 下午4:07:04
+ * @author naqichuan 2013-4-8 下午4:07:04
  * 
  */
 public class CookieUtils {

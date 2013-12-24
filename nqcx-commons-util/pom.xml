@@ -19,6 +19,6 @@
 			<artifactId>nqcx-commons-lang</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- ########## 3rd package ########## -->
+		<!-- ########## 3rd party library ########## -->
 	</dependencies>
 </project>

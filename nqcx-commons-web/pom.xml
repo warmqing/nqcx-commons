@@ -26,12 +26,13 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- ########## 3rd package ########## -->
+		<!-- ########## 3rd party library ########## -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 		</dependency>
 
+		<!-- servlet support -->
 		<dependency>
 			<groupId>servletapi</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -39,19 +40,30 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- The Simple Logging Facade for Java -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<!-- if you enable json support in spring mvc. -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+		</dependency>
+
+		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
+			<artifactId>spring-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
-
-		<!-- <dependency> -->
-		<!-- <groupId>net.sf.json-lib</groupId> -->
-		<!-- <artifactId>json-lib</artifactId> -->
-		<!-- <classifier>jdk15</classifier> -->
-		<!-- </dependency> -->
 	</dependencies>
 </project>

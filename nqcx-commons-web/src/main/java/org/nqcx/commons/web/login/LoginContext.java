@@ -12,20 +12,19 @@ import java.util.Date;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.nqcx.commons.lang.domain.EntityBase;
+import org.nqcx.commons.lang.EntityBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author nqcx 2013-4-8 下午4:07:04
+ * @author naqichuan 2013-4-8 下午4:07:04
  * 
  */
 public class LoginContext extends EntityBase {
 
-	private static final long serialVersionUID = -1671260460517072248L;
-
-	private static final Logger log = Logger.getLogger(LoginContext.class
-			.getName());
+	private final static Logger logger = LoggerFactory
+			.getLogger(LoginContext.class);
 
 	private final static ThreadLocal<LoginContext> holder = new ThreadLocal<LoginContext>();
 
@@ -168,7 +167,7 @@ public class LoginContext extends EntityBase {
 							BeanUtils.setProperty(context, field, keyValue[1]);
 						}
 					} catch (Exception e) {
-						log.error("praser error!", e);
+						logger.error("praser error!", e);
 					}
 				}
 			}

@@ -25,7 +25,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * 
- * @author nqcx 2013-4-8 下午5:26:40
+ * @author naqichuan 2013-4-8 下午5:26:40
  * 
  */
 public class UrlBuilder {

@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * 
- * @author 黄保光 Sep 23, 2013 4:41:48 PM
+ * @author naqichuan Sep 23, 2013 4:41:48 PM
  * 
  */
 public interface MapperInterface {
@@ -21,7 +21,7 @@ public interface MapperInterface {
 	/**
 	 * 插入记录
 	 * 
-	 * @author 黄保光 Sep 24, 2013 10:01:05 AM
+	 * @author naqichuan Sep 24, 2013 10:01:05 AM
 	 * @param t
 	 * @return
 	 */
@@ -30,7 +30,7 @@ public interface MapperInterface {
 	/**
 	 * 根据 id 更新记录
 	 * 
-	 * @author 黄保光 Sep 24, 2013 10:00:37 AM
+	 * @author naqichuan Sep 24, 2013 10:00:37 AM
 	 * @param t
 	 * @return
 	 */
@@ -39,7 +39,7 @@ public interface MapperInterface {
 	/**
 	 * 根据 id 删除单条记录
 	 * 
-	 * @author 黄保光 Sep 24, 2013 9:59:57 AM
+	 * @author naqichuan Sep 24, 2013 9:59:57 AM
 	 * @param id
 	 * @return
 	 */
@@ -48,7 +48,7 @@ public interface MapperInterface {
 	/**
 	 * 根据 id 取单条记录
 	 * 
-	 * @author 黄保光 Sep 24, 2013 9:59:17 AM
+	 * @author naqichuan Sep 24, 2013 9:59:17 AM
 	 * @param id
 	 * @return
 	 */
@@ -57,7 +57,7 @@ public interface MapperInterface {
 	/**
 	 * 查询总数
 	 * 
-	 * @author 黄保光 Sep 24, 2013 9:58:57 AM
+	 * @author naqichuan Sep 24, 2013 9:58:57 AM
 	 * @param map
 	 * @return
 	 */
@@ -66,7 +66,7 @@ public interface MapperInterface {
 	/**
 	 * 查询列表
 	 * 
-	 * @author 黄保光 Sep 24, 2013 9:58:43 AM
+	 * @author naqichuan Sep 24, 2013 9:58:43 AM
 	 * @param map
 	 * @return
 	 */

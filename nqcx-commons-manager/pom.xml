@@ -27,7 +27,7 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- ########## 3rd package ########## -->
+		<!-- ########## 3rd party library ########## -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>

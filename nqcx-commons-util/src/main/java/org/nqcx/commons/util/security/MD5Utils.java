@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
  * Static functions to simplifiy common {@link java.security.MessageDigest}
  * tasks. This class is thread safe.
  * 
- * @author nqcx 2013-4-3 下午6:02:53
+ * @author naqichuan 2013-4-3 下午6:02:53
  * 
  */
 public class MD5Utils {
