@@ -25,6 +25,7 @@ import sun.misc.BASE64Encoder;
  * @author naqichuan 2013-4-3 下午6:02:53
  * 
  */
+@SuppressWarnings("restriction")
 public class DESCoder {
 
 	private final static String DEFAULT_KEY = "_nqcx_";
