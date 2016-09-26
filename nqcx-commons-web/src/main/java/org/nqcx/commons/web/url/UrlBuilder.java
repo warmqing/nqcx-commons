@@ -9,6 +9,8 @@
 package org.nqcx.commons.web.url;
 
 import org.nqcx.commons.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -32,13 +34,15 @@ public class UrlBuilder {
         }
     };
 
+    private final static Logger logger = LoggerFactory.getLogger(UrlBuilder.class);
+
     private final URL baseUrl; // url 可以有用占位符，如: http://{0}.{1}.nqcx.org
     private final boolean ignoreEmpty;
     private final Charset charset;
     private final Map<String, Object> queryMap;
 
     public UrlBuilder(final String baseUrl) {
-        this(baseUrl, "UTF-8", true);
+        this(baseUrl, Charset.defaultCharset().name(), true);
     }
 
     public UrlBuilder(final String baseUrl, final String charsetName) {
@@ -95,45 +99,52 @@ public class UrlBuilder {
     }
 
     /**
-     * @param values
+     * @param _values
      */
-    public static void setValues(List<String> values) {
-        values.get()values);
+    public static void setValues(List<String> _values) {
+        if (values == null || _values.size() == 0)
+            values.get().clear();
+        else
+            values.set(_values);
     }
 
     /**
-     * @param values
+     * @param _values
      */
-    public static void addValues(List<String> values) {
-
+    public static void addValues(List<String> _values) {
+        if (values != null && _values.size() > 0)
+            values.get().addAll(_values);
     }
 
     /**
      * @param value
      */
     public static void setValue(String value) {
-
+        values.get().clear();
+        if (value != null)
+            values.get().add(value);
     }
 
     /**
      * @param value
      */
     public static void addValue(String value) {
-
+        if (value != null)
+            values.get().add(value);
     }
 
     /**
      */
     public static class Builder {
 
-        final URL base;
+        final URL baseUrl;
         String path;
         String charsetName;
         boolean ignoreEmpty;
         final Map<String, Object> urlParams;
 
-        Builder(URL base, String path, String charsetName, boolean ignoreEmpty, Map<String, Object> queryMap) {
-            this.base = base;
+        Builder(URL baseUrl, String path, String charsetName, boolean ignoreEmpty, Map<String, Object> queryMap) {
+            this.baseUrl = baseUrl;
             this.path = path;
             this.charsetName = charsetName;
             this.ignoreEmpty = ignoreEmpty;
@@ -168,26 +179,18 @@ public class UrlBuilder {
          * @return
          */
         public String build() {
-
-            String path = prefixPath(base.getPath(), this.path);
-            int port = base.getPort();
-            if (base.getPort() == base.getDefaultPort()) {
+            String path = prefixPath(baseUrl.getPath(), this.path);
+            int port = baseUrl.getPort();
+            if (baseUrl.getPort() == baseUrl.getDefaultPort())
                 port = -1;
-            }
 
-            String host = base.getHost();
-            if (holder.get() != null && host != null) {
-//                host = host.replaceAll("\\{[0-9]*\\}", holder.get());
-                host = MessageFormat.format(host, holder.get());
-                if (host.startsWith("."))
-                    host = host.substring(1);
-            }
-
+            String host = baseUrl.getHost();
+            if (StringUtils.isNotBlank(host) && host.startsWith("."))
+                host = host.substring(1);
 
             final StringBuilder builder;
             try {
-                builder = new StringBuilder(
-                        new URL(base.getProtocol(), host, port, path).toString());
+                builder = new StringBuilder(new URL(baseUrl.getProtocol(), host, port, path).toString());
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -196,9 +199,9 @@ public class UrlBuilder {
             for (Entry<String, Object> entry : urlParams.entrySet()) {
                 final String key = entry.getKey();
                 Object value = entry.getValue();
-                if (value == null) {
+                if (value == null)
                     continue;
-                }
+
                 if (value instanceof Object[]) {
                     for (final Object v : (Object[]) value) {
                         appendQueryString(key, v, query);
@@ -207,15 +210,16 @@ public class UrlBuilder {
                     for (final Object v : (Collection<?>) value) {
                         appendQueryString(key, v, query);
                     }
-                } else {
+                } else
                     appendQueryString(key, value, query);
-                }
             }
-            if (query.length() > 0) {
+            if (query.length() > 0)
                 query.replace(0, 1, "?");
-            }
+            builder.append(query);
 
-            return builder.append(query).toString();
+            if (values.get() != null && values.get().size() > 0)
+                return MessageFormat.format(builder.toString(), values.get().toArray());
+            return builder.toString();
         }
 
         /**
@@ -224,13 +228,13 @@ public class UrlBuilder {
          * @param sb
          */
         void appendQueryString(String key, Object v, StringBuilder sb) {
-            if (v == null) {
+            if (v == null)
                 return;
-            }
+
             String value = String.valueOf(v);
-            if (ignoreEmpty && value.trim().length() == 0) {
+            if (ignoreEmpty && StringUtils.isBlank(value))
                 return;
-            }
+
             sb.append("&").append(key).append("=").append(encodeUrl(value));
         }
 
@@ -239,14 +243,13 @@ public class UrlBuilder {
          * @return
          */
         String encodeUrl(String value) {
-            String result;
             try {
-                result = URLEncoder.encode(value, org.apache.commons.lang.StringUtils.isNotBlank(charsetName) ? charsetName : Charset
-                        .defaultCharset().name());
+                return URLEncoder.encode(value, StringUtils.isNotBlank(charsetName) ? charsetName : Charset.defaultCharset().name());
             } catch (UnsupportedEncodingException e) {
-                result = value;
+                // Nothing to do
+                logger.warn(e.getMessage());
             }
-            return result;
+            return value;
         }
 
         /**
@@ -255,23 +258,16 @@ public class UrlBuilder {
          * @return
          */
         String prefixPath(String contextPath, String path) {
-            String returnPath;
-            if (path == null || contextPath == null) {
-                if (path == null && contextPath == null) {
-                    returnPath = "/";
-                } else if (contextPath == null) {
-                    returnPath = path;
-                } else {
-                    returnPath = contextPath;
-                }
-            } else {
-                if (contextPath.endsWith("/") && path.startsWith("/")) {
-                    returnPath = contextPath + path.substring(1);
-                } else {
-                    returnPath = contextPath + path;
-                }
-            }
-            return returnPath;
+            if (path == null && contextPath == null)
+                return "/";
+            else if (path == null)
+                return contextPath;
+            else if (contextPath == null)
+                return path;
+            else if (path.startsWith("/") && contextPath.endsWith("/"))
+                return contextPath + path.substring(1);
+            else
+                return contextPath + path;
         }
 
         /**
@@ -283,11 +279,10 @@ public class UrlBuilder {
                 for (Object e : (Object[]) o) {
                     container.add(e);
                 }
-            } else if (o instanceof Collection) {
+            } else if (o instanceof Collection)
                 container.addAll((Collection<?>) o);
-            } else {
+            else
                 container.add(o);
-            }
         }
 
         /**
@@ -345,9 +340,13 @@ public class UrlBuilder {
         }
     }
 
-    // public static void main(String[] args) {
-    // String abcd = ".abcd";
-    // System.out.println(abcd.startsWith("."));
-    // System.out.println(abcd.substring(1));
-    // }
+    public static void main(String[] args) {
+        UrlBuilder ub = new UrlBuilder("http://www.naqichuan.com?cc=2&abcd=3");
+        System.out.println(ub.forPath("/n").build());
+        ub = new UrlBuilder("http://passport.{0}.{1}.naqichuan.com/{2}?cc=2&abcd=3&ccaa={1}");
+        ub.addValue("c");
+        ub.addValue("123");
+        ub.addValue("bbbb");
+        System.out.println(ub.forPath("/n{2}").build());
+    }
 }
