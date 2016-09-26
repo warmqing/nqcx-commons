@@ -8,15 +8,11 @@
 
 package org.nqcx.commons.web;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.*;
-
 import org.nqcx.commons.lang.DTO;
 import org.nqcx.commons.lang.page.PageBuilder;
 import org.nqcx.commons.util.MapBuilder;
-import org.nqcx.commons.web.result.Result;
 import org.nqcx.commons.web.result.NqcxResult;
+import org.nqcx.commons.web.result.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +20,17 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
 public abstract class WebSupport {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final static Logger logger = LoggerFactory.getLogger(WebSupport.class);
 
     protected final static String SUCCESS = "success";
     protected final static String ERROR_CODE = "errorCode";
@@ -38,11 +38,11 @@ public abstract class WebSupport {
     protected final static String ERROR_MULTIPLE = "multipleError";
     protected final static String ERROR_MULTIPLE_CODE = "multipleErrorCode";
     protected final static String ERROR_MULTIPLE_TEXT = "multipleErrorText";
-
+    //
     protected final static String DEFAULT_CHARSET_NAME = "UTF-8";
 
     @Autowired(required = false)
-    private NqcxResult nqcxResult;
+    private NqcxResult resultConfig;
     @Autowired(required = false)
     private MessageSource messageSource;
 
@@ -63,18 +63,18 @@ public abstract class WebSupport {
 
     /**
      * 取得配置文件中的Result
-     * 
+     *
      * @param type
      * @param code
      * @return
      */
     protected Result getResult(String type, String code) {
-        return nqcxResult == null ? null : nqcxResult.getResult(type, code);
+        return resultConfig == null ? null : resultConfig.getResult(type, code);
     }
 
     /**
      * 从 properties 中取值
-     * 
+     *
      * @param code
      * @return
      */
@@ -84,17 +84,32 @@ public abstract class WebSupport {
 
     /**
      * 从 properties 中取值
-     * 
+     *
      * @param code
      * @param arguments
      * @return
      */
     protected String getPropertyValue(String code, Object[] arguments) {
+        return getPropertyValue(code, arguments, null);
+    }
+
+    /**
+     * 从 properties 中取值
+     *
+     * @param code
+     * @param arguments
+     * @param locale
+     * @return
+     */
+    protected String getPropertyValue(String code, Object[] arguments, Locale locale) {
         String rv = null;
         try {
-            rv = (messageSource == null ? null : messageSource.getMessage(code, arguments, null));
+            if (locale == null && WebContext.getWebContext() != null)
+                locale = WebContext.getWebContext().getLocale();
+
+            rv = messageSource == null ? null : messageSource.getMessage(code, arguments, locale);
         } catch (NoSuchMessageException e) {
-            logger.warn("WebSupport.getValue warn:" + e.getMessage());
+            logger.warn("WebSupport.getPropertyValue ," + e.getMessage());
         }
         return rv == null ? code : rv;
     }
@@ -151,8 +166,8 @@ public abstract class WebSupport {
     }
 
     /**
-     * @author naqichuan Oct 14, 2013 4:03:49 PM
      * @return
+     * @author huangbg 2014年8月1日 下午5:49:40
      */
     protected WebContext getWebContext() {
         return WebContext.getWebContext();
@@ -214,7 +229,7 @@ public abstract class WebSupport {
      * @param entrySet
      */
     private void parseMultipleErrorJson(MapBuilder mapBuilder, Set<Map.Entry<String, Object>> entrySet) {
-        mapBuilder.putMap(putError("10")).pubArray(ERROR_MULTIPLE, convertMultipleErrorJsonArray(entrySet));
+        mapBuilder.putMap(putError("10")).put(ERROR_MULTIPLE, convertMultipleErrorJsonArray(entrySet));
     }
 
     /**
@@ -268,7 +283,7 @@ public abstract class WebSupport {
      * @param list
      */
     private void parseSuccessList(MapBuilder mapBuilder, List<?> list) {
-        if (list != null && list.size() > 0)
+        if (list != null)
             mapBuilder.put("list", list);
     }
 
@@ -302,20 +317,32 @@ public abstract class WebSupport {
     /**
      * 通过 response 直接返回 ContentType 为 application/json 格式字符串
      *
-     * @author naqichuan Sep 26, 2013 3:02:32 PM
      * @param response
      * @param result
+     * @author naqichuan Sep 26, 2013 3:02:32 PM
      */
 
     protected void responseJsonResult(HttpServletResponse response, String result) {
-        response.setCharacterEncoding(DEFAULT_CHARSET_NAME);
         response.setContentType("application/json; charset=utf-8");
+        responseResult(response, result);
+    }
+
+    /**
+     * 通过 response 直接返回字符串
+     *
+     * @param response
+     * @param result
+     * @author naqichuan Sep 26, 2013 3:02:32 PM
+     */
+
+    protected void responseResult(HttpServletResponse response, String result) {
+        response.setCharacterEncoding(DEFAULT_CHARSET_NAME);
         PrintWriter out = null;
         try {
             out = response.getWriter();
             out.append(result);
         } catch (IOException e) {
-            logger.error("WebSupport.responseResult", e);
+            logger.warn("WebSupport.responseResult, " + e.getMessage());
         } finally {
             if (out != null) {
                 out.close();

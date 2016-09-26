@@ -15,12 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.text.MessageFormat;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -28,32 +24,46 @@ import java.util.Map.Entry;
  */
 public class UrlBuilder {
 
-    private final URL base;
+    // 生成 url 时根据 index 对应的值替换占位符
+    private final static ThreadLocal<List<String>> values = new ThreadLocal<List<String>>() {
+        @Override
+        protected List<String> initialValue() {
+            return new ArrayList<String>(0);
+        }
+    };
+
+    private final URL baseUrl; // url 可以有用占位符，如: http://{0}.{1}.nqcx.org
     private final boolean ignoreEmpty;
     private final Charset charset;
     private final Map<String, Object> queryMap;
 
-    public UrlBuilder(final String base) throws MalformedURLException {
-        this(base, "utf-8", true);
+    public UrlBuilder(final String baseUrl) {
+        this(baseUrl, "UTF-8", true);
     }
 
-    public UrlBuilder(final String base, final String charsetName) throws MalformedURLException {
-        this(base, charsetName, true);
+    public UrlBuilder(final String baseUrl, final String charsetName) {
+        this(baseUrl, charsetName, true);
     }
 
-    public UrlBuilder(final String base, final String charsetName, final boolean ignoreEmpty)
-            throws MalformedURLException {
-        this.base = new URL(base);
-        this.charset = Charset.forName(charsetName);
-        this.ignoreEmpty = ignoreEmpty;
-        String queryString = this.base.getQuery();
-        if (!StringUtils.isEmpty(queryString)) {
-            queryMap = new LinkedHashMap<String, Object>(parseQuery(queryString));
-        } else {
-            queryMap = Collections.emptyMap();
+    public UrlBuilder(final String baseUrl, final String charsetName, final boolean ignoreEmpty) {
+        try {
+            this.baseUrl = new URL(baseUrl);
+            this.ignoreEmpty = ignoreEmpty;
+            this.charset = Charset.forName(charsetName);
+            String queryString = this.baseUrl.getQuery();
+            if (StringUtils.isNotEmpty(queryString))
+                queryMap = new LinkedHashMap<String, Object>(parseQuery(queryString));
+            else
+                queryMap = Collections.emptyMap();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
     }
 
+    /**
+     * @param query
+     * @return
+     */
     private Map<String, Object> parseQuery(String query) {
         String[] params = query.split("&");
         Map<String, Object> map = new LinkedHashMap<String, Object>(params.length);
@@ -69,28 +79,65 @@ public class UrlBuilder {
         return map;
     }
 
+    /**
+     * @return
+     */
     public Builder forPath() {
         return forPath(null);
     }
 
+    /**
+     * @param path
+     * @return
+     */
     public Builder forPath(String path) {
-        return new Builder(base, path, charset.name(), ignoreEmpty, queryMap);
+        return new Builder(baseUrl, path, charset.name(), ignoreEmpty, queryMap);
     }
 
+    /**
+     * @param values
+     */
+    public static void setValues(List<String> values) {
+        values.get()values);
+    }
+
+    /**
+     * @param values
+     */
+    public static void addValues(List<String> values) {
+
+    }
+
+    /**
+     * @param value
+     */
+    public static void setValue(String value) {
+
+    }
+
+    /**
+     * @param value
+     */
+    public static void addValue(String value) {
+
+    }
+
+    /**
+     */
     public static class Builder {
 
         final URL base;
         String path;
         String charsetName;
         boolean ignoreEmpty;
-        final Map<String, Object> urlParameters;
+        final Map<String, Object> urlParams;
 
         Builder(URL base, String path, String charsetName, boolean ignoreEmpty, Map<String, Object> queryMap) {
             this.base = base;
             this.path = path;
             this.charsetName = charsetName;
             this.ignoreEmpty = ignoreEmpty;
-            this.urlParameters = new LinkedHashMap<String, Object>(queryMap);
+            this.urlParams = new LinkedHashMap<String, Object>(queryMap);
         }
 
         public Builder setPath(String path) {
@@ -108,6 +155,18 @@ public class UrlBuilder {
             return this;
         }
 
+        /**
+         * 取得参数表
+         *
+         * @return
+         */
+        public Map<String, Object> getParamMap() {
+            return new HashMap<String, Object>(this.urlParams);
+        }
+
+        /**
+         * @return
+         */
         public String build() {
 
             String path = prefixPath(base.getPath(), this.path);
@@ -116,16 +175,25 @@ public class UrlBuilder {
                 port = -1;
             }
 
+            String host = base.getHost();
+            if (holder.get() != null && host != null) {
+//                host = host.replaceAll("\\{[0-9]*\\}", holder.get());
+                host = MessageFormat.format(host, holder.get());
+                if (host.startsWith("."))
+                    host = host.substring(1);
+            }
+
+
             final StringBuilder builder;
             try {
                 builder = new StringBuilder(
-                        new URL(base.getProtocol(), base.getHost(), port, path).toString());
+                        new URL(base.getProtocol(), host, port, path).toString());
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
 
             StringBuilder query = new StringBuilder();
-            for (Entry<String, Object> entry : urlParameters.entrySet()) {
+            for (Entry<String, Object> entry : urlParams.entrySet()) {
                 final String key = entry.getKey();
                 Object value = entry.getValue();
                 if (value == null) {
@@ -150,6 +218,11 @@ public class UrlBuilder {
             return builder.append(query).toString();
         }
 
+        /**
+         * @param key
+         * @param v
+         * @param sb
+         */
         void appendQueryString(String key, Object v, StringBuilder sb) {
             if (v == null) {
                 return;
@@ -161,17 +234,26 @@ public class UrlBuilder {
             sb.append("&").append(key).append("=").append(encodeUrl(value));
         }
 
+        /**
+         * @param value
+         * @return
+         */
         String encodeUrl(String value) {
             String result;
             try {
-                result = URLEncoder.encode(value,
-                        StringUtils.isNotBlank(charsetName) ? charsetName : Charset.defaultCharset().name());
+                result = URLEncoder.encode(value, org.apache.commons.lang.StringUtils.isNotBlank(charsetName) ? charsetName : Charset
+                        .defaultCharset().name());
             } catch (UnsupportedEncodingException e) {
                 result = value;
             }
             return result;
         }
 
+        /**
+         * @param contextPath
+         * @param path
+         * @return
+         */
         String prefixPath(String contextPath, String path) {
             String returnPath;
             if (path == null || contextPath == null) {
@@ -192,25 +274,10 @@ public class UrlBuilder {
             return returnPath;
         }
 
-        public Builder add(final String key, final Object value) {
-            Object newValue;
-            if (urlParameters.containsKey(key)) {
-                Object o = urlParameters.get(key);
-                if (o == null) {
-                    newValue = value;
-                } else {
-                    List<Object> container = new LinkedList<Object>();
-                    append(container, o);
-                    append(container, value);
-                    newValue = container;
-                }
-            } else {
-                newValue = value;
-            }
-            urlParameters.put(key, newValue);
-            return this;
-        }
-
+        /**
+         * @param container
+         * @param o
+         */
         void append(List<Object> container, Object o) {
             if (o instanceof Object[]) {
                 for (Object e : (Object[]) o) {
@@ -223,24 +290,64 @@ public class UrlBuilder {
             }
         }
 
-        public Builder addAll(final Map<String, Object> values) {
-            if (values != null && values.size() > 0) {
-                for (Entry<String, Object> entry : values.entrySet()) {
-                    add(entry.getKey(), entry.getValue());
+        /**
+         * @param key
+         * @param value
+         * @return
+         */
+        public Builder add(final String key, final Object value) {
+            Object newValue;
+            if (urlParams.containsKey(key)) {
+                Object o = urlParams.get(key);
+                if (o == null) {
+                    newValue = value;
+                } else {
+                    List<Object> container = new LinkedList<Object>();
+                    append(container, o);
+                    append(container, value);
+                    newValue = container;
                 }
+            } else {
+                newValue = value;
+            }
+            urlParams.put(key, newValue);
+            return this;
+        }
+
+        /**
+         * @param values
+         * @return
+         */
+        public Builder add(Map<String, Object> values) {
+            for (Entry<String, Object> entry : values.entrySet()) {
+                add(entry.getKey(), entry.getValue());
             }
             return this;
         }
 
+        /**
+         * @param key
+         * @param value
+         * @return
+         */
         public Builder put(final String key, final Object value) {
-            urlParameters.put(key, value);
+            urlParams.put(key, value);
             return this;
         }
 
-        public Builder put(Map<String, Object> values) {
-            urlParameters.putAll(values);
+        /**
+         * @param values
+         * @return
+         */
+        public Builder put(Map<String, ?> values) {
+            urlParams.putAll(values);
             return this;
         }
-
     }
+
+    // public static void main(String[] args) {
+    // String abcd = ".abcd";
+    // System.out.println(abcd.startsWith("."));
+    // System.out.println(abcd.substring(1));
+    // }
 }

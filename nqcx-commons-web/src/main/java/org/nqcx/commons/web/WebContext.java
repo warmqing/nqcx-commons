@@ -8,6 +8,8 @@
 
 package org.nqcx.commons.web;
 
+import java.util.Locale;
+
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
@@ -23,6 +25,8 @@ public class WebContext {
 
     private boolean ajax = false;
     private String remoteAddr;
+    private String serverName;
+    private Locale locale;
 
     public boolean isAjax() {
         return ajax;
@@ -38,6 +42,22 @@ public class WebContext {
 
     public void setRemoteAddr(String remoteAddr) {
         this.remoteAddr = remoteAddr;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
     }
 
     public static void setWebContext(WebContext webContext) {
