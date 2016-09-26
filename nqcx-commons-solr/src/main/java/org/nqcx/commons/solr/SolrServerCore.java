@@ -16,5 +16,5 @@ public interface SolrServerCore {
      *
      * @return
      */
-    public String getCore();
+    String getCore();
 }

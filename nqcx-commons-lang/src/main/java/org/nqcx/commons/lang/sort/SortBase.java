@@ -8,13 +8,15 @@
 
 package org.nqcx.commons.lang.sort;
 
+import org.nqcx.commons.lang.EntityBase;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:03:31
  */
-public class SortBase {
+public class SortBase extends EntityBase {
 
     // 排序字段列表，在子类中定义，KEY为序号，value为字段名
     protected Map<String, String> fileds = new HashMap<String, String>(5);
@@ -32,7 +34,7 @@ public class SortBase {
 
     /**
      * 取得用于排序的字段列表
-     * 
+     *
      * @return
      */
     public Map<String, String> getFileds() {
@@ -41,7 +43,7 @@ public class SortBase {
 
     /**
      * 设置用于排序的字段列表
-     * 
+     *
      * @param fileds
      * @return
      */
@@ -52,7 +54,7 @@ public class SortBase {
 
     /**
      * 添加排序字段
-     * 
+     *
      * @param key
      * @param field
      * @return
@@ -64,7 +66,7 @@ public class SortBase {
 
     /**
      * 取得排序字段
-     * 
+     *
      * @return
      */
     public String getSort() {
@@ -73,7 +75,7 @@ public class SortBase {
 
     /**
      * 设置排序字段
-     * 
+     *
      * @param sort
      * @return
      */
@@ -84,7 +86,7 @@ public class SortBase {
 
     /**
      * 取反其中指定的字段
-     * 
+     *
      * @param sort
      * @param field
      * @return

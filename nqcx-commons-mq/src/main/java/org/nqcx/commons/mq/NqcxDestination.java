@@ -13,5 +13,5 @@ import javax.jms.Destination;
  */
 public interface NqcxDestination {
 
-    public Destination getDestination();
+    Destination getDestination();
 }

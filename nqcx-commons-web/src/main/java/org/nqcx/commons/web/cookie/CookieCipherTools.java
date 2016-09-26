@@ -10,7 +10,7 @@ package org.nqcx.commons.web.cookie;
 
 import java.io.UnsupportedEncodingException;
 
-import org.nqcx.commons.util.NqcxStringUtils;
+import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.util.security.Base32;
 import org.nqcx.commons.util.security.DESCoder;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class CookieCipherTools {
     public String encrypt(String value, String key) {
         try {
             byte[] data;
-            if (!NqcxStringUtils.isEmpty(charsetName)) {
+            if (!StringUtils.isEmpty(charsetName)) {
                 try {
                     data = value.getBytes(charsetName);
                 } catch (Exception e1) {
@@ -66,7 +66,7 @@ public class CookieCipherTools {
         try {
             byte[] data = decoding(value);
             byte[] bytes = decrypt(key, data);
-            if (!NqcxStringUtils.isEmpty(charsetName)) {
+            if (!StringUtils.isEmpty(charsetName)) {
                 try {
                     return new String(bytes, charsetName);
                 } catch (UnsupportedEncodingException e1) {

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * 
  * @author naqichuan 2014年8月14日 上午11:48:45
  */
-public class EmailValidatorUtils {
+public class EmailUtils {
 
     /**
      * Email address pattern

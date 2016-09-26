@@ -12,7 +12,7 @@ import java.util.Date;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.nqcx.commons.lang.EntityBase;
-import org.nqcx.commons.util.NqcxStringUtils;
+import org.nqcx.commons.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -305,14 +305,14 @@ public class LoginContext extends EntityBase {
      *            of type LoginContext
      */
     protected static void setValue(String value, LoginContext context) {
-        if (NqcxStringUtils.isNotEmpty(value)) {
+        if (StringUtils.isNotEmpty(value)) {
             String[] fields = value.split(",");
             for (String keyValues : fields) {
                 String[] keyValue = keyValues.split("=");
                 if (keyValue.length == 2) {
                     try {
                         String field = keyValue[0];
-                        if (NqcxStringUtils.isNotBlank(field)) {
+                        if (StringUtils.isNotBlank(field)) {
                             BeanUtils.setProperty(context, field, keyValue[1]);
                         }
                     } catch (Exception e) {

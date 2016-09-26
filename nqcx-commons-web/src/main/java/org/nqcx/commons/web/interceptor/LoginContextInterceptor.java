@@ -11,7 +11,7 @@ package org.nqcx.commons.web.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nqcx.commons.util.NqcxStringUtils;
+import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.web.cookie.CookieUtils;
 import org.nqcx.commons.web.cookie.NqcxCookie;
 import org.nqcx.commons.web.login.LoginContext;
@@ -129,6 +129,6 @@ public class LoginContextInterceptor extends WebContextInterceptor {
      * @return
      */
     protected LoginContext getLoginContext(String value) {
-        return NqcxStringUtils.isBlank(value) ? null : LoginContext.parse(value);
+        return StringUtils.isBlank(value) ? null : LoginContext.parse(value);
     }
 }

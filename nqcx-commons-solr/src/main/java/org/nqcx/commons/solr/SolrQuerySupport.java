@@ -11,11 +11,9 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.nqcx.commons.lang.DTO;
-import org.nqcx.commons.lang.sort.SortBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,10 +79,28 @@ public abstract class SolrQuerySupport extends SolrSupport {
                 Set<Map.Entry<String, Object>> sets = dto.getParamsMap().entrySet();
                 if (sets != null && sets.size() > 0) {
                     StringBuffer sb = new StringBuffer();
+                    Object dataObj = null;
                     for (Map.Entry<String, Object> entry : sets) {
+                        dataObj = entry.getValue();
+                        if (dataObj == null)
+                            continue;
+
                         if (sb.length() > 0)
                             sb.append(" AND ");
-                        sb.append(entry.getKey() + ":" + (String) entry.getValue());
+
+                        if (dataObj instanceof List) {
+                            List<String> valueList = (List<String>) dataObj;
+                            if (valueList != null && valueList.size() > 0) {
+                                sb.append(" (");
+                                for (int i = 0; i < valueList.size(); i++) {
+                                    if (i > 0)
+                                        sb.append(" OR ");
+                                    sb.append(entry.getKey() + ":" + valueList.get(i));
+                                }
+                                sb.append(")");
+                            }
+                        } else
+                            sb.append(entry.getKey() + ":" + (String) dataObj);
                     }
                     query.setQuery(sb.toString());
                 }

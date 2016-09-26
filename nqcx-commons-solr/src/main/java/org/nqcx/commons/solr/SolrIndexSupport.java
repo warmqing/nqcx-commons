@@ -6,6 +6,7 @@
 
 package org.nqcx.commons.solr;
 
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
 
 import java.util.Arrays;
@@ -25,8 +26,9 @@ public abstract class SolrIndexSupport extends SolrSupport {
      */
     public void add(SolrInputDocument doc) {
         try {
-            this.getServer().add(doc);
-            this.getServer().optimize();
+            HttpSolrServer server = this.getServer();
+            server.add(doc);
+            server.optimize();
         } catch (Exception e) {
             throw new SolrSupportException("SolrIndexSupport add error", e);
         }
@@ -44,8 +46,9 @@ public abstract class SolrIndexSupport extends SolrSupport {
      */
     public void addMulti(Collection<SolrInputDocument> docs) {
         try {
-            this.getServer().add(docs);
-            this.getServer().optimize();
+            HttpSolrServer server = this.getServer();
+            server.add(docs);
+            server.optimize();
         } catch (Exception e) {
             throw new SolrSupportException("SolrIndexSupport addMulti error", e);
         }
@@ -57,8 +60,9 @@ public abstract class SolrIndexSupport extends SolrSupport {
      */
     public <T> void addBean(T bean) {
         try {
-            this.getServer().addBean(bean);
-            this.getServer().optimize();
+            HttpSolrServer server = this.getServer();
+            server.addBean(bean);
+            server.optimize();
         } catch (Exception e) {
             throw new SolrSupportException("SolrIndexSupport addBean error", e);
         }
@@ -78,8 +82,9 @@ public abstract class SolrIndexSupport extends SolrSupport {
      */
     public <T> void addBeans(Collection<T> beans) {
         try {
-            this.getServer().addBeans(beans);
-            this.getServer().optimize();
+            HttpSolrServer server = this.getServer();
+            server.addBeans(beans);
+            server.optimize();
         } catch (Exception e) {
             throw new SolrSupportException("SolrIndexSupport addBeans error", e);
         }
@@ -90,8 +95,9 @@ public abstract class SolrIndexSupport extends SolrSupport {
      */
     public void deleteOne(String id) {
         try {
-            this.getServer().deleteById(id);
-            this.getServer().optimize();
+            HttpSolrServer server = this.getServer();
+            server.deleteById(id);
+            server.optimize();
         } catch (Exception e) {
             throw new SolrSupportException("SolrIndexSupport deleteOne error", e);
         }
@@ -102,8 +108,9 @@ public abstract class SolrIndexSupport extends SolrSupport {
      */
     public void deleteMulti(List<String> ids) {
         try {
-            this.getServer().deleteById(ids);
-            this.getServer().optimize();
+            HttpSolrServer server = this.getServer();
+            server.deleteById(ids);
+            server.optimize();
         } catch (Exception e) {
             throw new SolrSupportException("SolrIndexSupport deleteMulti error", e);
         }
@@ -114,8 +121,9 @@ public abstract class SolrIndexSupport extends SolrSupport {
      */
     public void deleteAll() {
         try {
-            this.getServer().deleteByQuery("*:*");
-            this.getServer().optimize();
+            HttpSolrServer server = this.getServer();
+            server.deleteByQuery("*:*");
+            server.optimize();
         } catch (Exception e) {
             throw new SolrSupportException("SolrIndexSupport deleteAll error", e);
         }

@@ -8,13 +8,10 @@
 
 package org.nqcx.commons.web.interceptor;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nqcx.commons.util.NqcxStringUtils;
+import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.web.WebContext;
 import org.nqcx.commons.web.WebSupport;
 import org.slf4j.Logger;
@@ -63,13 +60,13 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
      */
     protected String getRemoteAddr(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
-        if (NqcxStringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip))
+        if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip))
             ip = request.getHeader("X-Real-IP");
 
-        if (NqcxStringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip))
+        if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip))
             ip = request.getRemoteAddr();
 
-        if (NqcxStringUtils.isNotBlank(ip) && ip.indexOf(",") != -1)
+        if (StringUtils.isNotBlank(ip) && ip.indexOf(",") != -1)
             ip = ip.substring(ip.lastIndexOf(",") + 1, ip.length()).trim();
 
         return ip;

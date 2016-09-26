@@ -11,7 +11,7 @@ package org.nqcx.commons.web.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nqcx.commons.util.NqcxStringUtils;
+import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.web.cookie.CookieUtils;
 import org.nqcx.commons.web.cookie.NqcxCookie;
 import org.nqcx.commons.web.login.LoginTicket;
@@ -47,7 +47,7 @@ public class LoginTicketInterceptor extends WebContextInterceptor {
             return;
 
         String cookieValue = CookieUtils.getCookieValue(request, ticketCookie.getName());
-        if (NqcxStringUtils.isNotBlank(cookieValue)) { // 先check passport的cookie有没有
+        if (StringUtils.isNotBlank(cookieValue)) { // 先check passport的cookie有没有
             LoginTicket ticket = null;
 
             try {

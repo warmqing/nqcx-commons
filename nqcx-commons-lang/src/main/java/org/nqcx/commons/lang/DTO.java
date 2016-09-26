@@ -8,22 +8,21 @@
 
 package org.nqcx.commons.lang;
 
-import java.io.Serializable;
+import org.nqcx.commons.lang.page.PageBuilder;
+import org.nqcx.commons.lang.sort.SortBase;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.nqcx.commons.lang.page.PageBuilder;
-import org.nqcx.commons.lang.sort.SortBase;
 
 /**
  * Data transfer object
  * 
  * @author naqichuan 2014年8月14日 上午10:58:13
  */
-public class DTO extends EntityBase implements Serializable {
+public class DTO extends EntityBase {
 
-	private static final long serialVersionUID = 2484511853213485328L;
+//    private static final long serialVersionUID = 2484511853213485328L;
 
 	/**
 	 * 成功标记
@@ -107,7 +106,7 @@ public class DTO extends EntityBase implements Serializable {
 
 	/**
 	 * 取实体对象
-	 * 
+	 *
 	 * @return object
 	 */
 	@SuppressWarnings("unchecked")
@@ -122,7 +121,7 @@ public class DTO extends EntityBase implements Serializable {
 
 	/**
 	 * 取实体对象列表
-	 * 
+	 *
 	 * @return 实体对象的List
 	 */
 	@SuppressWarnings("unchecked")

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * @author naqichuan 2014年9月9日 下午12:46:12
  */
-public class NqcxNumberUtils {
+public class NumberUtils {
 
     public static String NUMBER_PATTERN = "[0-9]*";
 
@@ -22,6 +22,6 @@ public class NqcxNumberUtils {
     public static void main(String[] args) {
         String testString = "12";
 
-        System.out.println(NqcxNumberUtils.isNumber(testString));
+        System.out.println(NumberUtils.isNumber(testString));
     }
 }

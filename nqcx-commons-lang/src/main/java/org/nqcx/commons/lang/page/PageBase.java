@@ -8,6 +8,7 @@
 
 package org.nqcx.commons.lang.page;
 
+
 import org.nqcx.commons.lang.EntityBase;
 
 /**
@@ -196,6 +197,16 @@ public class PageBase extends EntityBase implements PageBuilder {
         return showArray;
     }
 
+    @Override
+    public long getPrevPage() {
+        return this.getPage() - 1 < 1 ? 1 : this.getPage() - 1;
+    }
+
+    @Override
+    public long getNextPage() {
+        return this.getPage() + 1 > this.getTotalPage() ? this.getTotalPage() : this.getPage() + 1;
+    }
+
     public static void main(String[] args) {
         PageBuilder pb = new PageBase();
         pb.setTotalCount(188);
@@ -207,6 +218,7 @@ public class PageBase extends EntityBase implements PageBuilder {
         System.out.println(pb.getPage());
         System.out.println(pb.getPosition());
         System.out.println(pb.getShowArray());
+        System.out.println(pb.getPrevPage());
+        System.out.println(pb.getNextPage());
     }
-
 }

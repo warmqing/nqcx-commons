@@ -8,7 +8,7 @@
 
 package org.nqcx.commons.web.url;
 
-import org.nqcx.commons.util.NqcxStringUtils;
+import org.nqcx.commons.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -47,7 +47,7 @@ public class UrlBuilder {
         this.charset = Charset.forName(charsetName);
         this.ignoreEmpty = ignoreEmpty;
         String queryString = this.base.getQuery();
-        if (!NqcxStringUtils.isEmpty(queryString)) {
+        if (!StringUtils.isEmpty(queryString)) {
             queryMap = new LinkedHashMap<String, Object>(parseQuery(queryString));
         } else {
             queryMap = Collections.emptyMap();
@@ -165,7 +165,7 @@ public class UrlBuilder {
             String result;
             try {
                 result = URLEncoder.encode(value,
-                        NqcxStringUtils.isNotBlank(charsetName) ? charsetName : Charset.defaultCharset().name());
+                        StringUtils.isNotBlank(charsetName) ? charsetName : Charset.defaultCharset().name());
             } catch (UnsupportedEncodingException e) {
                 result = value;
             }

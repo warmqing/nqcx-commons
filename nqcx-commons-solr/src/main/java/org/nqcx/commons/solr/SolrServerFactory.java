@@ -17,42 +17,42 @@ import java.util.Map;
 public class SolrServerFactory {
 
     private final static String DEFAULT_NO_CORE_KEY = "_default";
-    private final static Map<String, HttpSolrServer> httpSolrServerMap = new HashMap<String, HttpSolrServer>();
+    private final Map<String, HttpSolrServer> httpSolrServerMap = new HashMap<String, HttpSolrServer>();
 
-    public static String SOLR_URL = "";
-    public static int CONNECTION_TIMEOUT = 100;
-    public static int SO_TIMEOUT = 15000;
-    public static int DEFAULT_MAX_CONNECTIONS_PER_HOST = 100;
-    public static int MAX_TOTAL_CONNECTION = 100;
-    public static boolean FOLLOW_REDIRECTS = false;
-    public static boolean ALLOW_COMPRESSION = true;
+    public String solrUrl = "";
+    public int connectionTimeout = 100;
+    public int soTimeout = 15000;
+    public int defaultMaxConnectionsPerHost = 100;
+    public int maxTotalConnection = 100;
+    public boolean followRedirects = false;
+    public boolean allowCompression = true;
 
     public void setSolrUrl(String solrUrl) {
-        SOLR_URL = solrUrl;
+        this.solrUrl = solrUrl;
     }
 
     public void setConnectionTimeout(int connectionTimeout) {
-        CONNECTION_TIMEOUT = connectionTimeout;
+        this.connectionTimeout = connectionTimeout;
     }
 
     public void setSoTimeout(int soTimeout) {
-        SO_TIMEOUT = soTimeout;
+        this.soTimeout = soTimeout;
     }
 
     public void setDefaultMaxConnectionsPerHost(int defaultMaxConnectionsPerHost) {
-        DEFAULT_MAX_CONNECTIONS_PER_HOST = defaultMaxConnectionsPerHost;
+        this.defaultMaxConnectionsPerHost = defaultMaxConnectionsPerHost;
     }
 
     public void setMaxTotalConnection(int maxTotalConnection) {
-        MAX_TOTAL_CONNECTION = maxTotalConnection;
+        this.maxTotalConnection = maxTotalConnection;
     }
 
     public void setFollowRedirects(boolean followRedirects) {
-        FOLLOW_REDIRECTS = followRedirects;
+        this.followRedirects = followRedirects;
     }
 
     public void setAllowCompression(boolean allowCompression) {
-        ALLOW_COMPRESSION = allowCompression;
+        this.allowCompression = allowCompression;
     }
 
     /**
@@ -60,9 +60,9 @@ public class SolrServerFactory {
      *
      * @return
      */
-    public static HttpSolrServer getHttpSolrServer() {
+    public HttpSolrServer getHttpSolrServer() {
         if (!httpSolrServerMap.containsKey(DEFAULT_NO_CORE_KEY))
-            httpSolrServerMap.put(DEFAULT_NO_CORE_KEY, fillServerParams((new HttpSolrServer(SOLR_URL))));
+            httpSolrServerMap.put(DEFAULT_NO_CORE_KEY, fillServerParams((new HttpSolrServer(solrUrl))));
 
         return httpSolrServerMap.get(DEFAULT_NO_CORE_KEY);
     }
@@ -73,12 +73,27 @@ public class SolrServerFactory {
      * @param core
      * @return
      */
-    public static HttpSolrServer getHttpSolrServer(SolrServerCore core) {
+    public HttpSolrServer getHttpSolrServer(SolrServerCore core) {
+
+        return getHttpSolrServer(core, false);
+    }
+
+    /**
+     * 取得 core server
+     *
+     * @param core
+     * @param newInstance
+     * @return
+     */
+    public HttpSolrServer getHttpSolrServer(SolrServerCore core, boolean newInstance) {
         if (core == null)
             return getHttpSolrServer();
 
+        if (newInstance)
+            return fillServerParams(new HttpSolrServer(solrUrl + "/" + core.getCore()));
+
         if (!httpSolrServerMap.containsKey(core.getCore()))
-            httpSolrServerMap.put(core.getCore(), fillServerParams(new HttpSolrServer(SOLR_URL + "/" + core.getCore())));
+            httpSolrServerMap.put(core.getCore(), fillServerParams(new HttpSolrServer(solrUrl + "/" + core.getCore())));
 
         return httpSolrServerMap.get(core.getCore());
     }
@@ -89,13 +104,13 @@ public class SolrServerFactory {
      * @param server
      * @return
      */
-    private static HttpSolrServer fillServerParams(HttpSolrServer server) {
-        server.setConnectionTimeout(CONNECTION_TIMEOUT);
-        server.setSoTimeout(SO_TIMEOUT);
-        server.setDefaultMaxConnectionsPerHost(DEFAULT_MAX_CONNECTIONS_PER_HOST);
-        server.setMaxTotalConnections(MAX_TOTAL_CONNECTION);
-        server.setFollowRedirects(FOLLOW_REDIRECTS);
-        server.setAllowCompression(ALLOW_COMPRESSION);
+    private HttpSolrServer fillServerParams(HttpSolrServer server) {
+        server.setConnectionTimeout(connectionTimeout);
+        server.setSoTimeout(soTimeout);
+        server.setDefaultMaxConnectionsPerHost(defaultMaxConnectionsPerHost);
+        server.setMaxTotalConnections(maxTotalConnection);
+        server.setFollowRedirects(followRedirects);
+        server.setAllowCompression(allowCompression);
 
         return server;
     }

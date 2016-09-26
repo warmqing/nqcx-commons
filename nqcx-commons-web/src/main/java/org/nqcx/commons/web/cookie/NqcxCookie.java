@@ -9,7 +9,7 @@
 package org.nqcx.commons.web.cookie;
 
 
-import org.nqcx.commons.util.NqcxStringUtils;
+import org.nqcx.commons.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 
@@ -53,16 +53,16 @@ public class NqcxCookie {
 
     public Cookie newCookie(String value) {
         String newValue;
-        if (!NqcxStringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             newValue = isEncrypt() ? cookieCipherTools.encrypt(value, getKey()) : value;
         } else {
             newValue = value;
         }
         Cookie cookie = new Cookie(name, newValue);
-        if (!NqcxStringUtils.isBlank(domain)) {
+        if (!StringUtils.isBlank(domain)) {
             cookie.setDomain(domain);
         }
-        if (!NqcxStringUtils.isBlank(path)) {
+        if (!StringUtils.isBlank(path)) {
             cookie.setPath(path);
         }
         if (expiry > 0) {
@@ -73,16 +73,16 @@ public class NqcxCookie {
 
     public Cookie newCookie(String value, int expiry) {
         String newValue;
-        if (!NqcxStringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             newValue = isEncrypt() ? cookieCipherTools.encrypt(value, getKey()) : value;
         } else {
             newValue = value;
         }
         Cookie cookie = new Cookie(name, newValue);
-        if (!NqcxStringUtils.isBlank(domain)) {
+        if (!StringUtils.isBlank(domain)) {
             cookie.setDomain(domain);
         }
-        if (!NqcxStringUtils.isBlank(path)) {
+        if (!StringUtils.isBlank(path)) {
             cookie.setPath(path);
         }
         cookie.setMaxAge(expiry);
@@ -91,16 +91,16 @@ public class NqcxCookie {
 
     public Cookie newCookie(String name, String value, int expiry) {
         String newValue;
-        if (!NqcxStringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             newValue = isEncrypt() ? cookieCipherTools.encrypt(value, getKey()) : value;
         } else {
             newValue = value;
         }
         Cookie cookie = new Cookie(name, newValue);
-        if (!NqcxStringUtils.isBlank(domain)) {
+        if (!StringUtils.isBlank(domain)) {
             cookie.setDomain(domain);
         }
-        if (!NqcxStringUtils.isBlank(path)) {
+        if (!StringUtils.isBlank(path)) {
             cookie.setPath(path);
         }
         cookie.setMaxAge(expiry);
@@ -109,16 +109,16 @@ public class NqcxCookie {
 
     public Cookie newCookie(String name, String value) {
         String newValue;
-        if (!NqcxStringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             newValue = isEncrypt() ? cookieCipherTools.encrypt(value, getKey()) : value;
         } else {
             newValue = value;
         }
         Cookie cookie = new Cookie(name, newValue);
-        if (!NqcxStringUtils.isBlank(domain)) {
+        if (!StringUtils.isBlank(domain)) {
             cookie.setDomain(domain);
         }
-        if (!NqcxStringUtils.isBlank(path)) {
+        if (!StringUtils.isBlank(path)) {
             cookie.setPath(path);
         }
         cookie.setMaxAge(-1);
@@ -126,7 +126,7 @@ public class NqcxCookie {
     }
 
     public String getValue(String value) {
-        if (!NqcxStringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             return isEncrypt() ? cookieCipherTools.decrypt(value, getKey()) : value;
         } else {
             return value;
@@ -134,7 +134,7 @@ public class NqcxCookie {
     }
 
     public String getValue(String value, boolean isEncrypt) {
-        if (!NqcxStringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             return isEncrypt ? cookieCipherTools.decrypt(value, getKey()) : value;
         } else {
             return value;

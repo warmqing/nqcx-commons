@@ -26,11 +26,18 @@ public abstract class SolrSupport {
     public abstract SolrServerCore getServerCore();
 
     /**
+     * 设置 factory
+     *
+     * @return
+     */
+    public abstract SolrServerFactory getSolrServerFactory();
+
+    /**
      * 取得 server
      *
      * @return
      */
     public HttpSolrServer getServer() {
-        return SolrServerFactory.getHttpSolrServer(getServerCore());
+        return this.getSolrServerFactory() == null ? null : this.getSolrServerFactory().getHttpSolrServer(getServerCore());
     }
 }

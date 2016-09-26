@@ -8,6 +8,9 @@
 
 package org.nqcx.commons.util.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -21,17 +24,29 @@ import java.util.Set;
  */
 public class ServerUtil {
 
+    private final static Logger logger = LoggerFactory.getLogger(ServerUtil.class);
+
+    /**
+     * 取服务器IP
+     *
+     * @return
+     */
     public static String serverIp() {
         String serverip = "0.0.0.0";
         try {
             InetAddress inet = InetAddress.getLocalHost();
             serverip = inet.getHostAddress();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
         return serverip;
     }
 
+    /**
+     * 取服务器IPS
+     *
+     * @return
+     */
     public static Set<String> serverIps() {
         try {
             Set<String> ips = new HashSet<String>();
@@ -49,12 +64,13 @@ public class ServerUtil {
             }
             return ips;
         } catch (SocketException e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
         return null;
     }
 
     public static void main(String[] args) {
         System.out.println(ServerUtil.serverIp());
+        System.out.println(ServerUtil.serverIps());
     }
 }

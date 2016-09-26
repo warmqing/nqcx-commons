@@ -14,7 +14,7 @@ import java.util.*;
 
 import org.nqcx.commons.lang.DTO;
 import org.nqcx.commons.lang.page.PageBuilder;
-import org.nqcx.commons.util.NqcxMapBuilder;
+import org.nqcx.commons.util.MapBuilder;
 import org.nqcx.commons.web.result.Result;
 import org.nqcx.commons.web.result.NqcxResult;
 import org.slf4j.Logger;
@@ -171,7 +171,7 @@ public abstract class WebSupport {
             dto.putResult("10", "10");
         }
 
-        NqcxMapBuilder mb = NqcxMapBuilder.newInstance().put(SUCCESS, dto.isSuccess());
+        MapBuilder mb = MapBuilder.newInstance().put(SUCCESS, dto.isSuccess());
 
         if (dto.isSuccess())
             parseSuccess(mb, dto);
@@ -187,7 +187,7 @@ public abstract class WebSupport {
      * @param mapBuilder
      * @param errorMap
      */
-    private void parseError(NqcxMapBuilder mapBuilder, Map<String, Object> errorMap) {
+    private void parseError(MapBuilder mapBuilder, Map<String, Object> errorMap) {
         if (errorMap == null || errorMap.isEmpty())
             return;
         else if (errorMap.size() == 1)
@@ -203,7 +203,7 @@ public abstract class WebSupport {
      * @param mapBuilder
      * @param entry
      */
-    private void parseErrorJson(NqcxMapBuilder mapBuilder, Map.Entry<String, Object> entry) {
+    private void parseErrorJson(MapBuilder mapBuilder, Map.Entry<String, Object> entry) {
         mapBuilder.putMap(putError(entry.getValue().toString()));
     }
 
@@ -213,7 +213,7 @@ public abstract class WebSupport {
      * @param mapBuilder
      * @param entrySet
      */
-    private void parseMultipleErrorJson(NqcxMapBuilder mapBuilder, Set<Map.Entry<String, Object>> entrySet) {
+    private void parseMultipleErrorJson(MapBuilder mapBuilder, Set<Map.Entry<String, Object>> entrySet) {
         mapBuilder.putMap(putError("10")).pubArray(ERROR_MULTIPLE, convertMultipleErrorJsonArray(entrySet));
     }
 
@@ -227,7 +227,7 @@ public abstract class WebSupport {
     private List<Object> convertMultipleErrorJsonArray(Set<Map.Entry<String, Object>> entrySet) {
         List<Object> list = new ArrayList<Object>();
         for (Map.Entry<String, Object> error : entrySet) {
-            list.add(NqcxMapBuilder.newInstance().put(ERROR_MULTIPLE_CODE, "1x")
+            list.add(MapBuilder.newInstance().put(ERROR_MULTIPLE_CODE, "1x")
                     .put(ERROR_MULTIPLE_TEXT, error.getValue().toString()).build());
         }
         return list;
@@ -239,7 +239,7 @@ public abstract class WebSupport {
      * @param mapBuilder
      * @param dto
      */
-    private <T> void parseSuccess(NqcxMapBuilder mapBuilder, DTO dto) {
+    private <T> void parseSuccess(MapBuilder mapBuilder, DTO dto) {
         // 1. 解析对象
         parseSuccessObject(mapBuilder, dto.getObject());
         // 2. 解析分页
@@ -256,7 +256,7 @@ public abstract class WebSupport {
      * @param mapBuilder
      * @param object
      */
-    private void parseSuccessObject(NqcxMapBuilder mapBuilder, Object object) {
+    private void parseSuccessObject(MapBuilder mapBuilder, Object object) {
         if (object != null)
             mapBuilder.put("object", object);
     }
@@ -267,7 +267,7 @@ public abstract class WebSupport {
      * @param mapBuilder
      * @param list
      */
-    private void parseSuccessList(NqcxMapBuilder mapBuilder, List<?> list) {
+    private void parseSuccessList(MapBuilder mapBuilder, List<?> list) {
         if (list != null && list.size() > 0)
             mapBuilder.put("list", list);
     }
@@ -278,7 +278,7 @@ public abstract class WebSupport {
      * @param mapBuilder
      * @param map
      */
-    private void parseSuccessResult(NqcxMapBuilder mapBuilder, Map<?, ?> map) {
+    private void parseSuccessResult(MapBuilder mapBuilder, Map<?, ?> map) {
         if (map != null)
             mapBuilder.put("result", map);
     }
@@ -289,7 +289,7 @@ public abstract class WebSupport {
      * @param mapBuilder
      * @param pageBuilder
      */
-    private void parsePageBuilder(NqcxMapBuilder mapBuilder, PageBuilder pageBuilder) {
+    private void parsePageBuilder(MapBuilder mapBuilder, PageBuilder pageBuilder) {
         if (pageBuilder == null)
             return;
 

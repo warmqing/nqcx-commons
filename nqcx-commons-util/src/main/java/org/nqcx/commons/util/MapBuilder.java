@@ -15,25 +15,25 @@ import java.util.Map;
 /**
  * @author naqichuan 2014年8月14日 上午11:47:41
  */
-public class NqcxMapBuilder {
+public class MapBuilder {
 
     private Map<Object, Object> map = new LinkedHashMap<Object, Object>();
 
-    private NqcxMapBuilder(){
+    private MapBuilder(){
 
     }
 
     @SuppressWarnings("unchecked")
-    private NqcxMapBuilder(Map<?, ?> map){
+    private MapBuilder(Map<?, ?> map){
         this.map = (Map<Object, Object>) map;
     }
 
-    public static NqcxMapBuilder newInstance() {
-        return new NqcxMapBuilder();
+    public static MapBuilder newInstance() {
+        return new MapBuilder();
     }
 
-    public static NqcxMapBuilder newInstance(Map<?, ?> map) {
-        return new NqcxMapBuilder(map);
+    public static MapBuilder newInstance(Map<?, ?> map) {
+        return new MapBuilder(map);
     }
 
     /**
@@ -43,7 +43,7 @@ public class NqcxMapBuilder {
      * @param value
      * @return
      */
-    public NqcxMapBuilder put(Object key, Object value) {
+    public MapBuilder put(Object key, Object value) {
         this.map.put(key, value);
         return this;
     }
@@ -54,7 +54,7 @@ public class NqcxMapBuilder {
      * @param map
      * @return
      */
-    public NqcxMapBuilder putMap(Map<?, ?> map) {
+    public MapBuilder putMap(Map<?, ?> map) {
         this.map.putAll(map);
         return this;
     }
@@ -66,7 +66,7 @@ public class NqcxMapBuilder {
      * @param list
      * @return
      */
-    public NqcxMapBuilder pubArray(Object key, List<?> list) {
+    public MapBuilder pubArray(Object key, List<?> list) {
         this.map.put(key, list);
         return this;
     }

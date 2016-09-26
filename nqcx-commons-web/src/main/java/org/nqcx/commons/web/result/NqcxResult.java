@@ -8,7 +8,7 @@
 
 package org.nqcx.commons.web.result;
 
-import org.nqcx.commons.util.NqcxStringUtils;
+import org.nqcx.commons.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class NqcxResult {
     }
 
     private static String getFullCode(String code) {
-        return NqcxStringUtils.leftPad(code, 5, '0');
+        return StringUtils.leftPad(code, 5, '0');
     }
 
     /**

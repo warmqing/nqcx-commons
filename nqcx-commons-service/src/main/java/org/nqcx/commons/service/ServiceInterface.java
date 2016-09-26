@@ -60,6 +60,14 @@ public interface ServiceInterface {
 	public <T> List<T> query(DTO dto);
 
 	/**
+	 * 执行查询，用于远程调用执行查询，解决远程调时 dto 取不到分页信息的问题
+	 *
+	 * @param dto
+	 * @return
+	 */
+	DTO rmiQuery(DTO dto);
+
+	/**
 	 * 查询总数
 	 * 
 	 * @param dto

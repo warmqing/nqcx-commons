@@ -6,9 +6,6 @@
 
 package org.nqcx.commons.util.io;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.*;
 
 /**
@@ -16,7 +13,7 @@ import java.io.*;
  */
 public class Output {
 
-    private final Logger logger = LoggerFactory.getLogger(Output.class);
+//    private final Logger logger = LoggerFactory.getLogger(Output.class);
 
     protected final static int BUF_LEN = 1024;
 
