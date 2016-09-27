@@ -8,25 +8,22 @@
 
 package org.nqcx.commons.web.interceptor;
 
-import java.net.MalformedURLException;
+import org.nqcx.commons.web.login.LoginContext;
+import org.nqcx.commons.web.url.UrlBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.nqcx.commons.web.login.LoginContext;
-import org.nqcx.commons.web.url.UrlBuilder;
-import org.nqcx.commons.web.url.UrlBuilder.Builder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import java.net.MalformedURLException;
+import java.util.Map;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
 public class LoginRequiredInterceptor extends WebContextInterceptor {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static Logger logger = LoggerFactory.getLogger(LoginRequiredInterceptor.class);
 
     protected static final String NEED_LOGIN_JSON = "{\"success\": false, \"needLogin\": true}";
 
@@ -65,7 +62,7 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
 
     /**
      * 通过验证 LoginContext，判断用户是否登录，如果需要更新数据库，要重写该方法
-     * 
+     *
      * @param context
      * @return
      */
@@ -80,24 +77,39 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
 
     /**
      * 取出登录的信息
-     * 
+     *
      * @return
      */
     protected LoginContext getLoginContext() {
         return LoginContext.getLoginContext();
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * @param request
+     * @return
+     * @throws MalformedURLException
+     */
     protected String getLoginUrl(HttpServletRequest request) throws MalformedURLException {
+        return getLoginUrl(request, null);
+    }
+
+    /**
+     * @param request
+     * @return
+     * @throws MalformedURLException
+     */
+    protected String getLoginUrl(HttpServletRequest request, Map<String, String> params) {
         if (homeUrl == null)
             return "";
-        Builder currentUrlBuilder = homeUrl.forPath(request.getServletPath());
+        UrlBuilder.Builder currentUrlBuilder = homeUrl.forPath(request.getServletPath());
         currentUrlBuilder.put(request.getParameterMap());
 
         if (loginUrl == null)
             return "";
-        Builder loginUrlBuilder = loginUrl.forPath();
+        UrlBuilder.Builder loginUrlBuilder = loginUrl.forPath();
 
+        if (params != null && params.size() > 0)
+            loginUrlBuilder.put(params);
         loginUrlBuilder.put("returnUrl", currentUrlBuilder.build());
 
         return loginUrlBuilder.build();

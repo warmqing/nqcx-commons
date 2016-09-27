@@ -22,7 +22,7 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
  */
 public class NqcxExceptionResolver extends SimpleMappingExceptionResolver {
 
-    protected Logger logger = LoggerFactory.getLogger("controller_error");
+    protected final static Logger logger = LoggerFactory.getLogger("controller_error");
 
     @Override
     protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler,

@@ -152,13 +152,14 @@ public class CookieUtils {
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (nCookie.getName().equals(cookie.getName())) {
-                    cookie.setMaxAge(0);
-                    cookie.setValue(null);
                     if (isCrossCookie) {
+                        cookie.setMaxAge(0);
+                        cookie.setValue(null);
                         cookie.setPath(nCookie.getPath());
                         cookie.setDomain(nCookie.getDomain());
-                    }
-                    response.addCookie(cookie);
+                        response.addCookie(cookie);
+                    } else
+                        setCookie(response, nCookie.getName(), null, 0);
                     break;
                 }
             }

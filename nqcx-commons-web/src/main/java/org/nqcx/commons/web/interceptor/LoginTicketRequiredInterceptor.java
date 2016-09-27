@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class LoginTicketRequiredInterceptor extends LoginRequiredInterceptor {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static Logger logger = LoggerFactory.getLogger(LoginTicketRequiredInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

@@ -8,17 +8,16 @@
 
 package org.nqcx.commons.web.login;
 
+import org.apache.commons.lang.time.DateUtils;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.LongBuffer;
 import java.util.Date;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.lang.time.DateUtils;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
@@ -27,20 +26,24 @@ public class LoginTicketUtils {
 
     public final static String ENCODING = "UTF-16LE";
 
-    public static String generateTickBolob(String random, String account, Date issueDate, Date expires, String key)
+    public static String generateTickBolob(String random, String account, String userdata, Date issueDate, Date expires, String key)
             throws Exception {
         return new String(encrypt(
-                createTickBolob(random.getBytes(), account.getBytes(ENCODING), dateToByteArray(issueDate),
+                createTickBolob(random.getBytes(),
+                        account.getBytes(ENCODING),
+                        userdata.getBytes(ENCODING),
+                        dateToByteArray(issueDate),
                         dateToByteArray(expires)), key));
     }
 
-    private static byte[] createTickBolob(byte[] random, byte[] account, byte[] issueDate, byte[] expires)
+    private static byte[] createTickBolob(byte[] random, byte[] account, byte[] userData, byte[] issueDate, byte[] expires)
             throws Exception {
         if (random.length != 8)
             throw new Exception("random");
-        int bufferLength = 2;
+        int bufferLength = 4;
         bufferLength += random.length;
         bufferLength += account.length;
+        bufferLength += userData.length;
         bufferLength += issueDate.length;
         bufferLength += expires.length;
 
@@ -51,10 +54,12 @@ public class LoginTicketUtils {
         pos += random.length;
         System.arraycopy(account, 0, buffer, pos, account.length);
         pos += account.length;
-        buffer[pos] = 0;
-        pos++;
-        buffer[pos] = 0;
-        pos++;
+        buffer[pos++] = 0;
+        buffer[pos++] = 0;
+        System.arraycopy(userData, 0, buffer, pos, userData.length);
+        pos += userData.length;
+        buffer[pos++] = 0;
+        buffer[pos++] = 0;
         System.arraycopy(issueDate, 0, buffer, pos, issueDate.length);
         pos += issueDate.length;
         System.arraycopy(expires, 0, buffer, pos, expires.length);
@@ -75,6 +80,9 @@ public class LoginTicketUtils {
         byte[] account = readUtf16le(ticketBytes, pos);
         pos += account.length + 2;
 
+        byte[] userData = readUtf16le(ticketBytes, pos);
+        pos += userData.length + 2;
+
         byte[] issueDate = new byte[8];
         System.arraycopy(ticketBytes, pos, issueDate, 0, issueDate.length);
         pos += issueDate.length;
@@ -84,9 +92,10 @@ public class LoginTicketUtils {
         pos += expires.length;
 
         long _account = Long.parseLong(new String(account, ENCODING));
+        String _userData = new String(userData, ENCODING);
         Date _issueDate = byteArrayToDate(issueDate);
         Date _expires = byteArrayToDate(expires);
-        ticket = new LoginTicket(_account, null, null, _issueDate, _expires, 0, false);
+        ticket = new LoginTicket(_account, _userData, null, _issueDate, _expires, 0, false);
 
         return ticket;
     }
@@ -158,7 +167,7 @@ public class LoginTicketUtils {
 
     /**
      * 转换成十六进制字符串
-     * 
+     *
      * @param b
      * @return
      */
@@ -167,7 +176,7 @@ public class LoginTicketUtils {
         String stmp = "";
 
         for (int n = 0; n < b.length; n++) {
-            stmp = (java.lang.Integer.toHexString(b[n] & 0XFF));
+            stmp = (Integer.toHexString(b[n] & 0XFF));
             if (stmp.length() == 1)
                 hs = hs + "0" + stmp;
             else
@@ -238,7 +247,9 @@ public class LoginTicketUtils {
         String key = "0123456789abcdef0123456789abcdef";
         byte[] testByte = null;
         try {
-            testByte = createTickBolob("123iudf8".getBytes(), "nqcx".getBytes(ENCODING),
+            testByte = createTickBolob("123iudf8".getBytes(),
+                    "123".getBytes(ENCODING),
+                    "ad".getBytes(ENCODING),
                     LoginTicketUtils.dateToByteArray(new Date()),
                     LoginTicketUtils.dateToByteArray(DateUtils.addMinutes(new Date(), 30)));
             String encrypt = encrypt(testByte, key);

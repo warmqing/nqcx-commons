@@ -25,42 +25,61 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class LoginTicketInterceptor extends WebContextInterceptor {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static Logger logger = LoggerFactory.getLogger(LoginTicketInterceptor.class);
 
     @Autowired(required = false)
-    private NqcxCookie ticketCookie;
+    protected NqcxCookie ticketCookie;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         try {
-            parseTicket(request);
+            parseTicketCookie(request, response);
         } catch (Exception e) {
-            logger.warn("parse login ticket error!", e);
+            logger.warn("parse login ticket cookie error! " + e.getMessage());
         }
 
         return true;
     }
 
-    protected void parseTicket(HttpServletRequest request) {
+    /**
+     * 解析 ticket cookie
+     *
+     * @param request
+     * @param response
+     */
+    protected void parseTicketCookie(HttpServletRequest request, HttpServletResponse response) {
+        LoginTicket.setTicket(null);
+
         if (ticketCookie == null)
             return;
 
         String cookieValue = CookieUtils.getCookieValue(request, ticketCookie.getName());
-        if (StringUtils.isNotBlank(cookieValue)) { // 先check passport的cookie有没有
-            LoginTicket ticket = null;
-
+        if (StringUtils.isNotBlank(cookieValue)) {
             try {
-                ticket = LoginTicketUtils.getLoginTicket(cookieValue, ticketCookie.getKey());
+                LoginTicket.setTicket(LoginTicketUtils.getLoginTicket(cookieValue, ticketCookie.getKey()));
+                if (LoginTicket.getTicket() != null)
+                    return;
+                logger.info("ticket error or ticket expired!");
             } catch (Exception e) {
-                logger.error("decrypt ticket cookie error!", e);
+                logger.warn("decrypt ticket cookie error!" + e.getMessage());
             }
 
-            if (ticket != null && ticket.getAccount() > 0)
-                LoginTicket.setTicket(ticket);
-            else
-                logger.info("tick error or ticket expired!");
-        } else
-            LoginTicket.setTicket(null);
+            LoginTicket.remove();
+            removeTicketCookie(request, response);
+        }
+    }
+
+    /**
+     * 删除 ticket cookie
+     *
+     * @param request
+     * @param response
+     */
+    protected void removeTicketCookie(HttpServletRequest request, HttpServletResponse response) {
+        if (ticketCookie == null)
+            return;
+
+        CookieUtils.removeCookie(request, response, ticketCookie.getName(), true);
     }
 }

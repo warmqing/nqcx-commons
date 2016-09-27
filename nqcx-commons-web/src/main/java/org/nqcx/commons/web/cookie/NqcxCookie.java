@@ -37,91 +37,75 @@ public class NqcxCookie {
     /**
      * cookie默认时限
      */
-    private int expiry;
+    private int expiry = -1;
+    /**
+     * http only
+     */
+    private boolean httpOnly = false;
     /**
      * cookie键
-     * 
+     *
      * @see #encrypt
      */
     private String key;
     /**
      * 是否加密cookie
-     * 
+     *
      * @see #key
      */
     private boolean encrypt;
 
     public Cookie newCookie(String value) {
-        String newValue;
-        if (!StringUtils.isEmpty(value)) {
-            newValue = isEncrypt() ? cookieCipherTools.encrypt(value, getKey()) : value;
-        } else {
-            newValue = value;
-        }
-        Cookie cookie = new Cookie(name, newValue);
-        if (!StringUtils.isBlank(domain)) {
-            cookie.setDomain(domain);
-        }
-        if (!StringUtils.isBlank(path)) {
-            cookie.setPath(path);
-        }
-        if (expiry > 0) {
-            cookie.setMaxAge(expiry);
-        }
-        return cookie;
+        return newCookie(value, expiry);
     }
 
     public Cookie newCookie(String value, int expiry) {
-        String newValue;
-        if (!StringUtils.isEmpty(value)) {
-            newValue = isEncrypt() ? cookieCipherTools.encrypt(value, getKey()) : value;
-        } else {
-            newValue = value;
-        }
-        Cookie cookie = new Cookie(name, newValue);
-        if (!StringUtils.isBlank(domain)) {
-            cookie.setDomain(domain);
-        }
-        if (!StringUtils.isBlank(path)) {
-            cookie.setPath(path);
-        }
-        cookie.setMaxAge(expiry);
-        return cookie;
+        return newCookie(name, value, expiry);
+    }
+
+
+    public Cookie newCookie(String name, String value) {
+        return newCookie(name, value, expiry);
     }
 
     public Cookie newCookie(String name, String value, int expiry) {
-        String newValue;
-        if (!StringUtils.isEmpty(value)) {
-            newValue = isEncrypt() ? cookieCipherTools.encrypt(value, getKey()) : value;
-        } else {
-            newValue = value;
-        }
-        Cookie cookie = new Cookie(name, newValue);
-        if (!StringUtils.isBlank(domain)) {
-            cookie.setDomain(domain);
-        }
-        if (!StringUtils.isBlank(path)) {
-            cookie.setPath(path);
-        }
-        cookie.setMaxAge(expiry);
-        return cookie;
+        return newCookie(name, value, expiry, httpOnly);
     }
 
-    public Cookie newCookie(String name, String value) {
+    public Cookie newCookie(String name, String value, boolean httpOnly) {
+        return newCookie(name, value, expiry, httpOnly);
+    }
+
+    public Cookie newCookie(String name, String value, int expiry, boolean httpOnly) {
+        return newCookie(name, value, expiry, domain, path, httpOnly);
+    }
+
+    /**
+     * 创建cookie
+     *
+     * @param name
+     * @param value
+     * @param expiry
+     * @param domain
+     * @param path
+     * @param httpOnly
+     * @return
+     */
+    public Cookie newCookie(String name, String value, int expiry, String domain, String path, boolean httpOnly) {
         String newValue;
-        if (!StringUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value))
             newValue = isEncrypt() ? cookieCipherTools.encrypt(value, getKey()) : value;
-        } else {
+        else
             newValue = value;
-        }
+
         Cookie cookie = new Cookie(name, newValue);
-        if (!StringUtils.isBlank(domain)) {
+        if (!StringUtils.isBlank(domain))
             cookie.setDomain(domain);
-        }
-        if (!StringUtils.isBlank(path)) {
+        if (!StringUtils.isBlank(path))
             cookie.setPath(path);
-        }
-        cookie.setMaxAge(-1);
+        cookie.setMaxAge(expiry);
+        cookie.setHttpOnly(httpOnly);
+
         return cookie;
     }
 
@@ -171,6 +155,14 @@ public class NqcxCookie {
 
     public void setExpiry(int expiry) {
         this.expiry = expiry;
+    }
+
+    public boolean isHttpOnly() {
+        return httpOnly;
+    }
+
+    public void setHttpOnly(boolean httpOnly) {
+        this.httpOnly = httpOnly;
     }
 
     public String getKey() {

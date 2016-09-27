@@ -8,15 +8,15 @@
 
 package org.nqcx.commons.web.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.web.cookie.CookieUtils;
 import org.nqcx.commons.web.cookie.NqcxCookie;
 import org.nqcx.commons.web.login.LoginContext;
 import org.nqcx.commons.web.login.LoginTicket;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
@@ -31,6 +31,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        LoginContext.setLoginContext(null);
 
         if (loginCookie == null)
             return true;
@@ -43,7 +44,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
         if (loginContext == null || loginContext.getAccount() == 0) {
             if (loginTicket == null || loginTicket.isExpired()) {
                 // 没有 login cookie，并且没有 ticket 或 ticket 已过期，需要重新登录的
-                CookieUtils.removeCookie(request, response, loginCookie.getName());
+                removeLoginCookie(request, response);
                 LoginContext.remove();
                 return true;
             }
@@ -53,7 +54,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
         } else {
             if (loginTicket == null) {
                 // 有 login cookie，但没有 ticket，需要重新登录的
-                CookieUtils.removeCookie(request, response, loginCookie.getName());
+                removeLoginCookie(request, response);
                 LoginContext.remove();
                 return true;
             } else if (loginTicket.isExpired()) {
@@ -76,7 +77,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
 
         // 如果已过期 login cookie，并且 ticket 已过期，重新登录
         if (current - created >= timeout && loginTicket.isExpired()) {
-            CookieUtils.removeCookie(request, response, loginCookie.getName());
+            removeLoginCookie(request, response);
             LoginContext.remove();
             return true;
         }
@@ -115,11 +116,25 @@ public class LoginContextInterceptor extends WebContextInterceptor {
 
     /**
      * 用于应用中往cookie里添加内容
+     *
      * @param loginContext
      */
     protected void fillLoginContext(LoginContext loginContext) {
         // 填充 id
         // 填充 nick
+    }
+
+    /**
+     * 删除 login cookie
+     *
+     * @param request
+     * @param response
+     */
+    protected void removeLoginCookie(HttpServletRequest request, HttpServletResponse response) {
+        if (loginCookie == null)
+            return;
+
+        CookieUtils.removeCookie(request, response, loginCookie.getName());
     }
 
     /**

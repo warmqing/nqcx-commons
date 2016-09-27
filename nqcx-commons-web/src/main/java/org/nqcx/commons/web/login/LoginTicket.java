@@ -8,14 +8,12 @@
 
 package org.nqcx.commons.web.login;
 
-import java.util.Date;
-
 import org.nqcx.commons.lang.EntityBase;
 
+import java.util.Date;
+
 /**
- * 
  * @author naqichuan 2014年8月14日 上午11:50:15
- * 
  */
 public class LoginTicket extends EntityBase {
 
@@ -79,17 +77,21 @@ public class LoginTicket extends EntityBase {
 
     /**
      * 判断cookie是不是过期
-     * 
+     *
      * @return true 过期。false 未过期
      */
     public boolean isExpired() {
         return (new Date()).after(_expires);
     }
 
+    public LoginTicket(long _account) {
+        this(_account, null, null, null, null, 0, false);
+    }
+
     public LoginTicket(long account, String userdata, String appPath, Date issued, Date expires, int version,
-            boolean isPersistent) throws Exception {
+                       boolean isPersistent) {
         if (account == 0)
-            throw new Exception("account");
+            throw new RuntimeException("account == 0");
         else
             _account = account;
         if (userdata == null)
@@ -108,7 +110,7 @@ public class LoginTicket extends EntityBase {
             _issueDate = issued;
         if (expires == null)
             _expires = new Date(System.currentTimeMillis() + 30 * 1000 * 60); // 30
-                                                                              // mins
+            // mins
         else
             _expires = expires;
         if (version > 0)
@@ -165,9 +167,8 @@ public class LoginTicket extends EntityBase {
 
     /**
      * 实际上是将LoginTicket放到了actionContext中
-     * 
-     * @param ticket
-     *            对象
+     *
+     * @param ticket 对象
      */
     public static void setTicket(LoginTicket ticket) {
         holder.set(ticket);
@@ -175,7 +176,7 @@ public class LoginTicket extends EntityBase {
 
     /**
      * 取出ticket的上下文
-     * 
+     *
      * @return null 如果没有的话
      */
     public static LoginTicket getTicket() {

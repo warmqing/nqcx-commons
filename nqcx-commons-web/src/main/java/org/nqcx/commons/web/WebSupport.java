@@ -29,7 +29,6 @@ import java.util.*;
  */
 public abstract class WebSupport {
 
-
     private final static Logger logger = LoggerFactory.getLogger(WebSupport.class);
 
     protected final static String SUCCESS = "success";
@@ -38,7 +37,7 @@ public abstract class WebSupport {
     protected final static String ERROR_MULTIPLE = "multipleError";
     protected final static String ERROR_MULTIPLE_CODE = "multipleErrorCode";
     protected final static String ERROR_MULTIPLE_TEXT = "multipleErrorText";
-    //
+
     protected final static String DEFAULT_CHARSET_NAME = "UTF-8";
 
     @Autowired(required = false)
@@ -72,6 +71,8 @@ public abstract class WebSupport {
         return resultConfig == null ? null : resultConfig.getResult(type, code);
     }
 
+    // ========================================================================
+
     /**
      * 从 properties 中取值
      *
@@ -104,8 +105,8 @@ public abstract class WebSupport {
     protected String getPropertyValue(String code, Object[] arguments, Locale locale) {
         String rv = null;
         try {
-            if (locale == null && WebContext.getWebContext() != null)
-                locale = WebContext.getWebContext().getLocale();
+            if (locale == null)
+                locale = getLocale();
 
             rv = messageSource == null ? null : messageSource.getMessage(code, arguments, locale);
         } catch (NoSuchMessageException e) {
@@ -113,6 +114,8 @@ public abstract class WebSupport {
         }
         return rv == null ? code : rv;
     }
+
+    // ========================================================================
 
     /**
      * 向 MAP 中添加错误信息，同时转换错误代码为说明
@@ -165,6 +168,8 @@ public abstract class WebSupport {
         return putValue(new HashMap<Object, Object>(), key, value);
     }
 
+    // ========================================================================
+
     /**
      * @return
      * @author huangbg 2014年8月1日 下午5:49:40
@@ -172,6 +177,36 @@ public abstract class WebSupport {
     protected WebContext getWebContext() {
         return WebContext.getWebContext();
     }
+
+    /**
+     * @return
+     */
+    protected boolean isAjax() {
+        return getWebContext() == null ? false : getWebContext().isAjax();
+    }
+
+    /**
+     * @return
+     */
+    protected String getRemoteAddr() {
+        return getWebContext() == null ? null : getWebContext().getRemoteAddr();
+    }
+
+    /**
+     * @return
+     */
+    protected String getServerName() {
+        return getWebContext() == null ? null : getWebContext().getServerName();
+    }
+
+    /**
+     * @return
+     */
+    protected Locale getLocale() {
+        return getWebContext() == null ? null : getWebContext().getLocale();
+    }
+
+    // ========================================================================
 
     /**
      * 分析返回结果
@@ -313,6 +348,8 @@ public abstract class WebSupport {
         mapBuilder.put("pageSize", pageBuilder.getPageSize());
         mapBuilder.put("totalPage", pageBuilder.getTotalPage());
     }
+
+    // ========================================================================
 
     /**
      * 通过 response 直接返回 ContentType 为 application/json 格式字符串

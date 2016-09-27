@@ -8,13 +8,13 @@
 
 package org.nqcx.commons.web.login;
 
-import java.util.Date;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.nqcx.commons.lang.EntityBase;
 import org.nqcx.commons.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
@@ -30,11 +30,6 @@ public class LoginContext extends EntityBase {
             return new LoginContext();
         }
     };
-
-    /**
-     * Constant for the LoginContextt object.
-     */
-    public static final String HTTP_LOGIN_CONTEXT = "org.nqcx.commons.web.login.LoginContext";
 
     /**
      * id
@@ -65,11 +60,6 @@ public class LoginContext extends EntityBase {
      */
     private long expires;
 
-    /**
-     * 是否持久化
-     */
-    private boolean persistent;
-
     public long getId() {
         return id;
     }
@@ -90,7 +80,7 @@ public class LoginContext extends EntityBase {
      * Method getNick returns the nick of this LoginContext object.
      * <p/>
      * 显示名称
-     * 
+     *
      * @return the nick (type String) of this LoginContext object.
      */
     public String getNick() {
@@ -101,9 +91,8 @@ public class LoginContext extends EntityBase {
      * Method setNick sets the nick of this LoginContext object.
      * <p/>
      * 显示名称
-     * 
-     * @param nick
-     *            the nick of this LoginContext object.
+     *
+     * @param nick the nick of this LoginContext object.
      */
     public void setNick(String nick) {
         this.nick = nick;
@@ -114,9 +103,8 @@ public class LoginContext extends EntityBase {
      * Method setChecksum sets the checksum of this LoginContext object.
      * <p/>
      * passport cookie的checksum
-     * 
-     * @param checksum
-     *            the checksum of this LoginContext object.
+     *
+     * @param checksum the checksum of this LoginContext object.
      */
     public void setChecksum(int checksum) {
         this.checksum = checksum;
@@ -126,7 +114,7 @@ public class LoginContext extends EntityBase {
      * Method getChecksum returns the checksum of this LoginContext object.
      * <p/>
      * passport cookie的checksum
-     * 
+     *
      * @return the checksum (type int) of this LoginContext object.
      */
     public int getChecksum() {
@@ -137,7 +125,7 @@ public class LoginContext extends EntityBase {
      * Method getCreated returns the created of this LoginContext object.
      * <p/>
      * 创建时间
-     * 
+     *
      * @return the created (type long) of this LoginContext object.
      */
     public long getCreated() {
@@ -146,7 +134,7 @@ public class LoginContext extends EntityBase {
 
     /**
      * 创建日期
-     * 
+     *
      * @return 创建日期
      */
     public Date getCreatedDate() {
@@ -157,9 +145,8 @@ public class LoginContext extends EntityBase {
      * Method setCreated sets the created of this LoginContext object.
      * <p/>
      * 创建时间
-     * 
-     * @param created
-     *            the created of this LoginContext object.
+     *
+     * @param created the created of this LoginContext object.
      */
     public void setCreated(long created) {
         this.created = created;
@@ -167,9 +154,8 @@ public class LoginContext extends EntityBase {
 
     /**
      * Method setCreatedDate sets the createdDate of this LoginContext object.
-     * 
-     * @param created
-     *            the createdDate of this LoginContext object.
+     *
+     * @param created the createdDate of this LoginContext object.
      */
     public void setCreatedDate(Date created) {
         this.created = created.getTime();
@@ -186,7 +172,7 @@ public class LoginContext extends EntityBase {
      * Method getExpires returns the expires of this LoginContext object.
      * <p/>
      * 过期时间
-     * 
+     *
      * @return the expires (type long) of this LoginContext object.
      */
     public long getExpires() {
@@ -195,7 +181,7 @@ public class LoginContext extends EntityBase {
 
     /**
      * Method getExpiresDate returns the expiresDate of this LoginContext object.
-     * 
+     *
      * @return the expiresDate (type Date) of this LoginContext object.
      */
     public Date getExpiresDate() {
@@ -206,9 +192,8 @@ public class LoginContext extends EntityBase {
      * Method setExpires sets the expires of this LoginContext object.
      * <p/>
      * 过期时间
-     * 
-     * @param expires
-     *            the expires of this LoginContext object.
+     *
+     * @param expires the expires of this LoginContext object.
      */
     public void setExpires(long expires) {
         this.expires = expires;
@@ -216,51 +201,18 @@ public class LoginContext extends EntityBase {
 
     /**
      * Method setExpiresDate sets the expiresDate of this LoginContext object.
-     * 
-     * @param expires
-     *            the expiresDate of this LoginContext object.
+     *
+     * @param expires the expiresDate of this LoginContext object.
      */
     public void setExpiresDate(Date expires) {
         this.expires = expires.getTime();
     }
 
-    /**
-     * 设置cookie的过期时间，单位：毫秒
-     * 
-     * @param timeout
-     */
-    public void setTimeout(long timeout) {
-        this.expires = this.created + timeout;
-    }
-
-    /**
-     * Method isPersistent returns the persistent of this LoginContext object.
-     * <p/>
-     * 是否持久化
-     * 
-     * @return the persistent (type boolean) of this LoginContext object.
-     */
-    public boolean isPersistent() {
-        return persistent;
-    }
-
-    /**
-     * Method setPersistent sets the persistent of this LoginContext object.
-     * <p/>
-     * 是否持久化
-     * 
-     * @param persistent
-     *            the persistent of this LoginContext object.
-     */
-    public void setPersistent(boolean persistent) {
-        this.persistent = persistent;
-    }
 
     /**
      * 实际上是将loginContext放到了actionContext中
      *
-     * @param loginContext
-     *            对象
+     * @param loginContext 对象
      */
     public static void setLoginContext(LoginContext loginContext) {
         holder.set(loginContext);
@@ -285,8 +237,7 @@ public class LoginContext extends EntityBase {
     /**
      * 反向构造上下文。
      *
-     * @param value
-     *            需要反向构造的串。形式如下：mid=123,account=yangsy,nick=杨思勇
+     * @param value 需要反向构造的串。形式如下：mid=123,account=yangsy,nick=杨思勇
      * @return 上下文
      * @see #toCookieValue()
      */
@@ -299,10 +250,8 @@ public class LoginContext extends EntityBase {
     /**
      * Method setValue ...
      *
-     * @param value
-     *            of type String
-     * @param context
-     *            of type LoginContext
+     * @param value   of type String
+     * @param context of type LoginContext
      */
     protected static void setValue(String value, LoginContext context) {
         if (StringUtils.isNotEmpty(value)) {
@@ -337,7 +286,7 @@ public class LoginContext extends EntityBase {
         if (account != 0)
             sb.append(",account=").append(account);
 
-        if(nick != null)
+        if (nick != null)
             sb.append(",nick=").append(nick);
 
         if (created != 0)
@@ -348,9 +297,6 @@ public class LoginContext extends EntityBase {
 
         if (expires != 0)
             sb.append(",expires=").append(expires);
-
-        if (persistent)
-            sb.append(",persistent=").append(persistent);
 
         return sb.length() > 0 ? sb.substring(1) : "";
     }

@@ -8,10 +8,12 @@
 
 package org.nqcx.commons.web.controller;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.nqcx.commons.lang.DTO;
+import org.nqcx.commons.util.json.JsonUtils;
 import org.nqcx.commons.web.WebSupport;
 import org.nqcx.commons.web.result.Result;
 import org.nqcx.commons.web.url.UrlBuilder;
@@ -26,13 +28,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
 @Controller
 public class ResultController extends WebSupport {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Result rs;
 
@@ -41,46 +43,54 @@ public class ResultController extends WebSupport {
     private UrlBuilder homeUrl;
 
     @RequestMapping(value = "/error", method = { RequestMethod.GET, RequestMethod.POST })
-    public String error(String url, Model model) {
-        return error("0", url, model);
+    public String error(String url, Model model, HttpServletResponse response) {
+        return error("0", url, model, response);
     }
 
     @RequestMapping(value = "/error/{code}", method = { RequestMethod.GET, RequestMethod.POST })
-    public String error(@PathVariable String code, String url, Model model) {
-        return result("error", code, url, model);
+    public String error(@PathVariable String code, String url, Model model, HttpServletResponse response) {
+        return result("error", code, url, model, response);
     }
 
     @RequestMapping(value = "/msg", method = { RequestMethod.GET, RequestMethod.POST })
-    public String msg(String url, Model model) throws Exception {
-        return msg("0", url, model);
+    public String msg(String url, Model model, HttpServletResponse response) throws Exception {
+        return msg("0", url, model, response);
     }
 
     @RequestMapping(value = "/msg/{code}", method = { RequestMethod.GET, RequestMethod.POST })
-    public String msg(@PathVariable String code, String url, Model model) throws Exception {
-        return result("msg", code, url, model);
+    public String msg(@PathVariable String code, String url, Model model, HttpServletResponse response) throws Exception {
+        return result("msg", code, url, model, response);
     }
 
     @RequestMapping(value = "/success", method = { RequestMethod.GET, RequestMethod.POST })
-    public String success(String url, Model model) throws Exception {
-        return success("0", url, model);
+    public String success(String url, Model model, HttpServletResponse response) throws Exception {
+        return success("0", url, model, response);
     }
 
     @RequestMapping(value = "/success/{code}", method = { RequestMethod.GET, RequestMethod.POST })
-    public String success(@PathVariable String code, String url, Model model){
-        return result("success", code, url, model);
+    public String success(@PathVariable String code, String url, Model model, HttpServletResponse response) throws Exception {
+        return result("success", code, url, model, response);
     }
 
-    private String result(String type, String code, String url, Model model) {
+    private String result(String type, String code, String url, Model model, HttpServletResponse response) {
         if (this.rs == null)
             this.rs = new Result();
 
+        if (this.isAjax()) {
+            String result = null;
+            if (type.endsWith("error"))
+                result = JsonUtils.mapToJson((Map<String, Object>) this.returnResult(new DTO(false).putResult(code, code)));
+            else
+                result = JsonUtils.mapToJson((Map<String, Object>) this.returnResult(new DTO(true).setObject(super.getPropertyValue(code))));
+
+            super.responseJsonResult(response, result);
+
+            return null;
+        }
+
         BeanUtils.copyProperties(getResult(type, code), rs);
 
-        try {
-            rs.setIndex(homeUrl == null ? null : homeUrl.forPath().build());
-        } catch (Exception e) {
-            logger.error("ResultController.result", e);
-        }
+        rs.setIndex(homeUrl.forPath().build());
 
         if (url != null && url.length() > 0)
             rs.setUrl(url);
