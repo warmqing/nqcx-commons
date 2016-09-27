@@ -6,13 +6,13 @@
 
 package cn.chineseall.commons.zk.simultaneous;
 
-import cn.chineseall.commons.util.StringUtils;
 import cn.chineseall.commons.zk.Zk;
 import cn.chineseall.commons.zk.ZkConfig;
 import cn.chineseall.commons.zk.ZkNode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.data.Stat;
+import org.nqcx.commons.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

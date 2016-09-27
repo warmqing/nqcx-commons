@@ -208,6 +208,14 @@ public class LoginContext extends EntityBase {
         this.expires = expires.getTime();
     }
 
+    /**
+     * 设置cookie的过期时间，单位：毫秒
+     *
+     * @param timeout
+     */
+    public void setTimeout(long timeout) {
+        this.expires = this.created + timeout;
+    }
 
     /**
      * 实际上是将loginContext放到了actionContext中

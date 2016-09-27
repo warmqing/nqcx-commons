@@ -35,7 +35,7 @@ public class NqcxSender {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 try {
-                    return session.createObjectMessage(JsonUtils.toJson(object));
+                    return session.createObjectMessage(JsonUtils.objectToJson(object));
                 } catch (Exception e) {
                     logger.error("发送消息失败", e);
                 }
