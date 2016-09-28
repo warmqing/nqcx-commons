@@ -10,10 +10,12 @@ package org.nqcx.commons.lang;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import java.io.Serializable;
+
 /**
  * @author naqichuan 2014年8月14日 上午10:58:37
  */
-public abstract class EntityBase {
+public abstract class EntityBase implements Serializable {
 
     @Override
     public String toString() {
