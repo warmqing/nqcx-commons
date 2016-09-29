@@ -19,7 +19,7 @@ public enum BoolEnum implements EnumInterface {
     private boolean bool;
     private String text;
 
-    private BoolEnum(int value, boolean bool, String text){
+    BoolEnum(int value, boolean bool, String text) {
         this.value = value;
         this.bool = bool;
         this.text = text;

@@ -15,15 +15,15 @@ public interface EnumInterface {
 
     /**
      * 取值
-     * 
+     *
      * @return
      */
-    public int getValue();
+    int getValue();
 
     /**
      * 取值对应的文本
-     * 
+     *
      * @return
      */
-    public String getText();
+    String getText();
 }

@@ -16,7 +16,7 @@ public enum GenderEnum implements EnumInterface {
     private int value;
     private String text;
 
-    private GenderEnum(int value, String text) {
+    GenderEnum(int value, String text) {
         this.value = value;
         this.text = text;
     }
