@@ -27,12 +27,7 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
 
     protected static final String NEED_LOGIN_JSON = "{\"success\": false, \"needLogin\": true}";
 
-//    @Autowired(required = false)
-//    @Qualifier("_homeUrl")
     protected UrlBuilder homeUrl;
-
-//    @Autowired(required = false)
-//    @Qualifier("_loginUrl")
     protected UrlBuilder loginUrl;
 
     @Override
@@ -87,7 +82,6 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
     /**
      * @param request
      * @return
-     * @throws MalformedURLException
      */
     protected String getLoginUrl(HttpServletRequest request) throws MalformedURLException {
         return getLoginUrl(request, null);
@@ -96,7 +90,6 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
     /**
      * @param request
      * @return
-     * @throws MalformedURLException
      */
     protected String getLoginUrl(HttpServletRequest request, Map<String, String> params) {
         if (homeUrl == null)
@@ -110,7 +103,7 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
 
         if (params != null && params.size() > 0)
             loginUrlBuilder.put(params);
-        loginUrlBuilder.put("returnUrl", currentUrlBuilder.build());
+        loginUrlBuilder.put("redirectUrl", currentUrlBuilder.build());
 
         return loginUrlBuilder.build();
     }
