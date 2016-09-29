@@ -4,7 +4,7 @@
  * it only in accordance with the terms of the license agreement you entered into with nqcx.org.
  */
 
-package org.nqcx.commons.util.security;
+package org.nqcx.commons.lang.id;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -15,8 +15,8 @@ import java.util.Random;
  */
 public class IdHelper {
 
-    //private final static String ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final static String ALPHABET = "fudOIE9YbxrwTi0325gMWDjqH87zkcXU6lGJ4FKStBCe1RAQanvLPhmyNZopVs";
+    //private static String ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static String ALPHABET = "1fGyLYQ3qHrc2M6j8mdREba90tKZBTi4vWsgpShouJzwlCeAFO7nU5IkPDNXxV";
 
     /**
      * 数字转字符串
@@ -128,6 +128,15 @@ public class IdHelper {
         return news.toString();
     }
 
+    /**
+     * 用于在程序里配置编码因子
+     *
+     * @param alphabet
+     */
+    public void setAlphabet(String alphabet) {
+        IdHelper.ALPHABET = alphabet;
+    }
+
     public static void main(String[] args) {
         System.out.println(toAlphabet(Long.MAX_VALUE));
         System.out.println(toAlphabet(1));
@@ -141,8 +150,8 @@ public class IdHelper {
         System.out.println(toDigital("1evYd"));
         System.out.println(toDigital("jevYd"));
 
-//        将 ALPHABET 顺序打乱
-//        System.out.println(newAlphabet());
+        // 将 ALPHABET 顺序打乱
+        // System.out.println(newAlphabet());
 
     }
 }

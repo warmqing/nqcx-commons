@@ -15,8 +15,29 @@ import java.util.Date;
  */
 public abstract class EntityDB extends EntityBase {
 
+    // id
+    protected long id;
+    // short id
+    private String shId;
+
     protected Date create;
     protected Date modify;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getShId() {
+        return shId;
+    }
+
+    public void setShId(String shId) {
+        this.shId = shId;
+    }
 
     public Date getCreate() {
         return create;
@@ -26,16 +47,6 @@ public abstract class EntityDB extends EntityBase {
         this.create = create;
     }
 
-    public long getCreateLong() {
-        return create == null ? 0 : create.getTime();
-    }
-
-    public void setCreateLong(long create) {
-        if (create <= 0)
-            return;
-        this.create = new Date(create);
-    }
-
     public Date getModify() {
         return modify;
     }
@@ -43,15 +54,4 @@ public abstract class EntityDB extends EntityBase {
     public void setModify(Date modify) {
         this.modify = modify;
     }
-
-    public long getModifyLong() {
-        return modify == null ? 0 : modify.getTime();
-    }
-
-    public void setModifyLong(long modify) {
-        if (modify <= 0)
-            return;
-        this.modify = new Date(modify);
-    }
-
 }
