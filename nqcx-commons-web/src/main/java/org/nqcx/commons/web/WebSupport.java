@@ -358,9 +358,20 @@ public abstract class WebSupport {
      * @param result
      * @author naqichuan Sep 26, 2013 3:02:32 PM
      */
-
     protected void responseJsonResult(HttpServletResponse response, String result) {
-        response.setContentType("application/json; charset=utf-8");
+        response.setContentType("application/json; charset=UTF-8");
+        responseResult(response, result);
+    }
+
+    /**
+     * 通过 response 直接返回 ContentType 为 text/html 格式字符串
+     *
+     * @param response
+     * @param result
+     * @author naqichuan Sep 26, 2013 3:02:32 PM
+     */
+    protected void responseHtmlResult(HttpServletResponse response, String result) {
+        response.setContentType("text/html; charset=UTF-8");
         responseResult(response, result);
     }
 
