@@ -16,27 +16,38 @@ import java.util.Map;
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
-public class NqcxResult {
+public class ResultBuilder {
 
     public final static String D = "default";
     public final static String M = "msg";
     public final static String E = "error";
     public final static String S = "success";
 
-    private Map<String, Result> results;
+    private final static Map<String, String> types = new HashMap<String, String>();
 
-    private Map<String, String> types = new HashMap<String, String>();
-    {
+    static {
         types.put(D, "M");
         types.put(M, "M");
         types.put(E, "E");
         types.put(S, "S");
     }
 
+    private Map<String, Result> results;
+
+
+    /**
+     * @param code
+     * @return
+     */
     public Result getResult(String code) {
         return getResult(null, code);
     }
 
+    /**
+     * @param type
+     * @param code
+     * @return
+     */
     public Result getResult(String type, String code) {
         String t = (type != null && types.containsKey(type.toLowerCase()) ? types.get(type.toLowerCase()) : types.get(D));
         String c = (code == null ? getFullCode("0") : getFullCode(code));
@@ -51,14 +62,18 @@ public class NqcxResult {
         return unite(results.get(t + getFullCode("0")), rs);
     }
 
+    /**
+     * @param code
+     * @return
+     */
     private static String getFullCode(String code) {
         return StringUtils.leftPad(code, 5, '0');
     }
 
     /**
      * 合并操作
-     * 
-     * @param base 基本信息对像，需要合并到基本信息对像的信息
+     *
+     * @param base  基本信息对像，需要合并到基本信息对像的信息
      * @param other
      * @return
      */
@@ -89,6 +104,9 @@ public class NqcxResult {
         return newRs;
     }
 
+    /**
+     * @param results
+     */
     public void setResults(Map<String, Result> results) {
         this.results = results;
     }

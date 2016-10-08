@@ -11,7 +11,7 @@ package org.nqcx.commons.web;
 import org.nqcx.commons.lang.DTO;
 import org.nqcx.commons.lang.page.PageBuilder;
 import org.nqcx.commons.util.MapBuilder;
-import org.nqcx.commons.web.result.NqcxResult;
+import org.nqcx.commons.web.result.ResultBuilder;
 import org.nqcx.commons.web.result.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,22 +41,22 @@ public abstract class WebSupport {
     protected final static String DEFAULT_CHARSET_NAME = "UTF-8";
 
     @Autowired(required = false)
-    private NqcxResult resultConfig;
+    private ResultBuilder resultBuilder;
     @Autowired(required = false)
     private MessageSource messageSource;
 
     protected String m(String code) {
-        Result result = getResult(NqcxResult.M, code);
+        Result result = getResult(ResultBuilder.M, code);
         return result == null ? "" : getPropertyValue(result.getSubject());
     }
 
     protected String e(String code) {
-        Result result = getResult(NqcxResult.E, code);
+        Result result = getResult(ResultBuilder.E, code);
         return result == null ? "" : getPropertyValue(result.getSubject());
     }
 
     protected String s(String code) {
-        Result result = getResult(NqcxResult.S, code);
+        Result result = getResult(ResultBuilder.S, code);
         return result == null ? "" : getPropertyValue(result.getSubject());
     }
 
@@ -68,7 +68,7 @@ public abstract class WebSupport {
      * @return
      */
     protected Result getResult(String type, String code) {
-        return resultConfig == null ? null : resultConfig.getResult(type, code);
+        return resultBuilder == null ? null : resultBuilder.getResult(type, code);
     }
 
     // ========================================================================
