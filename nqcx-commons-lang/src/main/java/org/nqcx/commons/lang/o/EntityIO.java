@@ -20,6 +20,6 @@ public interface EntityIO {
     // Get short id
     String getShId();
 
-    // Set short id
+    // Set short id d
     void setShId(String shId);
 }
