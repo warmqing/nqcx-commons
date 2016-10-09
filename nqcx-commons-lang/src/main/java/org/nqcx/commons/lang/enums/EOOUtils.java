@@ -22,7 +22,7 @@ public class EOOUtils {
      * @return
      */
     public static <T> boolean contain(T[] eos, T eo) {
-        if (eos == null || eo == null)
+        if (eos == null || eos.length == 0 || eo == null)
             return false;
 
         for (T n : eos) {
