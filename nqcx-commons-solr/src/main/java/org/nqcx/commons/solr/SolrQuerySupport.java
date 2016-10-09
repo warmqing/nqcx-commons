@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.nqcx.commons.lang.DTO;
+import org.nqcx.commons.lang.o.DTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

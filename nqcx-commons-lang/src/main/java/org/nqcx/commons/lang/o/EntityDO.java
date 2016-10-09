@@ -6,7 +6,7 @@
  * into with nqcx.org.
  */
 
-package org.nqcx.commons.lang;
+package org.nqcx.commons.lang.o;
 
 import org.nqcx.commons.lang.id.IdHelper;
 
@@ -22,8 +22,6 @@ public abstract class EntityDO extends EntityBO implements EntityIO {
     // id
     protected long id;
 
-    protected Date create;
-    protected Date modify;
 
     @Override
     public long getId() {
@@ -45,23 +43,5 @@ public abstract class EntityDO extends EntityBO implements EntityIO {
         // Do nothing
     }
 
-    @Override
-    public Date getCreate() {
-        return create;
-    }
 
-    @Override
-    public void setCreate(Date create) {
-        this.create = create;
-    }
-
-    @Override
-    public Date getModify() {
-        return modify;
-    }
-
-    @Override
-    public void setModify(Date modify) {
-        this.modify = modify;
-    }
 }

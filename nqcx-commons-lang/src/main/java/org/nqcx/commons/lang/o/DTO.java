@@ -6,7 +6,7 @@
  * into with nqcx.org.
  */
 
-package org.nqcx.commons.lang;
+package org.nqcx.commons.lang.o;
 
 import org.nqcx.commons.lang.page.PageIO;
 import org.nqcx.commons.lang.sort.SortBO;

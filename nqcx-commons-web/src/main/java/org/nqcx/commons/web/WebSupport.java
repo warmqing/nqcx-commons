@@ -8,7 +8,7 @@
 
 package org.nqcx.commons.web;
 
-import org.nqcx.commons.lang.DTO;
+import org.nqcx.commons.lang.o.DTO;
 import org.nqcx.commons.lang.page.PageIO;
 import org.nqcx.commons.util.MapBuilder;
 import org.nqcx.commons.web.result.Result;

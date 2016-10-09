@@ -6,7 +6,7 @@
 
 package cn.chineseall.commons.zk;
 
-import org.nqcx.commons.lang.EntityBO;
+import org.nqcx.commons.lang.o.EntityBO;
 
 /**
  * @author naqichuan 16/3/7 09:51

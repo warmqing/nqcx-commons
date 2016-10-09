@@ -8,7 +8,7 @@
 
 package org.nqcx.commons.service;
 
-import org.nqcx.commons.lang.DTO;
+import org.nqcx.commons.lang.o.DTO;
 
 import java.util.List;
 

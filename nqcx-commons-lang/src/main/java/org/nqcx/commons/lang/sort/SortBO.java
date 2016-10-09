@@ -8,7 +8,7 @@
 
 package org.nqcx.commons.lang.sort;
 
-import org.nqcx.commons.lang.EntityBO;
+import org.nqcx.commons.lang.o.EntityBO;
 
 import java.util.HashMap;
 import java.util.Map;

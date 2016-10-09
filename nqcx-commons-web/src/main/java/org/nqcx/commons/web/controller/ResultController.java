@@ -8,7 +8,7 @@
 
 package org.nqcx.commons.web.controller;
 
-import org.nqcx.commons.lang.DTO;
+import org.nqcx.commons.lang.o.DTO;
 import org.nqcx.commons.util.json.JsonUtils;
 import org.nqcx.commons.web.WebSupport;
 import org.nqcx.commons.web.result.Result;

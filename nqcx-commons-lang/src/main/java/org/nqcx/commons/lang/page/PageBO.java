@@ -9,7 +9,7 @@
 package org.nqcx.commons.lang.page;
 
 
-import org.nqcx.commons.lang.EntityBO;
+import org.nqcx.commons.lang.o.EntityBO;
 
 /**
  * Page interface object

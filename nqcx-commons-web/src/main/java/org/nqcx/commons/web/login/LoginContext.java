@@ -9,7 +9,7 @@
 package org.nqcx.commons.web.login;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.nqcx.commons.lang.EntityBO;
+import org.nqcx.commons.lang.o.EntityBO;
 import org.nqcx.commons.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

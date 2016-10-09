@@ -6,7 +6,7 @@
  * into with nqcx.org.
  */
 
-package org.nqcx.commons.lang;
+package org.nqcx.commons.lang.o;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
