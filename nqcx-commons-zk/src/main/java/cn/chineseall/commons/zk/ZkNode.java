@@ -6,12 +6,12 @@
 
 package cn.chineseall.commons.zk;
 
-import org.nqcx.commons.lang.EntityBase;
+import org.nqcx.commons.lang.EntityBO;
 
 /**
  * @author naqichuan 16/3/7 09:51
  */
-public class ZkNode extends EntityBase {
+public class ZkNode extends EntityBO {
 
     private long czxid;
     private String path;

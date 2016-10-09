@@ -7,16 +7,18 @@
 package org.nqcx.commons.lang.enums;
 
 /**
+ * Gender enum object
+ *
  * @author naqichuan 14-10-11 9:23
  */
-public enum GenderEnum implements EnumInterface {
+public enum GenderEO implements EnumIO {
 
     NONE(0, ""), MALE(1, "男"), FEMALE(2, "女");
 
     private int value;
     private String text;
 
-    GenderEnum(int value, String text) {
+    GenderEO(int value, String text) {
         this.value = value;
         this.text = text;
     }
@@ -31,8 +33,8 @@ public enum GenderEnum implements EnumInterface {
         return text;
     }
 
-    public static GenderEnum get(int value) {
-        for (GenderEnum p : GenderEnum.values()) {
+    public static GenderEO get(int value) {
+        for (GenderEO p : GenderEO.values()) {
             if (p.getValue() == value)
                 return p;
         }

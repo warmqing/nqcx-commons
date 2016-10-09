@@ -9,7 +9,7 @@
 package org.nqcx.commons.web.login;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.nqcx.commons.lang.EntityBase;
+import org.nqcx.commons.lang.EntityBO;
 import org.nqcx.commons.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import java.util.Date;
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
-public class LoginContext extends EntityBase {
+public class LoginContext extends EntityBO {
 
     private final static Logger logger = LoggerFactory.getLogger(LoginContext.class);
 

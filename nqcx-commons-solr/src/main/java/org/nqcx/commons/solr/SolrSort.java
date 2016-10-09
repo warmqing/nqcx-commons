@@ -7,7 +7,7 @@
 package org.nqcx.commons.solr;
 
 import org.apache.solr.client.solrj.SolrQuery;
-import org.nqcx.commons.lang.sort.SortBase;
+import org.nqcx.commons.lang.sort.SortBO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author naqichuan 15/1/7 23:34
  */
-public class SolrSort extends SortBase {
+public class SolrSort extends SortBO {
 
     /**
      * 取得搜索排序字段列表

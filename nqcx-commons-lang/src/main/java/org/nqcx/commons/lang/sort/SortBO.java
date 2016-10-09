@@ -8,7 +8,7 @@
 
 package org.nqcx.commons.lang.sort;
 
-import org.nqcx.commons.lang.EntityBase;
+import org.nqcx.commons.lang.EntityBO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @author naqichuan 2014年8月14日 上午11:03:31
  */
-public class SortBase extends EntityBase {
+public class SortBO extends EntityBO {
 
     // 排序字段列表，在子类中定义，KEY为序号，value为字段名
     protected Map<String, String> fileds = new HashMap<String, String>(5);
@@ -47,7 +47,7 @@ public class SortBase extends EntityBase {
      * @param fileds
      * @return
      */
-    public SortBase setFileds(Map<String, String> fileds) {
+    public SortBO setFileds(Map<String, String> fileds) {
         this.fileds = fileds;
         return this;
     }
@@ -59,7 +59,7 @@ public class SortBase extends EntityBase {
      * @param field
      * @return
      */
-    public SortBase putField(String key, String field) {
+    public SortBO putField(String key, String field) {
         this.fileds.put(key, field);
         return this;
     }
@@ -79,7 +79,7 @@ public class SortBase extends EntityBase {
      * @param sort
      * @return
      */
-    public SortBase setSort(String sort) {
+    public SortBO setSort(String sort) {
         this.sort = sort;
         return this;
     }
@@ -168,6 +168,6 @@ public class SortBase extends EntityBase {
     }
 
     public static void main(String[] args) {
-        System.out.println(new SortBase().putField("0", "id").putField("1", "id1").putField("2", "id2").setSort("-1,-2").getOrder());
+        System.out.println(new SortBO().putField("0", "id").putField("1", "id1").putField("2", "id2").setSort("-1,-2").getOrder());
     }
 }

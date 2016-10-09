@@ -9,9 +9,11 @@
 package org.nqcx.commons.lang.enums;
 
 /**
+ * Enum interface object
+ *
  * @author naqichuan 2014年8月14日 上午11:02:45
  */
-public interface EnumInterface {
+public interface EnumIO {
 
     /**
      * 取值

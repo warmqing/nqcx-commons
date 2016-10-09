@@ -8,8 +8,8 @@
 
 package org.nqcx.commons.lang;
 
-import org.nqcx.commons.lang.page.PageBuilder;
-import org.nqcx.commons.lang.sort.SortBase;
+import org.nqcx.commons.lang.page.PageIO;
+import org.nqcx.commons.lang.sort.SortBO;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.Map;
  * 
  * @author naqichuan 2014年8月14日 上午10:58:13
  */
-public class DTO extends EntityBase {
+public class DTO extends EntityBO {
 
 //    private static final long serialVersionUID = 2484511853213485328L;
 
@@ -28,16 +28,6 @@ public class DTO extends EntityBase {
 	 * 成功标记
 	 */
 	private boolean success = false;
-
-	// /**
-	// * id
-	// */
-	// protected long id;
-	//
-	// /**
-	// * ids
-	// */
-	// protected long[] ids;
 
 	/**
 	 * 实体对象
@@ -62,12 +52,12 @@ public class DTO extends EntityBase {
 	/**
 	 * 分页
 	 */
-	protected PageBuilder page;
+	protected PageIO page;
 
 	/**
 	 * 排序
 	 */
-	protected SortBase sort;
+	protected SortBO sort;
 
 	public DTO() {
 
@@ -85,24 +75,6 @@ public class DTO extends EntityBase {
 		this.success = success;
 		return this;
 	}
-
-	// public long getId() {
-	// return id;
-	// }
-	//
-	// public DTO setId(long id) {
-	// this.id = id;
-	// return this;
-	// }
-	//
-	// public long[] getIds() {
-	// return ids;
-	// }
-	//
-	// public DTO setIds(long[] ids) {
-	// this.ids = ids;
-	// return this;
-	// }
 
 	/**
 	 * 取实体对象
@@ -186,11 +158,11 @@ public class DTO extends EntityBase {
 			this.resultMap.remove(key);
 	}
 
-	public PageBuilder getPage() {
+	public PageIO getPage() {
 		return page;
 	}
 
-	public DTO setPage(PageBuilder page) {
+	public DTO setPage(PageIO page) {
 		this.page = page;
 		return this;
 	}
@@ -199,11 +171,11 @@ public class DTO extends EntityBase {
 		return getPage() == null ? 0 : getPage().getTotalCount();
 	}
 
-	public SortBase getSort() {
+	public SortBO getSort() {
 		return sort;
 	}
 
-	public DTO setSort(SortBase sort) {
+	public DTO setSort(SortBO sort) {
 		this.sort = sort;
 		return this;
 	}

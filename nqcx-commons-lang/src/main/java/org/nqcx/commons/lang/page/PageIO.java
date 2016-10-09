@@ -8,93 +8,93 @@
 
 package org.nqcx.commons.lang.page;
 
-import java.util.List;
-
 /**
+ * Page interface object
+ *
  * @author naqichuan 2014年8月14日 上午11:03:21
  */
-public interface PageBuilder {
+public interface PageIO {
 
     /**
      * @param totalCount 总记录数
      * @return 自身
      */
-   PageBuilder setTotalCount(long totalCount);
+    PageIO setTotalCount(long totalCount);
 
     /**
      * @param page 页数
      * @return 自身
      */
-   PageBuilder setPage(long page);
+    PageIO setPage(long page);
 
     /**
      * @param pageSize 每页数据条数
      * @return 自身
      */
-   PageBuilder setPageSize(long pageSize);
+    PageIO setPageSize(long pageSize);
 
     /**
      * 取得记录总数
      *
      * @return 返回 long 型的记录总数
      */
-   long getTotalCount();
+    long getTotalCount();
 
     /**
      * 取得记录分页后的总页数
      *
      * @return 总页数
      */
-   long getTotalPage();
+    long getTotalPage();
 
     /**
      * 取得当前页
      *
      * @return 当前页
      */
-   long getPage();
+    long getPage();
 
     /**
      * 取得每页显示记录条数
      *
      * @return 每页记录数
      */
-   long getPageSize();
+    long getPageSize();
 
     /**
      * 取得记录起始位置，在 SQL 中调用 从0开始
      *
      * @return 开始位置
      */
-   long getStartIndex();
+    long getStartIndex();
 
     /**
      * 取得记录的结束位置，要 SQL 中调用
      *
      * @return 结束位置
      */
-   long getEndIndex();
+    long getEndIndex();
 
     /**
      * 取得 mysql limit 字符串
      *
      * @return mysql Limit 字符串
      */
-   String getPosition();
+    String getPosition();
 
     /**
      * 取得每页显示分页页数
      *
      * @return
      */
-   long getShowPage();
+    long getShowPage();
 
     /**
      * 取得分页数组
      *
      * @return
      */
-   long[][] getShowArray();
+    long[][] getShowArray();
 
     /**
      * 获取上一页页码
@@ -108,5 +108,5 @@ public interface PageBuilder {
      *
      * @return
      */
-    public long getNextPage();
+    long getNextPage();
 }

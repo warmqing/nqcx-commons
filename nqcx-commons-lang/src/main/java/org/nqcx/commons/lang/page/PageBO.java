@@ -9,12 +9,14 @@
 package org.nqcx.commons.lang.page;
 
 
-import org.nqcx.commons.lang.EntityBase;
+import org.nqcx.commons.lang.EntityBO;
 
 /**
+ * Page interface object
+ *
  * @author naqichuan 2014年8月14日 上午11:03:13
  */
-public class PageBase extends EntityBase implements PageBuilder {
+public class PageBO extends EntityBO implements PageIO {
 
     // 记录总数
     private long totalCount = 0L;
@@ -26,14 +28,14 @@ public class PageBase extends EntityBase implements PageBuilder {
     private long showPage = 10L; //每页显示页数
     private long[][] showArray; //二维长度为2  [*][1] 数值 [*][2]页类型 －1记录总数 0当前页 1上一页 2首页 3普通页 4末页 5下一页
 
-    public PageBase() {
+    public PageBO() {
     }
 
-    public PageBase(long _page) {
+    public PageBO(long _page) {
         calculate(_page, 0, 0);
     }
 
-    public PageBase(long _page, long _pageSize) {
+    public PageBO(long _page, long _pageSize) {
         calculate(_page, _pageSize, 0);
     }
 
@@ -135,19 +137,19 @@ public class PageBase extends EntityBase implements PageBuilder {
     }
 
     @Override
-    public PageBuilder setPage(long page) {
+    public PageIO setPage(long page) {
         calculate(page, 0, -1);
         return this;
     }
 
     @Override
-    public PageBuilder setPageSize(long pageSize) {
+    public PageIO setPageSize(long pageSize) {
         calculate(0, pageSize, -1);
         return this;
     }
 
     @Override
-    public PageBuilder setTotalCount(long totalCount) {
+    public PageIO setTotalCount(long totalCount) {
         calculate(0, 0, totalCount);
         return this;
     }
@@ -208,7 +210,7 @@ public class PageBase extends EntityBase implements PageBuilder {
     }
 
     public static void main(String[] args) {
-        PageBuilder pb = new PageBase();
+        PageIO pb = new PageBO();
         pb.setTotalCount(188);
         pb.setPage(10);
         pb.setPageSize(55);

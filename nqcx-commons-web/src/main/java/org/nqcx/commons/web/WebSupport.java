@@ -9,10 +9,10 @@
 package org.nqcx.commons.web;
 
 import org.nqcx.commons.lang.DTO;
-import org.nqcx.commons.lang.page.PageBuilder;
+import org.nqcx.commons.lang.page.PageIO;
 import org.nqcx.commons.util.MapBuilder;
-import org.nqcx.commons.web.result.ResultBuilder;
 import org.nqcx.commons.web.result.Result;
+import org.nqcx.commons.web.result.ResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -337,16 +337,16 @@ public abstract class WebSupport {
      * 设置返回分页的结果
      *
      * @param mapBuilder
-     * @param pageBuilder
+     * @param pageIO
      */
-    private void parsePageBuilder(MapBuilder mapBuilder, PageBuilder pageBuilder) {
-        if (pageBuilder == null)
+    private void parsePageBuilder(MapBuilder mapBuilder, PageIO pageIO) {
+        if (pageIO == null)
             return;
 
-        mapBuilder.put("page", pageBuilder.getPage());
-        mapBuilder.put("totalCount", pageBuilder.getTotalCount());
-        mapBuilder.put("pageSize", pageBuilder.getPageSize());
-        mapBuilder.put("totalPage", pageBuilder.getTotalPage());
+        mapBuilder.put("page", pageIO.getPage());
+        mapBuilder.put("totalCount", pageIO.getTotalCount());
+        mapBuilder.put("pageSize", pageIO.getPageSize());
+        mapBuilder.put("totalPage", pageIO.getTotalPage());
     }
 
     // ========================================================================

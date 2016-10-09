@@ -8,13 +8,13 @@
 
 package org.nqcx.commons.web.cookie;
 
-import java.io.UnsupportedEncodingException;
-
 import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.util.security.Base32;
 import org.nqcx.commons.util.security.DESCoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15

@@ -8,14 +8,14 @@
 
 package org.nqcx.commons.web.login;
 
-import org.nqcx.commons.lang.EntityBase;
+import org.nqcx.commons.lang.EntityBO;
 
 import java.util.Date;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
-public class LoginTicket extends EntityBase {
+public class LoginTicket extends EntityBO {
 
     private final static ThreadLocal<LoginTicket> holder = new ThreadLocal<LoginTicket>();
 

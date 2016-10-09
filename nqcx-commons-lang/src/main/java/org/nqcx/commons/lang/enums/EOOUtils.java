@@ -7,26 +7,26 @@
 package org.nqcx.commons.lang.enums;
 
 /**
- * Object operate enum
+ * Enum object operate
  *
  * @author naqichuan 15/11/2 10:58
  */
-public class OOEUtils {
+public class EOOUtils {
 
     /**
-     * 判断指定的 ooe 是否在 ooes 数组中
+     * 判断指定的 eo 是否在 eos 数组中
      *
-     * @param ooes
-     * @param ooe
+     * @param eos
+     * @param eo
      * @param <T>
      * @return
      */
-    public static <T> boolean contain(T[] ooes, T ooe) {
-        if (ooes == null || ooe == null)
+    public static <T> boolean contain(T[] eos, T eo) {
+        if (eos == null || eo == null)
             return false;
 
-        for (T n : ooes) {
-            if (n != null && n == ooe)
+        for (T n : eos) {
+            if (n != null && n == eo)
                 return true;
         }
 

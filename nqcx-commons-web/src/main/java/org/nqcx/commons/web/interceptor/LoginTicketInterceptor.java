@@ -8,9 +8,6 @@
 
 package org.nqcx.commons.web.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.web.cookie.CookieUtils;
 import org.nqcx.commons.web.cookie.NqcxCookie;
@@ -19,6 +16,9 @@ import org.nqcx.commons.web.login.LoginTicketUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15

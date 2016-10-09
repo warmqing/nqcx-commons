@@ -8,17 +8,16 @@
 
 package org.nqcx.commons.util.security;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.Key;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.Key;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:49:18

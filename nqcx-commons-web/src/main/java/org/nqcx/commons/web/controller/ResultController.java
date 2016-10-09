@@ -8,17 +8,11 @@
 
 package org.nqcx.commons.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.nqcx.commons.lang.DTO;
 import org.nqcx.commons.util.json.JsonUtils;
 import org.nqcx.commons.web.WebSupport;
 import org.nqcx.commons.web.result.Result;
 import org.nqcx.commons.web.url.UrlBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15

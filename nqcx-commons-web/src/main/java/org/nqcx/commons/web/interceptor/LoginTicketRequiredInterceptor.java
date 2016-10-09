@@ -8,12 +8,12 @@
 
 package org.nqcx.commons.web.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nqcx.commons.web.login.LoginTicket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15

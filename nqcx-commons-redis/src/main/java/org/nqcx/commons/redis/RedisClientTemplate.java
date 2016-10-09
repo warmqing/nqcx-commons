@@ -8,20 +8,15 @@
 
 package org.nqcx.commons.redis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import redis.clients.jedis.BinaryClient.LIST_POSITION;
+import redis.clients.jedis.*;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import redis.clients.jedis.BinaryClient.LIST_POSITION;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisShardInfo;
-import redis.clients.jedis.ShardedJedis;
-import redis.clients.jedis.SortingParams;
-import redis.clients.jedis.Tuple;
 
 /**
  * @author huangbg 2014年8月12日 下午2:00:21
