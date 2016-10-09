@@ -6,8 +6,6 @@
 
 package org.nqcx.commons.lang.o;
 
-import java.util.Date;
-
 /**
  * Entity interface object
  *
@@ -24,12 +22,4 @@ public interface EntityIO {
 
     // Set short id, do nothing
     void setShId(String shId);
-
-    Date getCreate();
-
-    void setCreate(Date create);
-
-    Date getModify();
-
-    void setModify(Date modify);
 }

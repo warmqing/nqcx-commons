@@ -17,22 +17,18 @@ public class EntityDBO extends EntityDO {
     protected Date create;
     protected Date modify;
 
-    @Override
     public Date getCreate() {
         return create;
     }
 
-    @Override
     public void setCreate(Date create) {
         this.create = create;
     }
 
-    @Override
     public Date getModify() {
         return modify;
     }
 
-    @Override
     public void setModify(Date modify) {
         this.modify = modify;
     }

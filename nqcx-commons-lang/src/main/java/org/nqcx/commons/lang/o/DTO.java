@@ -22,8 +22,6 @@ import java.util.Map;
  */
 public class DTO extends EntityBO {
 
-//    private static final long serialVersionUID = 2484511853213485328L;
-
 	/**
 	 * 成功标记
 	 */

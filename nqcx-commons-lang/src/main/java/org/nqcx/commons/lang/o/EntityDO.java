@@ -42,6 +42,4 @@ public abstract class EntityDO extends EntityBO implements EntityIO {
     public void setShId(String shId) {
         // Do nothing
     }
-
-
 }
