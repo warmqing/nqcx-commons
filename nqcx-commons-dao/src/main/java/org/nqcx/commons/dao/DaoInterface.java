@@ -18,27 +18,27 @@ public interface DaoInterface {
 
     /**
      * 插入数据
-     * 
+     *
      * @param t
      * @return
      */
-    public <T> int insert(T t);
+    <T> int insert(T t);
 
     /**
      * 更新数据
-     * 
+     *
      * @param t
      * @return
      */
-    public <T> int update(T t);
+    <T> int update(T t);
 
     /**
      * 根据 id 删除单条记录
-     * 
+     *
      * @param id
      * @return
      */
-    public int deleteById(long id);
+    int deleteById(long id);
 
     /**
      * 根据 ids 删除多条记录
@@ -46,29 +46,29 @@ public interface DaoInterface {
      * @param ids
      * @return
      */
-    public int deleteByIds(long[] ids);
+    int deleteByIds(long[] ids);
 
     /**
      * 根据ID取得详情
-     * 
+     *
      * @param id
      * @return
      */
-    public <T> T getById(long id);
+    <T> T getById(long id);
 
     /**
      * 执行查询
-     * 
+     *
      * @param map
      * @return
      */
-    public <T> List<T> query(Map<String, Object> map);
+    <T> List<T> query(Map<String, Object> map);
 
     /**
      * 查询总数
-     * 
+     *
      * @param map
      * @return
      */
-    public long queryCount(Map<String, Object> map);
+    long queryCount(Map<String, Object> map);
 }
