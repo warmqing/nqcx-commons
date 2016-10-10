@@ -161,7 +161,7 @@ public abstract class ServiceSupport implements ServiceInterface {
      * @param dto
      * @return
      */
-    protected <T> Map<String, Object> parseParams(DTO dto) {
+    public static Map<String, Object> parseParams(DTO dto) {
         if (dto == null)
             return null;
 
