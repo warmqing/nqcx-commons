@@ -25,7 +25,6 @@
         <module>nqcx-commons-service</module>
         <module>nqcx-commons-util</module>
         <module>nqcx-commons-web</module>
-        <module>nqcx-commons-redis</module>
         <module>nqcx-commons-mq</module>
         <module>nqcx-commons-solr</module>
         <module>nqcx-commons-zk</module>
@@ -185,13 +184,6 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
                 <version>${spring.version}</version>
-                <optional>true</optional>
-            </dependency>
-
-            <dependency>
-                <groupId>redis.clients</groupId>
-                <artifactId>jedis</artifactId>
-                <version>2.5.1</version>
                 <optional>true</optional>
             </dependency>
 
