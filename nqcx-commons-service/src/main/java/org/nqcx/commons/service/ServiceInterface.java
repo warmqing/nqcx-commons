@@ -17,70 +17,70 @@ import java.util.List;
  */
 public interface ServiceInterface {
 
-	/**
-	 * 插入数据
-	 * <p>
-	 * 取ID可以从对象中取，需要从对象中取
-	 * 
-	 * @param t
-	 * @return
-	 */
-	public <T> DTO add(T t);
+    /**
+     * 插入数据
+     * <p/>
+     * 取ID可以从对象中取，需要从对象中取
+     *
+     * @param t
+     * @return
+     */
+    <T> DTO add(T t);
 
-	/**
-	 * 更新数据
-	 * 
-	 * @param t
-	 * @return
-	 */
-	public <T> DTO modify(T t);
+    /**
+     * 更新数据
+     *
+     * @param t
+     * @return
+     */
+    <T> DTO modify(T t);
 
-	/**
-	 * 删除数据
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public DTO deleteOne(long id);
+    /**
+     * 删除数据
+     *
+     * @param id
+     * @return
+     */
+    DTO deleteOne(long id);
 
-	/**
-	 * 删除多条数据
-	 * 
-	 * @param ids
-	 * @return
-	 */
-	public DTO deleteMultiple(long[] ids);
+    /**
+     * 删除多条数据
+     *
+     * @param ids
+     * @return
+     */
+    DTO deleteMultiple(long[] ids);
 
-	/**
-	 * 执行查询
-	 * 
-	 * @param dto
-	 * @return
-	 */
-	public <T> List<T> query(DTO dto);
+    /**
+     * 执行查询
+     *
+     * @param dto
+     * @return
+     */
+    <T> List<T> query(DTO dto);
 
-	/**
-	 * 执行查询，用于远程调用执行查询，解决远程调时 dto 取不到分页信息的问题
-	 *
-	 * @param dto
-	 * @return
-	 */
-	DTO rmiQuery(DTO dto);
+    /**
+     * 执行查询，用于远程调用执行查询，解决远程调时 dto 取不到分页信息的问题
+     *
+     * @param dto
+     * @return
+     */
+    DTO rmiQuery(DTO dto);
 
-	/**
-	 * 查询总数
-	 * 
-	 * @param dto
-	 * @return
-	 */
-	public long queryCount(DTO dto);
+    /**
+     * 查询总数
+     *
+     * @param dto
+     * @return
+     */
+    long queryCount(DTO dto);
 
-	/**
-	 * 根据ID取得详情
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public <T> T getById(long id);
+    /**
+     * 根据ID取得详情
+     *
+     * @param id
+     * @return
+     */
+    <T> T getById(long id);
 
 }
