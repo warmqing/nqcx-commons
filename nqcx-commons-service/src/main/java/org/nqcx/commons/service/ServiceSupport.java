@@ -110,7 +110,7 @@ public abstract class ServiceSupport implements ServiceInterface {
     @Override
     public <T> List<T> query(DTO dto) {
         if (dto == null)
-            throw new ServiceException("DTO can't be null");
+            throw new ServiceException("Parameter dto can't be null");
 
         try {
             dto.setSuccess(true);
