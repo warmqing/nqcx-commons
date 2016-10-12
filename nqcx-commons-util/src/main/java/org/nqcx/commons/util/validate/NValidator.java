@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 /**
  * @author naqichuan 16/10/12 16:37
  */
-public class Validator {
+public class NValidator {
 
 
     /**
