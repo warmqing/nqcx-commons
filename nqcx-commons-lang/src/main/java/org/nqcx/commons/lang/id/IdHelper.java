@@ -15,8 +15,8 @@ import java.util.Random;
  */
 public class IdHelper {
 
-    //private static String ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static String ALPHABET = "1fGyLYQ3qHrc2M6j8mdREba90tKZBTi4vWsgpShouJzwlCeAFO7nU5IkPDNXxV";
+    //private static String DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static String DEFAULT_ALPHABET = "1fGyLYQ3qHrc2M6j8mdREba90tKZBTi4vWsgpShouJzwlCeAFO7nU5IkPDNXxV";
 
     /**
      * 数字转字符串
@@ -25,7 +25,20 @@ public class IdHelper {
      * @return
      */
     public static String toAlphabet(long input) {
-        int alphabetLen = ALPHABET.length();
+        return toAlphabet(input, DEFAULT_ALPHABET);
+    }
+
+    /**
+     * 数字转字符串
+     *
+     * @param input
+     * @return
+     */
+    public static String toAlphabet(long input, String alphabet) {
+        if(alphabet == null || alphabet.length() == 0)
+            alphabet = DEFAULT_ALPHABET;
+
+        int alphabetLen = alphabet.length();
 
         input = mov(input);
 
@@ -35,7 +48,7 @@ public class IdHelper {
             int position = (int) (input / pow) % alphabetLen;
             input -= (position * pow);
 
-            output += ALPHABET.substring(position, position + 1);
+            output += alphabet.substring(position, position + 1);
         }
         return StringUtils.reverse(output);
     }
@@ -47,7 +60,20 @@ public class IdHelper {
      * @return
      */
     public static long toDigital(String input) {
-        int alphabetLen = ALPHABET.length();
+        return toDigital(input, DEFAULT_ALPHABET);
+    }
+
+    /**
+     * 字符串转成数字
+     *
+     * @param input
+     * @return
+     */
+    public static long toDigital(String input, String alphabet) {
+        if(alphabet == null || alphabet.length() == 0)
+            alphabet = DEFAULT_ALPHABET;
+
+        int alphabetLen = alphabet.length();
 
         input = StringUtils.reverse(input);
         int inputLen = input.length() - 1;
@@ -55,7 +81,7 @@ public class IdHelper {
         long output = 0;
         for (int i = 0; i <= inputLen; i++) {
             long pow = (long) Math.pow((double) alphabetLen, (double) (inputLen - i));
-            output += (ALPHABET.indexOf(input.substring(i, i + 1)) * pow);
+            output += (alphabet.indexOf(input.substring(i, i + 1)) * pow);
         }
         return remov(output);
     }
@@ -104,12 +130,12 @@ public class IdHelper {
     }
 
     /**
-     * 将 ALPHABET 顺序打乱
+     * 将 DEFAULT_ALPHABET 顺序打乱
      *
      * @return
      */
-    private static String newAlphabet() {
-        char[] alphabetChars = ALPHABET.toCharArray();
+    public static String newAlphabet() {
+        char[] alphabetChars = DEFAULT_ALPHABET.toCharArray();
         Random random = new Random();
         int rInt = 0;
         char mChar = 0;
@@ -134,7 +160,7 @@ public class IdHelper {
      * @param alphabet
      */
     public void setAlphabet(String alphabet) {
-        IdHelper.ALPHABET = alphabet;
+        IdHelper.DEFAULT_ALPHABET = alphabet;
     }
 
     public static void main(String[] args) {
@@ -150,7 +176,7 @@ public class IdHelper {
         System.out.println(toDigital("1evYd"));
         System.out.println(toDigital("jevYd"));
 
-        // 将 ALPHABET 顺序打乱
+        // 将 DEFAULT_ALPHABET 顺序打乱
         // System.out.println(newAlphabet());
 
     }
