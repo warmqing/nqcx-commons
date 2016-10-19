@@ -19,19 +19,19 @@ import java.io.Serializable;
 /**
  * @author naqichuan 15/1/3 12:43
  */
-public class NqcxSender {
+public class MqSender {
 
-    private final static Logger logger = LoggerFactory.getLogger(NqcxSender.class);
+    private final static Logger logger = LoggerFactory.getLogger(MqSender.class);
 
-    protected NqcxJmsTemplate nqcxJmsTemplate;
+    protected MqJmsTemplate mqJmsTemplate;
 
-    public NqcxSender(NqcxJmsTemplate nqcxJmsTemplate) {
-        this.nqcxJmsTemplate = nqcxJmsTemplate;
+    public MqSender(MqJmsTemplate mqJmsTemplate) {
+        this.mqJmsTemplate = mqJmsTemplate;
     }
 
-    public void send(NqcxDestination destination, final Serializable object) {
+    public void send(MqDestination destination, final Serializable object) {
 
-        nqcxJmsTemplate.send(destination, new MessageCreator() {
+        mqJmsTemplate.send(destination, new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 try {

@@ -6,15 +6,12 @@
 
 package org.nqcx.commons.mq;
 
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
+import javax.jms.Destination;
 
 /**
  * @author naqichuan 15/1/3 12:41
  */
-public class NqcxMessageListenerContainer extends DefaultMessageListenerContainer {
+public interface MqDestination {
 
-    public void setJmsDestination(NqcxDestination destination) {
-        super.setDestination(destination.getDestination());
-    }
-
+    Destination getDestination();
 }

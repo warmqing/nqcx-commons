@@ -13,9 +13,9 @@ import org.springframework.jms.core.MessageCreator;
 /**
  * @author naqichuan 15/1/3 12:42
  */
-public class NqcxJmsTemplate extends JmsTemplate {
+public class MqJmsTemplate extends JmsTemplate {
 
-    public void send(NqcxDestination destination, MessageCreator messageCreator) throws JmsException {
+    public void send(MqDestination destination, MessageCreator messageCreator) throws JmsException {
         super.send(destination.getDestination(), messageCreator);
     }
 }
