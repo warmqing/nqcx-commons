@@ -215,11 +215,9 @@ public abstract class WebSupport {
      * @return
      */
     protected Map<?, ?> returnResult(DTO dto) {
-        if (dto == null) {
-            dto = new DTO();
-            // 默认调用失败
-            dto.putResult("10", "10");
-        }
+        if (dto == null)
+            // 这里的 value 只做说明，最终返回以 gmsg.properties 中 key 对应的配置为准
+            dto = new DTO().putResult("10", "操作数据出错");
 
         MapBuilder mb = MapBuilder.newInstance().put(SUCCESS, dto.isSuccess());
 
@@ -254,7 +252,7 @@ public abstract class WebSupport {
      * @param entry
      */
     private void parseErrorJson(MapBuilder mapBuilder, Map.Entry<String, Object> entry) {
-        mapBuilder.putMap(putError(entry.getValue().toString()));
+        mapBuilder.putMap(putError(entry.getKey()));
     }
 
     /**
@@ -278,7 +276,7 @@ public abstract class WebSupport {
         List<Object> list = new ArrayList<Object>();
         for (Map.Entry<String, Object> error : entrySet) {
             list.add(MapBuilder.newInstance().put(ERROR_MULTIPLE_CODE, "1x")
-                    .put(ERROR_MULTIPLE_TEXT, error.getValue().toString()).build());
+                    .put(ERROR_MULTIPLE_TEXT, error.getKey()).build());
         }
         return list;
     }
