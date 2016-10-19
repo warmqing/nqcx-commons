@@ -11,7 +11,7 @@ import org.springframework.jms.listener.DefaultMessageListenerContainer;
 /**
  * @author naqichuan 15/1/3 12:41
  */
-public class MqJmsListeningContainer extends DefaultMessageListenerContainer {
+public class MqJmsListenerContainer extends DefaultMessageListenerContainer {
 
     public void setJmsDestination(MqDestination destination) {
         super.setDestination(destination.getDestination());
