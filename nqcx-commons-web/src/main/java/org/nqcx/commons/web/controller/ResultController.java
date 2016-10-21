@@ -30,7 +30,8 @@ import java.util.Map;
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
-@Controller("/r")
+@Controller
+@RequestMapping("/r")
 public class ResultController extends WebSupport {
 
     private NqcxResult rs;
