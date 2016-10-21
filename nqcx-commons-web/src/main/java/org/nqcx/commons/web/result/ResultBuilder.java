@@ -32,14 +32,14 @@ public class ResultBuilder {
         types.put(S, "S");
     }
 
-    private Map<String, Result> results;
+    private Map<String, NqcxResult> results;
 
 
     /**
      * @param code
      * @return
      */
-    public Result getResult(String code) {
+    public NqcxResult getResult(String code) {
         return getResult(null, code);
     }
 
@@ -48,13 +48,13 @@ public class ResultBuilder {
      * @param code
      * @return
      */
-    public Result getResult(String type, String code) {
+    public NqcxResult getResult(String type, String code) {
         String t = (type != null && types.containsKey(type.toLowerCase()) ? types.get(type.toLowerCase()) : types.get(D));
         String c = (code == null ? getFullCode("0") : getFullCode(code));
 
-        Result rs = null;
+        NqcxResult rs = null;
         if ((rs = results.get(t + c)) == null) {
-            rs = new Result();
+            rs = new NqcxResult();
             rs.setType(type);
             rs.setCode(c);
             rs.setSubject("R" + t + "." + c + ".SUBJECT");
@@ -77,9 +77,9 @@ public class ResultBuilder {
      * @param other
      * @return
      */
-    private Result unite(Result base, Result other) {
+    private NqcxResult unite(NqcxResult base, NqcxResult other) {
 
-        Result newRs = base.clone();
+        NqcxResult newRs = base.clone();
 
         if (other == null)
             return null;
@@ -107,7 +107,7 @@ public class ResultBuilder {
     /**
      * @param results
      */
-    public void setResults(Map<String, Result> results) {
+    public void setResults(Map<String, NqcxResult> results) {
         this.results = results;
     }
 }

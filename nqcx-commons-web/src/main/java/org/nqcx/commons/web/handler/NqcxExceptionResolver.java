@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class NqcxExceptionResolver extends SimpleMappingExceptionResolver {
 
-    protected final static Logger logger = LoggerFactory.getLogger("controller_error");
+    protected final static Logger logger = LoggerFactory.getLogger("_CONTROLLER_ERROR");
 
     @Override
     protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler,

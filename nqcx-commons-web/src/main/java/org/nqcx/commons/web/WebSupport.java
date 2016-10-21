@@ -11,7 +11,7 @@ package org.nqcx.commons.web;
 import org.nqcx.commons.lang.o.DTO;
 import org.nqcx.commons.lang.page.PageIO;
 import org.nqcx.commons.util.MapBuilder;
-import org.nqcx.commons.web.result.Result;
+import org.nqcx.commons.web.result.NqcxResult;
 import org.nqcx.commons.web.result.ResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,18 +46,18 @@ public abstract class WebSupport {
     private MessageSource messageSource;
 
     protected String m(String code) {
-        Result result = getResult(ResultBuilder.M, code);
-        return result == null ? "" : getPropertyValue(result.getSubject());
+        NqcxResult nqcxResult = getResult(ResultBuilder.M, code);
+        return nqcxResult == null ? "" : getPropertyValue(nqcxResult.getSubject());
     }
 
     protected String e(String code) {
-        Result result = getResult(ResultBuilder.E, code);
-        return result == null ? "" : getPropertyValue(result.getSubject());
+        NqcxResult nqcxResult = getResult(ResultBuilder.E, code);
+        return nqcxResult == null ? "" : getPropertyValue(nqcxResult.getSubject());
     }
 
     protected String s(String code) {
-        Result result = getResult(ResultBuilder.S, code);
-        return result == null ? "" : getPropertyValue(result.getSubject());
+        NqcxResult nqcxResult = getResult(ResultBuilder.S, code);
+        return nqcxResult == null ? "" : getPropertyValue(nqcxResult.getSubject());
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class WebSupport {
      * @param code
      * @return
      */
-    protected Result getResult(String type, String code) {
+    protected NqcxResult getResult(String type, String code) {
         return resultBuilder == null ? null : resultBuilder.getResult(type, code);
     }
 

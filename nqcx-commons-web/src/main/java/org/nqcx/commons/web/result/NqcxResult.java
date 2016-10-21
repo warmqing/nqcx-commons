@@ -18,7 +18,7 @@ import java.util.List;
  * @author naqichuan 2014年8月14日 上午11:50:15
  * 
  */
-public class Result implements Cloneable {
+public class NqcxResult implements Cloneable {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -109,13 +109,13 @@ public class Result implements Cloneable {
 	}
 
 	@Override
-	public Result clone() {
-		Result result = null;
+	public NqcxResult clone() {
+		NqcxResult nqcxResult = null;
 		try {
-			result = (Result) super.clone();
+			nqcxResult = (NqcxResult) super.clone();
 		} catch (CloneNotSupportedException e) {
 			logger.error("Result.clone", e);
 		}
-		return result;
+		return nqcxResult;
 	}
 }

@@ -11,7 +11,7 @@ package org.nqcx.commons.web.controller;
 import org.nqcx.commons.lang.o.DTO;
 import org.nqcx.commons.util.json.JsonUtils;
 import org.nqcx.commons.web.WebSupport;
-import org.nqcx.commons.web.result.Result;
+import org.nqcx.commons.web.result.NqcxResult;
 import org.nqcx.commons.web.url.UrlBuilder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ import java.util.Map;
 @Controller
 public class ResultController extends WebSupport {
 
-    private Result rs;
+    private NqcxResult rs;
 
     @Autowired(required = false)
     @Qualifier("_homeUrl")
@@ -71,7 +71,7 @@ public class ResultController extends WebSupport {
 
     private String result(String type, String code, String url, Model model, HttpServletResponse response) {
         if (this.rs == null)
-            this.rs = new Result();
+            this.rs = new NqcxResult();
 
         if (this.isAjax()) {
             String result = null;
@@ -126,11 +126,11 @@ public class ResultController extends WebSupport {
         return rl;
     }
 
-    public Result getResult() {
+    public NqcxResult getResult() {
         return rs;
     }
 
-    public void setResult(Result result) {
-        this.rs = result;
+    public void setResult(NqcxResult nqcxResult) {
+        this.rs = nqcxResult;
     }
 }
