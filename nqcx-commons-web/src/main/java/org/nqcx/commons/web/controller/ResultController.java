@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
-@Controller
+@Controller("/r")
 public class ResultController extends WebSupport {
 
     private NqcxResult rs;
@@ -39,32 +39,32 @@ public class ResultController extends WebSupport {
     @Qualifier("_homeUrl")
     private UrlBuilder homeUrl;
 
-    @RequestMapping(value = "/error", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/e", method = {RequestMethod.GET, RequestMethod.POST})
     public String error(String url, Model model, HttpServletResponse response) {
         return error("0", url, model, response);
     }
 
-    @RequestMapping(value = "/error/{code}", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/e/{code}", method = {RequestMethod.GET, RequestMethod.POST})
     public String error(@PathVariable String code, String url, Model model, HttpServletResponse response) {
         return result("error", code, url, model, response);
     }
 
-    @RequestMapping(value = "/msg", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/m", method = {RequestMethod.GET, RequestMethod.POST})
     public String msg(String url, Model model, HttpServletResponse response) throws Exception {
         return msg("0", url, model, response);
     }
 
-    @RequestMapping(value = "/msg/{code}", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/m/{code}", method = {RequestMethod.GET, RequestMethod.POST})
     public String msg(@PathVariable String code, String url, Model model, HttpServletResponse response) throws Exception {
         return result("msg", code, url, model, response);
     }
 
-    @RequestMapping(value = "/success", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/s", method = {RequestMethod.GET, RequestMethod.POST})
     public String success(String url, Model model, HttpServletResponse response) throws Exception {
         return success("0", url, model, response);
     }
 
-    @RequestMapping(value = "/success/{code}", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/s/{code}", method = {RequestMethod.GET, RequestMethod.POST})
     public String success(@PathVariable String code, String url, Model model, HttpServletResponse response) throws Exception {
         return result("success", code, url, model, response);
     }
@@ -87,7 +87,8 @@ public class ResultController extends WebSupport {
 
         BeanUtils.copyProperties(getResult(type, code), rs);
 
-        rs.setIndex(homeUrl.forPath().build());
+        if (homeUrl != null)
+            rs.setIndex(homeUrl.forPath().build());
 
         if (url != null && url.length() > 0)
             rs.setUrl(url);
@@ -114,9 +115,9 @@ public class ResultController extends WebSupport {
     }
 
     /**
-     * @author naqichuan Dec 24, 2013 9:37:54 PM
      * @param list
      * @return
+     * @author naqichuan Dec 24, 2013 9:37:54 PM
      */
     private Object getValue(List<String> list) {
         List<String> rl = new ArrayList<String>();
