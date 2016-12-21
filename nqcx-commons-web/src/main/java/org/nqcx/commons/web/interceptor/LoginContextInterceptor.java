@@ -107,7 +107,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
      */
     protected LoginContext getLoginContextFromTicket(LoginTicket ticket) {
         LoginContext loginContext = null;
-        if (ticket != null && ticket.getAccount() == null || ticket.getAccount().length() == 0) {
+        if (ticket != null && ticket.getAccount() != null && ticket.getAccount().length() > 0) {
             loginContext = new LoginContext();
             loginContext.setAccount(ticket.getAccount());
         }
