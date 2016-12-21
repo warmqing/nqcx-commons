@@ -91,7 +91,7 @@ public class LoginTicketUtils {
         System.arraycopy(ticketBytes, pos, expires, 0, expires.length);
         pos += expires.length;
 
-        long _account = Long.parseLong(new String(account, ENCODING));
+        String _account = new String(account, ENCODING);
         String _userData = new String(userData, ENCODING);
         Date _issueDate = byteArrayToDate(issueDate);
         Date _expires = byteArrayToDate(expires);

@@ -38,7 +38,7 @@ public class LoginContext extends EntityBO {
     /**
      * 账号
      */
-    private long account;
+    private String account;
 
     /**
      * 显示名称
@@ -68,11 +68,11 @@ public class LoginContext extends EntityBO {
         this.id = id;
     }
 
-    public long getAccount() {
+    public String getAccount() {
         return account;
     }
 
-    public void setAccount(long account) {
+    public void setAccount(String account) {
         this.account = account;
     }
 
@@ -291,7 +291,7 @@ public class LoginContext extends EntityBO {
         if (id != 0)
             sb.append(",id=").append(id);
 
-        if (account != 0)
+        if (account != null)
             sb.append(",account=").append(account);
 
         if (nick != null)
@@ -310,11 +310,11 @@ public class LoginContext extends EntityBO {
     }
 
     /**
-     * 判断是否登录。标准：trim(account).length > 0
+     * 判断是否登录。标准：account.trim().length() > 0
      *
      * @return true 已经登录 false 没有登录
      */
     public boolean isLogin() {
-        return account > 0;
+        return account != null && account.trim().length() > 0;
     }
 }

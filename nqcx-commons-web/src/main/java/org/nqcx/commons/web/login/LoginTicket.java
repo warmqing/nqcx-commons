@@ -27,7 +27,7 @@ public class LoginTicket extends EntityBO {
     /**
      * account
      */
-    private long _account;
+    private String _account;
     /**
      * 用户data
      */
@@ -51,7 +51,7 @@ public class LoginTicket extends EntityBO {
         return _version;
     }
 
-    public long getAccount() {
+    public String getAccount() {
         return _account;
     }
 
@@ -84,14 +84,14 @@ public class LoginTicket extends EntityBO {
         return (new Date()).after(_expires);
     }
 
-    public LoginTicket(long _account) {
+    public LoginTicket(String _account) {
         this(_account, null, null, null, null, 0, false);
     }
 
-    public LoginTicket(long account, String userdata, String appPath, Date issued, Date expires, int version,
+    public LoginTicket(String account, String userdata, String appPath, Date issued, Date expires, int version,
                        boolean isPersistent) {
-        if (account == 0)
-            throw new RuntimeException("account == 0");
+        if (account == null || account.length() == 0)
+            throw new RuntimeException("account is empty");
         else
             _account = account;
         if (userdata == null)
@@ -147,7 +147,7 @@ public class LoginTicket extends EntityBO {
             return false;
         if (_userData != null ? !_userData.equals(ticket._userData) : ticket._userData != null)
             return false;
-        if (_account == 0 || _account != ticket._account)
+        if (_account != null ?  !_account.equals(ticket._account) : ticket._account != null)
             return false;
 
         return true;
@@ -156,7 +156,7 @@ public class LoginTicket extends EntityBO {
     @Override
     public int hashCode() {
         int result = _version;
-        result = 31 * result + (_account > 0 ? new Long(_account).hashCode() : 0);
+        result = 31 * result + (_account != null ? _account.hashCode() : 0);
         result = 31 * result + (_userData != null ? _userData.hashCode() : 0);
         result = 31 * result + (_appPath != null ? _appPath.hashCode() : 0);
         result = 31 * result + (_expires != null ? _expires.hashCode() : 0);

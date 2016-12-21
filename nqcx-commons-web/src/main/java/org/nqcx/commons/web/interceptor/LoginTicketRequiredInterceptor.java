@@ -27,7 +27,7 @@ public class LoginTicketRequiredInterceptor extends LoginRequiredInterceptor {
 
         LoginTicket ticket = getLoginTicket();
 
-        if (ticket == null || ticket.getAccount() > 0) {
+        if (ticket == null || ticket.getAccount() == null || ticket.getAccount().length() == 0) {
             if (isAjax(request)) {
                 logger.info("RemoteAddr [" + request.getRemoteAddr() + "] from ajax check ticket false!");
 

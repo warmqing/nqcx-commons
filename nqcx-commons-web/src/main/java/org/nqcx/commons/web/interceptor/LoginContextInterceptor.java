@@ -41,7 +41,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
 
         boolean needNewCookie = false;
 
-        if (loginContext == null || loginContext.getAccount() == 0) {
+        if (loginContext == null || loginContext.getAccount() == null || loginContext.getAccount().length() == 0) {
             if (loginTicket == null || loginTicket.isExpired()) {
                 // 没有 login cookie，并且没有 ticket 或 ticket 已过期，需要重新登录的
                 removeLoginCookie(request, response);
@@ -107,7 +107,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
      */
     protected LoginContext getLoginContextFromTicket(LoginTicket ticket) {
         LoginContext loginContext = null;
-        if (ticket != null && ticket.getAccount() > 0) {
+        if (ticket != null && loginContext.getAccount() == null || loginContext.getAccount().length() == 0) {
             loginContext = new LoginContext();
             loginContext.setAccount(ticket.getAccount());
         }
