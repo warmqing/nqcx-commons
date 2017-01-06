@@ -21,7 +21,7 @@ import java.io.Serializable;
  */
 public class MqSender {
 
-    private final static Logger logger = LoggerFactory.getLogger(MqSender.class);
+    private final static Logger logger = LoggerFactory.getLogger(MqConst.MQ_LOG_NAME);
 
     protected MqJmsTemplate mqJmsTemplate;
 
@@ -31,13 +31,15 @@ public class MqSender {
 
     public void send(MqDestination destination, final Serializable object) {
 
+        logger.info("OPERATE: SEND, object: {}", object);
+
         mqJmsTemplate.send(destination, new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 try {
                     return session.createObjectMessage(JsonUtils.objectToJson(object));
                 } catch (Exception e) {
-                    logger.error("发送消息失败", e);
+                    logger.error("Message send failed", e);
                 }
                 return null;
             }
