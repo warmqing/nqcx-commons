@@ -19,7 +19,7 @@ import java.io.Serializable;
 /**
  * @author naqichuan 15/1/3 12:43
  */
-public class MqSender {
+public class MqSender extends MqSenderBlank {
 
     private final static Logger logger = LoggerFactory.getLogger(MqConst.MQ_LOG_NAME);
 
@@ -29,9 +29,10 @@ public class MqSender {
         this.mqJmsTemplate = mqJmsTemplate;
     }
 
+    @Override
     public void send(MqDestination destination, final Serializable object) {
 
-        logger.info("OPERATE: SEND, object: {}", object);
+        logger.info("MqSender -> OPERATE: SEND, object: {}", object);
 
         mqJmsTemplate.send(destination, new MessageCreator() {
             @Override
