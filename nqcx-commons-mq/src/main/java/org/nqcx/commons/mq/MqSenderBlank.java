@@ -6,6 +6,7 @@
 
 package org.nqcx.commons.mq;
 
+import org.nqcx.commons.lang.consts.LoggerConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,7 @@ import java.io.Serializable;
  */
 public class MqSenderBlank {
 
-    private final static Logger logger = LoggerFactory.getLogger(MqConst.MQ_LOG_NAME);
+    private final static Logger logger = LoggerFactory.getLogger(LoggerConst.LOGGER_MQ_NAME);
 
     public void send(MqDestination destination, final Serializable object) {
 
