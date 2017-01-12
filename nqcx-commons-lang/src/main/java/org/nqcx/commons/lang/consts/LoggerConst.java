@@ -27,4 +27,19 @@ public class LoggerConst {
      * 访问日志名
      */
     public final static String LOGGER_ACCESS_NAME = "_NQCX_LOGGER_ACCESS";
+
+    /**
+     * SOLR 日志
+     */
+    public final static String LOGGER_SOLR_NAME = "_NQCX_LOGGER_SOLR";
+
+    /**
+     * http 返回日志
+     */
+    public final static String LOGGER_HTTP_NAME = "_NQCX_LOGGER_HTTP";
+
+    /**
+     * zk 日志
+     */
+    public final static String LOGGER_ZK_NAME = "_NQCX_LOGGER_ZK";
 }

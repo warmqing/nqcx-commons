@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class NqcxResult implements Cloneable {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final static Logger logger = LoggerFactory.getLogger(NqcxResult.class);
 
 	private String code;
 

@@ -21,6 +21,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
+import org.nqcx.commons.lang.consts.LoggerConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,8 @@ import java.util.Map;
  */
 public class HttpRequest {
 
-    private static Logger logger = LoggerFactory.getLogger(HttpRequest.class);
+    private final static Logger logger = LoggerFactory.getLogger(HttpRequest.class);
+    private final static Logger http_logger = LoggerFactory.getLogger(LoggerConst.LOGGER_HTTP_NAME);
 
     /**
      * 创建 http client
@@ -117,7 +119,7 @@ public class HttpRequest {
         try {
             String paramString = httpMap.buildString();
 
-            logger.info("reqeust: get, uri: " + uri + ", params: ["
+            http_logger.info("reqeust: get, uri: " + uri + ", params: ["
                     + paramString + "]");
 
             if (paramString != null && paramString.length() > 0)
@@ -144,7 +146,7 @@ public class HttpRequest {
             responseBody = e.toString();
             logger.error("response: get, error: ", e);
         } finally {
-            logger.info("response: get, content: " + responseBody);
+            http_logger.info("response: get, content: " + responseBody);
             httpClient.getConnectionManager().shutdown();
         }
 
@@ -209,7 +211,7 @@ public class HttpRequest {
             nvps = httpMap.buildList();
 
         try {
-            logger.info("reqeust: post, uri:" + uri + ", params: " + nvps);
+            http_logger.info("reqeust: post, uri:" + uri + ", params: " + nvps);
 
             return post(uri, chareset, new UrlEncodedFormEntity(nvps, chareset),
                     connectionTimeout, socketTimeout);
@@ -241,7 +243,7 @@ public class HttpRequest {
     public static String postJson(String uri, HttpMap httpMap) {
 
         String params = httpMap.buildJson();
-        logger.info("reqeust: post, uri:" + uri + ", params: " + params);
+        http_logger.info("reqeust: post, uri:" + uri + ", params: " + params);
 
         try {
             StringEntity requestEntity = new StringEntity(params, Consts.UTF_8.toString());

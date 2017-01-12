@@ -8,6 +8,7 @@
 
 package org.nqcx.commons.web.interceptor;
 
+import org.nqcx.commons.lang.consts.LoggerConst;
 import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.web.WebContext;
 import org.nqcx.commons.web.WebSupport;
@@ -30,7 +31,7 @@ import java.util.Locale;
 public class WebContextInterceptor extends WebSupport implements HandlerInterceptor {
 
     private final static Logger logger = LoggerFactory.getLogger(WebContextInterceptor.class);
-    private final static Logger access_logger = LoggerFactory.getLogger("_ACCESS_LOGGER");
+    private final static Logger access_logger = LoggerFactory.getLogger(LoggerConst.LOGGER_ACCESS_NAME);
 
     protected static final String XHR_OBJECT_NAME = "XMLHttpRequest";
     protected static final String HEADER_REQUEST_WITH = "x-requested-with";
