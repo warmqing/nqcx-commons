@@ -51,15 +51,14 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
             url.append(request.getQueryString());
         }
         Locale locale = localeResolver == null ? null : localeResolver.resolveLocale(request);
-
-        access_logger.info("{}, method: {}, remoteAddr: {}, referer: {}, isAjax: {}, url: {}, locale: {}, User-Agent: {}",
-                request.getRequestURI(),
-                request.getMethod(),
+        access_logger.info("remoteAddr: {}, method: {}, isAjax: {}, uri: {}, locale: {}, url: {}, referer: {}, User-Agent: {}",
                 this.getRemoteAddr(request),
-                request.getHeader("referer"),
+                request.getMethod(),
                 this.isAjax(request),
-                url.toString(),
+                request.getRequestURI(),
                 locale,
+                url.toString(),
+                request.getHeader("referer"),
                 request.getHeader("User-Agent"));
 
         WebContext webContext = getWebContext();
