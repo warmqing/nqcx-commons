@@ -117,7 +117,9 @@ public class HttpRequest {
         HttpClient httpClient = newHttpClient(connectionTimeout, socketTimeout);
         String responseBody = null;
         try {
-            String paramString = httpMap.buildString();
+            String paramString = null;
+            if (httpMap != null)
+                paramString = httpMap.buildString();
 
             http_logger.info("reqeust: get, uri: " + uri + ", params: ["
                     + paramString + "]");
