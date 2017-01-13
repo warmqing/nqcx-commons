@@ -77,9 +77,9 @@ public class ResultController extends WebSupport {
         if (this.isAjax()) {
             String result = null;
             if (type.endsWith("error"))
-                result = JsonUtils.mapToJson((Map<String, Object>) this.returnResult(new DTO(false).putResult(code, code)));
+                result = JsonUtils.mapToJson((Map<String, Object>) this.buildResult(new DTO(false).putResult(code, code)));
             else
-                result = JsonUtils.mapToJson((Map<String, Object>) this.returnResult(new DTO(true).setObject(super.getPropertyValue(code))));
+                result = JsonUtils.mapToJson((Map<String, Object>) this.buildResult(new DTO(true).setObject(super.getPropertyValue(code))));
 
             super.responseJsonResult(response, result);
 

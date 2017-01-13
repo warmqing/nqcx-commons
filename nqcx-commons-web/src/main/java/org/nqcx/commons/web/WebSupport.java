@@ -11,6 +11,7 @@ package org.nqcx.commons.web;
 import org.nqcx.commons.lang.o.DTO;
 import org.nqcx.commons.lang.page.PageIO;
 import org.nqcx.commons.util.MapBuilder;
+import org.nqcx.commons.util.json.JsonUtils;
 import org.nqcx.commons.web.result.NqcxResult;
 import org.nqcx.commons.web.result.ResultBuilder;
 import org.slf4j.Logger;
@@ -209,12 +210,22 @@ public abstract class WebSupport {
     // ========================================================================
 
     /**
-     * 分析返回结果
+     * 构建返回结果，返回 String 类型
      *
      * @param dto
      * @return
      */
-    protected Map<?, ?> returnResult(DTO dto) {
+    protected String buildJsonResult(DTO dto) {
+        return JsonUtils.mapToJson((Map<String, Object>) buildResult(dto));
+    }
+
+    /**
+     * 构建返回结果，返回 map 类型
+     *
+     * @param dto
+     * @return
+     */
+    protected Map<?, ?> buildResult(DTO dto) {
         if (dto == null)
             // 这里的 value 只做说明，最终返回以 gmsg.properties 中 key 对应的配置为准
             dto = new DTO().putResult("10", "操作数据出错");
