@@ -60,8 +60,6 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
 
         // 取 realPath
         webContext.setRealPath(request.getSession().getServletContext().getRealPath("/"));
-        // 取 relativePath
-        webContext.setRelativePath(request.getSession().getServletContext().getRealPath("./"));
 
         // 取 remoteAddr
         webContext.setRemoteAddr(this.getRemoteAddrFromRequest(request));

@@ -32,7 +32,6 @@ public class WebContext {
     private StringBuffer requestURL;
 
     private String realPath;
-    private String relativePath;
 
     private String remoteAddr;
     private String method;
@@ -104,14 +103,6 @@ public class WebContext {
 
     public void setRealPath(String realPath) {
         this.realPath = realPath;
-    }
-
-    public String getRelativePath() {
-        return relativePath;
-    }
-
-    public void setRelativePath(String relativePath) {
-        this.relativePath = relativePath;
     }
 
     public String getRemoteAddr() {
