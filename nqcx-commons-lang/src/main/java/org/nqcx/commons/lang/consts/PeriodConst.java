@@ -18,4 +18,5 @@ public class PeriodConst {
     public final static int THIRTY_MINUTES = 30 * ONE_MINUTES;
     public final static int ONE_HOUR = 60 * ONE_MINUTES;
     public final static int ONE_DAY = 24 * ONE_HOUR;
+    public final static int ONE_WEEK = 7 * ONE_DAY;
 }
