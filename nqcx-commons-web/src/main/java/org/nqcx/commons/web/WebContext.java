@@ -23,17 +23,95 @@ public class WebContext {
         }
     };
 
-    private boolean ajax = false;
-    private String remoteAddr;
+    private String scheme;
     private String serverName;
-    private Locale locale;
+    private int port;
+    private String contextPath;
+    private String servletPath;
+    private String requestURI;
+    private StringBuffer requestURL;
 
-    public boolean isAjax() {
-        return ajax;
+    private String realPath;
+    private String relativePath;
+
+    private String remoteAddr;
+    private String method;
+    private boolean ajax = false;
+    private Locale locale;
+    private String url;
+    private String referer;
+    private String userAgent;
+
+    public String getScheme() {
+        return scheme;
     }
 
-    public void setAjax(boolean ajax) {
-        this.ajax = ajax;
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    public String getServletPath() {
+        return servletPath;
+    }
+
+    public void setServletPath(String servletPath) {
+        this.servletPath = servletPath;
+    }
+
+    public String getRequestURI() {
+        return requestURI;
+    }
+
+    public void setRequestURI(String requestURI) {
+        this.requestURI = requestURI;
+    }
+
+    public StringBuffer getRequestURL() {
+        return requestURL;
+    }
+
+    public void setRequestURL(StringBuffer requestURL) {
+        this.requestURL = requestURL;
+    }
+
+    public String getRealPath() {
+        return realPath;
+    }
+
+    public void setRealPath(String realPath) {
+        this.realPath = realPath;
+    }
+
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    public void setRelativePath(String relativePath) {
+        this.relativePath = relativePath;
     }
 
     public String getRemoteAddr() {
@@ -44,8 +122,20 @@ public class WebContext {
         this.remoteAddr = remoteAddr;
     }
 
-    public String getServerName() {
-        return serverName;
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public boolean isAjax() {
+        return ajax;
+    }
+
+    public void setAjax(boolean ajax) {
+        this.ajax = ajax;
     }
 
     public Locale getLocale() {
@@ -56,8 +146,28 @@ public class WebContext {
         this.locale = locale;
     }
 
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getReferer() {
+        return referer;
+    }
+
+    public void setReferer(String referer) {
+        this.referer = referer;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 
     public static void setWebContext(WebContext webContext) {

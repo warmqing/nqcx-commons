@@ -181,8 +181,8 @@ public abstract class WebSupport {
     /**
      * @return
      */
-    protected boolean isAjax() {
-        return getWebContext() == null ? false : getWebContext().isAjax();
+    protected String getServerName() {
+        return getWebContext() == null ? null : getWebContext().getServerName();
     }
 
     /**
@@ -195,8 +195,8 @@ public abstract class WebSupport {
     /**
      * @return
      */
-    protected String getServerName() {
-        return getWebContext() == null ? null : getWebContext().getServerName();
+    protected boolean isAjax() {
+        return getWebContext() == null ? false : getWebContext().isAjax();
     }
 
     /**

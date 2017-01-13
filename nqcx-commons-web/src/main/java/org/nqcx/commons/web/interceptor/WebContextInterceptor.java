@@ -21,9 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Locale;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
@@ -44,58 +41,58 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         WebContext.remove();
-
-        StringBuffer url = new StringBuffer(request.getRequestURL());
-        if (request.getQueryString() != null) {
-            url.append("?");
-            url.append(request.getQueryString());
-        }
-        Locale locale = localeResolver == null ? null : localeResolver.resolveLocale(request);
-        access_logger.info("remoteAddr: {}, method: {}, isAjax: {}, uri: {}, locale: {}, url: {}, referer: {}, User-Agent: {}",
-                this.getRemoteAddr(request),
-                request.getMethod(),
-                this.isAjax(request),
-                request.getRequestURI(),
-                locale,
-                url.toString(),
-                request.getHeader("referer"),
-                request.getHeader("User-Agent"));
-
         WebContext webContext = getWebContext();
-        // 判断是否 ajax 访问
-        webContext.setAjax(this.isAjax(request));
-        // 取IP
-        webContext.setRemoteAddr(this.getRemoteAddr(request));
+
+        // 取 scheme
+        webContext.setScheme(request.getScheme());
         // 取 server name
         webContext.setServerName(request.getServerName());
+        // 取 port
+        webContext.setPort(request.getServerPort());
+        // 取 contextPath
+        webContext.setContextPath(request.getContextPath());
+        // 取 servletPath
+        webContext.setServletPath(request.getServletPath());
+        // 取 requestURI
+        webContext.setRequestURI(request.getRequestURI());
+        // 取 requestURL
+        webContext.setRequestURL(request.getRequestURL());
+
+        // 取 realPath
+        webContext.setRealPath(request.getSession().getServletContext().getRealPath("/"));
+        // 取 relativePath
+        webContext.setRelativePath(request.getSession().getServletContext().getRealPath("./"));
+
+        // 取 remoteAddr
+        webContext.setRemoteAddr(this.getRemoteAddrFromRequest(request));
+        // 取 method
+        webContext.setMethod(request.getMethod());
+        // 判断是否 ajax 访问
+        webContext.setAjax(this.isAjaxFromRequest(request));
         // 取 locale
-        webContext.setLocale(locale);
+        webContext.setLocale(localeResolver == null ? null : localeResolver.resolveLocale(request));
+        // 取 url
+        StringBuffer url = new StringBuffer(request.getRequestURL());
+        if (request.getQueryString() != null)
+            url.append("?").append(request.getQueryString());
+        webContext.setUrl(url.toString());
+        // 取 referer
+        webContext.setReferer(request.getHeader("referer"));
+        // 取 userAgent
+        webContext.setUserAgent(request.getHeader("User-Agent"));
+
+
+        access_logger.info("remoteAddr: {}, method: {}, isAjax: {}, uri: {}, locale: {}, url: {}, referer: {}, User-Agent: {}",
+                webContext.getRemoteAddr(),
+                webContext.getMethod(),
+                webContext.isAjax(),
+                webContext.getRequestURI(),
+                webContext.getLocale(),
+                webContext.getUrl(),
+                webContext.getReferer(),
+                webContext.getUserAgent());
 
         return true;
-    }
-
-    /**
-     * 通过 response 直接返回 ContentType 为 application/json 格式字符串
-     *
-     * @param response
-     * @param result
-     * @author naqichuan Sep 26, 2013 3:02:32 PM
-     */
-
-    protected void responseJsonResult(HttpServletResponse response, String result) {
-        response.setCharacterEncoding(DEFAULT_CHARSET_NAME);
-        response.setContentType("application/json; charset=utf-8");
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-            out.append(result);
-        } catch (IOException e) {
-            logger.error("WebContextInterceptor.responseResult", e);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-        }
     }
 
     /**
@@ -103,7 +100,7 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
      * @return
      * @author naqichuan Oct 14, 2013 4:04:03 PM
      */
-    protected boolean isAjax(HttpServletRequest request) {
+    protected boolean isAjaxFromRequest(HttpServletRequest request) {
         return XHR_OBJECT_NAME.equals(request.getHeader(HEADER_REQUEST_WITH));
     }
 
@@ -114,7 +111,7 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
      * @return
      * @author naqichuan Oct 14, 2013 3:54:51 PM
      */
-    protected String getRemoteAddr(HttpServletRequest request) {
+    protected String getRemoteAddrFromRequest(HttpServletRequest request) {
         String ip = request.getHeader(HEADER_FORWARDED_FOR);
         if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip))
             ip = request.getHeader(HEADER_REAL_IP);
@@ -126,15 +123,6 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
             ip = ip.substring(ip.lastIndexOf(",") + 1, ip.length()).trim();
 
         return ip;
-    }
-
-    /**
-     * @return
-     * @author naqichuan Oct 12, 2013 3:41:44 PM
-     */
-    protected boolean clearAndReturn() {
-        WebContext.remove();
-        return false;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
 
         // 取得用户请求方式 request with
         if (!checkLogin(response, loginContext)) {
-            if (isAjax(request)) {
+            if (isAjax()) {
                 logger.info("RemoteAddr [" + request.getRemoteAddr() + "] from ajax check login false!");
 
                 responseJsonResult(response, NEED_LOGIN_JSON);
