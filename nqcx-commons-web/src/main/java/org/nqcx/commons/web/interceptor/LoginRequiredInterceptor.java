@@ -8,6 +8,7 @@
 
 package org.nqcx.commons.web.interceptor;
 
+import org.nqcx.commons.util.json.JsonUtils;
 import org.nqcx.commons.web.login.LoginContext;
 import org.nqcx.commons.web.url.UrlBuilder;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,7 +27,14 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
 
     private final static Logger logger = LoggerFactory.getLogger(LoginRequiredInterceptor.class);
 
-    protected static final String NEED_LOGIN_JSON = "{\"success\": false, \"needLogin\": true}";
+    protected static final String NEED_LOGIN_JSON;
+
+    static {
+        Map<String, Object> needLoginMap = new HashMap<String, Object>();
+        needLoginMap.put("success", false);
+        needLoginMap.put("needLogin", true);
+        NEED_LOGIN_JSON = JsonUtils.mapToJson(needLoginMap);
+    }
 
     protected UrlBuilder homeUrl;
     protected UrlBuilder loginUrl;
