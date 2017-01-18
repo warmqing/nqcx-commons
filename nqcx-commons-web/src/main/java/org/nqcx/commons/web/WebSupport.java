@@ -422,11 +422,12 @@ public abstract class WebSupport {
      * @param dto
      */
     protected void sendRedirectErrorResult(HttpServletResponse response, DTO dto) {
-        if (dto == null || dto.isSuccess())
-            return;
         String errorCode = null;
-        Map<String, Object> errorMap = dto.getResultMap();
-        if (errorMap != null && errorMap.size() > 1)
+        Map<String, Object> errorMap = null;
+
+        if (dto != null && dto.isSuccess())
+            return;
+        else if(dto != null && (errorMap = dto.getResultMap()) != null && errorMap.size() > 0)
             errorCode = errorMap.entrySet().iterator().next().getKey();
         else
             errorCode = "1";
