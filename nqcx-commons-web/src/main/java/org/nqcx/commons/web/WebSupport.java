@@ -196,6 +196,13 @@ public abstract class WebSupport {
     /**
      * @return
      */
+    protected String getContextPath() {
+        return getWebContext() == null ? null : getWebContext().getContextPath();
+    }
+
+    /**
+     * @return
+     */
     protected boolean isAjax() {
         return getWebContext() == null ? false : getWebContext().isAjax();
     }
@@ -409,4 +416,25 @@ public abstract class WebSupport {
 
     // ========================================================================
 
+    /**
+     * 跳转到错误页
+     *
+     * @param dto
+     */
+    protected void sendRedirectErrorResult(HttpServletResponse response, DTO dto) {
+        if (dto == null || dto.isSuccess())
+            return;
+        String errorCode = null;
+        Map<String, Object> errorMap = dto.getResultMap();
+        if (errorMap != null && errorMap.size() > 1)
+            errorCode = errorMap.entrySet().iterator().next().getKey();
+        else
+            errorCode = "1";
+
+        try {
+            response.sendRedirect(getContextPath() + "/r/e/" + errorCode);
+        } catch (IOException e) {
+            logger.warn(e.getMessage());
+        }
+    }
 }
