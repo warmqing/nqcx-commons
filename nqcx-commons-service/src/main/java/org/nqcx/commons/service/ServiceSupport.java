@@ -25,8 +25,7 @@ public abstract class ServiceSupport implements ServiceInterface {
     @Override
     public <T> DTO add(T t) {
         try {
-            int affected = getDao().insert(t);
-            return new DTO(affected > 0).putResult("affected", affected).setObject(beforeAdd(t));
+            return new DTO(true).putResult("affected", getDao().insert(beforeAdd(t))).setObject(t);
         } catch (Exception e) {
             throw new ServiceException("ServiceSupport add error", e);
         }
