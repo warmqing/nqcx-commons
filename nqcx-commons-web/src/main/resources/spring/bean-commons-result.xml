@@ -21,6 +21,7 @@
             </map>
         </property>
     </bean>
+
     <bean id="E00000" class="org.nqcx.commons.web.result.NqcxResult">
         <property name="type" value="error"/>
         <property name="code" value="0"/>

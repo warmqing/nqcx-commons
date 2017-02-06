@@ -34,7 +34,6 @@ public class ResultBuilder {
 
     private Map<String, NqcxResult> results;
 
-
     /**
      * @param code
      * @return
@@ -108,6 +107,19 @@ public class ResultBuilder {
      * @param results
      */
     public void setResults(Map<String, NqcxResult> results) {
-        this.results = results;
+        if (this.results == null)
+            this.results = results;
+        else if (results != null && results.size() > 0)
+            this.results.putAll(results);
+    }
+
+    /**
+     * @param resultExtends
+     */
+    public void setResultExtends(Map<String, NqcxResult> resultExtends) {
+        if (this.results == null)
+            this.results = resultExtends;
+        else if (resultExtends != null && resultExtends.size() > 0)
+            this.results.putAll(resultExtends);
     }
 }
