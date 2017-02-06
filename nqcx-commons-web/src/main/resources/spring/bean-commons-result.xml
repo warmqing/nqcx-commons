@@ -20,6 +20,7 @@
                 </entry>
             </map>
         </property>
+        <!-- resultExtends 用于扩展配置，应用中配置名为 resultExtends 的 map，启动时会根据 autowire="byName" 进行属性装配 -->
     </bean>
 
     <bean id="E00000" class="org.nqcx.commons.web.result.NqcxResult">
