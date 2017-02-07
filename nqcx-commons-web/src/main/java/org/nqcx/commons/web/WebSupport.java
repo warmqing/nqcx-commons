@@ -42,9 +42,9 @@ public abstract class WebSupport {
     protected final static String DEFAULT_CHARSET_NAME = "UTF-8";
 
     @Autowired(required = false)
-    private ResultBuilder resultBuilder;
+    protected ResultBuilder resultBuilder;
     @Autowired(required = false)
-    private MessageSource messageSource;
+    protected MessageSource messageSource;
 
     protected String m(String code) {
         NqcxResult nqcxResult = getResult(ResultBuilder.M, code);

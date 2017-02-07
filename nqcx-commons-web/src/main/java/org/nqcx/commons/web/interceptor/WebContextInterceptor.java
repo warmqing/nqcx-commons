@@ -36,7 +36,7 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     protected static final String HEADER_REAL_IP = "X-Real-IP";
 
     @Autowired(required = false)
-    private LocaleResolver localeResolver;
+    protected LocaleResolver localeResolver;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

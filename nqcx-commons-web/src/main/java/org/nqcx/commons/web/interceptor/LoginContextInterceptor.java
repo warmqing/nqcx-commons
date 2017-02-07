@@ -23,9 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginContextInterceptor extends WebContextInterceptor {
 
     @Autowired(required = false)
-    private NqcxCookie loginCookie;
+    protected NqcxCookie loginCookie;
 
-    private long sessionTimeout = 30L;
+    protected long sessionTimeout = 30L;
     protected int rate = 2;
 
     @Override
