@@ -293,8 +293,8 @@ public abstract class WebSupport {
     private List<Object> convertMultipleErrorJsonArray(Set<Map.Entry<String, Object>> entrySet) {
         List<Object> list = new ArrayList<Object>();
         for (Map.Entry<String, Object> error : entrySet) {
-            list.add(MapBuilder.newInstance().put(ERROR_MULTIPLE_CODE, "1x")
-                    .put(ERROR_MULTIPLE_TEXT, error.getKey()).build());
+            list.add(MapBuilder.newInstance().put(ERROR_MULTIPLE_CODE, error.getKey())
+                    .put(ERROR_MULTIPLE_TEXT, error.getValue()).build());
         }
         return list;
     }
