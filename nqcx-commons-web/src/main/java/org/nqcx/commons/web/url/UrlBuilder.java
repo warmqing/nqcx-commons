@@ -76,11 +76,27 @@ public class UrlBuilder {
             String name = strings[0];
             String value = null;
             if (strings.length > 1) {
-                value = strings[1];
+                // 需要对数值进行 decode
+                value = decodeValue(strings[1]);
             }
             map.put(name, value);
         }
         return map;
+    }
+
+    /**
+     * @param value
+     * @return
+     */
+    private String decodeValue(String value) {
+        try {
+            if (value != null && value.length() > 0)
+                return URLEncoder.encode(value, this.charset.name());
+        } catch (UnsupportedEncodingException e) {
+            // Nothing to do
+            logger.warn(e.getMessage());
+        }
+        return value;
     }
 
     /**
