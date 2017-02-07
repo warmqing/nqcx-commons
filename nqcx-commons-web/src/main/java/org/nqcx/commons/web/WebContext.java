@@ -24,6 +24,7 @@ public class WebContext {
     };
 
     private String scheme;
+    private boolean secure;
     private String serverName;
     private int port;
     private String contextPath;
@@ -37,6 +38,7 @@ public class WebContext {
     private String method;
     private boolean ajax = false;
     private Locale locale;
+    private String sessionId;
     private String url;
     private String referer;
     private String userAgent;
@@ -47,6 +49,14 @@ public class WebContext {
 
     public void setScheme(String scheme) {
         this.scheme = scheme;
+    }
+
+    public boolean isSecure() {
+        return secure;
+    }
+
+    public void setSecure(boolean secure) {
+        this.secure = secure;
     }
 
     public String getServerName() {
@@ -135,6 +145,14 @@ public class WebContext {
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getUrl() {

@@ -45,6 +45,8 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
 
         // 取 scheme
         webContext.setScheme(request.getScheme());
+        // 取 secure
+        webContext.setSecure(request.isSecure());
         // 取 server name
         webContext.setServerName(request.getServerName());
         // 取 port
@@ -69,6 +71,8 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         webContext.setAjax(this.isAjaxFromRequest(request));
         // 取 locale
         webContext.setLocale(localeResolver == null ? null : localeResolver.resolveLocale(request));
+        // 取 sessionId
+        webContext.setSessionId(request.getRequestedSessionId());
         // 取 url
         StringBuffer url = new StringBuffer(request.getRequestURL());
         if (request.getQueryString() != null)
@@ -80,12 +84,15 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         webContext.setUserAgent(request.getHeader("User-Agent"));
 
 
-        access_logger.info("remoteAddr: {}, method: {}, isAjax: {}, uri: {}, locale: {}, url: {}, referer: {}, User-Agent: {}",
+        access_logger.info("remoteAddr: {}, method: {}, scheme: {}, secure: {}, isAjax: {}, uri: {}, locale: {}, sessionId: {}, url: {}, referer: {}, User-Agent: {}",
                 webContext.getRemoteAddr(),
                 webContext.getMethod(),
+                webContext.getScheme(),
+                webContext.isSecure(),
                 webContext.isAjax(),
                 webContext.getRequestURI(),
                 webContext.getLocale(),
+                webContext.getSessionId(),
                 webContext.getUrl(),
                 webContext.getReferer(),
                 webContext.getUserAgent());
