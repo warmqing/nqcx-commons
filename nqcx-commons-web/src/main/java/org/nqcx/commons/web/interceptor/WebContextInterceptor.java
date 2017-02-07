@@ -83,7 +83,6 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         // 取 userAgent
         webContext.setUserAgent(request.getHeader("User-Agent"));
 
-
         access_logger.info("remoteAddr: {}, method: {}, scheme: {}, secure: {}, isAjax: {}, uri: {}, locale: {}, sessionId: {}, url: {}, referer: {}, User-Agent: {}",
                 webContext.getRemoteAddr(),
                 webContext.getMethod(),
