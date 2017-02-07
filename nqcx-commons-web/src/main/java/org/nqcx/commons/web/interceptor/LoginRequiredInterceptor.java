@@ -112,9 +112,23 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
 
         if (params != null && params.size() > 0)
             loginUrlBuilder.put(params);
-        loginUrlBuilder.put("redirectUrl", currentUrlBuilder.build());
+        loginUrlBuilder.put("redirectUrl", generateRedirectUrl(currentUrlBuilder));
 
         return loginUrlBuilder.build();
+    }
+
+    /**
+     * 对当前的 url 进行处理，生成符合预期的 redirectUrl
+     * <p/>
+     * 该方法用于子类扩展和重构 redirectUrl
+     *
+     * @param currentUrlBuilder
+     * @return
+     */
+    protected String generateRedirectUrl(UrlBuilder.Builder currentUrlBuilder) {
+        if (currentUrlBuilder == null)
+            return null;
+        return currentUrlBuilder.build();
     }
 
     public void setHomeUrl(UrlBuilder homeUrl) {
