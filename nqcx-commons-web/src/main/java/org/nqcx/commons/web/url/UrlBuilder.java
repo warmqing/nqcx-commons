@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
@@ -91,7 +92,7 @@ public class UrlBuilder {
     private String decodeValue(String value) {
         try {
             if (value != null && value.length() > 0)
-                return URLEncoder.encode(value, this.charset.name());
+                return URLDecoder.decode(value, this.charset.name());
         } catch (UnsupportedEncodingException e) {
             // Nothing to do
             logger.warn(e.getMessage());
