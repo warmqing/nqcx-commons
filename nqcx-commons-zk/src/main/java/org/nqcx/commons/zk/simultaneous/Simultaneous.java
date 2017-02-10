@@ -4,10 +4,10 @@
  * it only in accordance with the terms of the license agreement you entered into with nqcx.org.
  */
 
-package cn.chineseall.commons.zk.simultaneous;
+package org.nqcx.commons.zk.simultaneous;
 
 
-import cn.chineseall.commons.zk.ZkNode;
+import org.nqcx.commons.zk.ZkNode;
 
 import java.util.List;
 

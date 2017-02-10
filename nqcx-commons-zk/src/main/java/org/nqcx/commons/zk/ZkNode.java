@@ -4,7 +4,7 @@
  * it only in accordance with the terms of the license agreement you entered into with nqcx.org.
  */
 
-package cn.chineseall.commons.zk;
+package org.nqcx.commons.zk;
 
 import org.nqcx.commons.lang.o.EntityBO;
 
