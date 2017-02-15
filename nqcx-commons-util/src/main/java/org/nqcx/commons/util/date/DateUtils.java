@@ -8,6 +8,10 @@
 
 package org.nqcx.commons.util.date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,6 +19,8 @@ import java.util.Date;
  * @author naqichuan 2014年8月14日 上午11:48:35
  */
 public class DateUtils extends org.apache.commons.lang.time.DateUtils {
+
+	private final static Logger logger = LoggerFactory.getLogger(DateUtils.class);
 
 	/**
 	 * <p>
@@ -25,6 +31,33 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 	 */
 	public static Date date() {
 		return new Date();
+	}
+
+
+	/**
+	 * 字符串转日期
+	 *
+	 * @param date
+	 * @return
+	 */
+	public static Date parseDate(String date) {
+		return parseDate(date, DateFormatUtils.DATE_FORMAT);
+	}
+
+	/**
+	 * 字符串转日期指定格式日期
+	 *
+	 * @param date
+	 * @param pattern
+	 * @return
+	 */
+	public static Date parseDate(String date, String pattern) {
+		try {
+			return parseDate(date, new String[]{pattern});
+		} catch (ParseException e) {
+			logger.error("", e);
+		}
+		return null;
 	}
 
 	/**
