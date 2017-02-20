@@ -14,7 +14,6 @@ import org.nqcx.commons.web.WebContext;
 import org.nqcx.commons.web.WebSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,7 +34,6 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     protected static final String HEADER_FORWARDED_FOR = "X-Forwarded-For";
     protected static final String HEADER_REAL_IP = "X-Real-IP";
 
-    @Autowired(required = false)
     protected LocaleResolver localeResolver;
 
     @Override
@@ -137,5 +135,14 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
                                 Object handler, Exception ex) throws Exception {
+    }
+
+    /**
+     * 用于配置文件中配置注入
+     *
+     * @param localeResolver
+     */
+    public void setLocaleResolver(LocaleResolver localeResolver) {
+        this.localeResolver = localeResolver;
     }
 }

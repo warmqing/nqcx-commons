@@ -12,7 +12,6 @@ import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.web.cookie.CookieUtils;
 import org.nqcx.commons.web.cookie.NqcxCookie;
 import org.nqcx.commons.web.login.LoginContext;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +21,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginContextInterceptor extends WebContextInterceptor {
 
-    @Autowired(required = false)
+    /**
+     * 需要注入
+     */
     protected NqcxCookie loginCookie;
 
     protected long sessionTimeout = 30L;
@@ -103,5 +104,14 @@ public class LoginContextInterceptor extends WebContextInterceptor {
      */
     protected LoginContext getLoginContext(String value) {
         return StringUtils.isBlank(value) ? null : LoginContext.parse(value);
+    }
+
+    /**
+     * 用于配置文件中配置注入
+     *
+     * @param loginCookie
+     */
+    public void setLoginCookie(NqcxCookie loginCookie) {
+        this.loginCookie = loginCookie;
     }
 }

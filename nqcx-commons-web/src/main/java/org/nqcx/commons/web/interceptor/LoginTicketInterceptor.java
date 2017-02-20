@@ -15,7 +15,6 @@ import org.nqcx.commons.web.login.LoginTicket;
 import org.nqcx.commons.web.login.LoginTicketUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +26,6 @@ public class LoginTicketInterceptor extends WebContextInterceptor {
 
     private final static Logger logger = LoggerFactory.getLogger(LoginTicketInterceptor.class);
 
-    @Autowired(required = false)
     protected NqcxCookie ticketCookie;
 
     @Override
@@ -81,5 +79,14 @@ public class LoginTicketInterceptor extends WebContextInterceptor {
             return;
 
         CookieUtils.removeCookie(request, response, ticketCookie.getName(), true);
+    }
+
+    /**
+     * 用于配置文件中配置注入
+     *
+     * @param ticketCookie
+     */
+    public void setTicketCookie(NqcxCookie ticketCookie) {
+        this.ticketCookie = ticketCookie;
     }
 }
