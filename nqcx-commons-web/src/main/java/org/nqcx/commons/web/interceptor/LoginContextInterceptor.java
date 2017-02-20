@@ -75,13 +75,11 @@ public class LoginContextInterceptor extends WebContextInterceptor {
     }
 
     /**
-     * 用于应用中往cookie里添加内容
+     * 用于应用中修改或添加 cookie 属性，非必须
      *
      * @param loginContext
      */
     protected void fillLoginContext(LoginContext loginContext) {
-        // 填充 id
-        // 填充 nick
     }
 
     /**
