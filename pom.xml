@@ -194,6 +194,14 @@
                 <optional>true</optional>
             </dependency>
 
+            <!--  poi  -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>3.9</version>
+                <optional>true</optional>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
