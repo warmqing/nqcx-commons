@@ -21,43 +21,117 @@ import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
+ * 支持泛协议，该特性用于http 和 https 自适应，如：//nqcx.org，forPath() 操作之前需要填充协议
+ * <p/>
+ * 支持 baseUrl 占位符，该特性用于泛域名的应用，如：http://$baseUrl$ or //$baseUrl$ or http://$baseUrl$，forPath() 操作之前需要填充 baseUrl
+ * <p/>
+ * 支持 ajax 匿名函数，如：http://nqcx.org?xx=xx&callback=?
+ *
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
 public class UrlBuilder {
 
-    // 生成 url 时根据 index 对应的值替换占位符
-    private final static ThreadLocal<List<String>> values = new ThreadLocal<List<String>>() {
+    private final static Logger logger = LoggerFactory.getLogger(UrlBuilder.class);
+
+    private final static Pattern URL_PROTOCOL_PATTERN = Pattern.compile("^(file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp){0,1}:{0,1}//{0,1}(.*)");
+    private final static Pattern URL_BASE_PATTERN = Pattern.compile("(\\$\\s*baseUrl\\s*\\$)");
+    private final static Pattern PARAM_PLACEHOLDER_PATTERN = Pattern.compile("\\{\\s*\\d+\\s*\\}");
+
+    // 泛协议，默认 http 协议
+    private final ThreadLocal<String> protocol = new ThreadLocal<String>() {
         @Override
-        protected List<String> initialValue() {
-            return new ArrayList<String>(0);
+        protected String initialValue() {
+            return "http";
         }
     };
 
-    private final static Logger logger = LoggerFactory.getLogger(UrlBuilder.class);
+    // 支持泛协议，支持 baseUrl 占位符，//$baseUrl$
+    private final ThreadLocal<String> baseUrl = new ThreadLocal<String>() {
+        @Override
+        protected String initialValue() {
+            return new String();
+        }
+    };
 
-    private final URL baseUrl; // url 可以有用占位符，如: http://{0}.{1}.nqcx.org
-    private final boolean ignoreEmpty;
+    // 生成 url 时根据 index 对应的值替换占位符
+    private final ThreadLocal<List<String>> values = new ThreadLocal<List<String>>() {
+        @Override
+        protected List<String> initialValue() {
+            return new ArrayList<String>(50);
+        }
+    };
+
+    private final String originalUrl;
     private final Charset charset;
+    private final boolean ignoreEmpty;
     private final Map<String, Object> queryMap;
 
-    public UrlBuilder(final String baseUrl) {
-        this(baseUrl, Charset.defaultCharset().name(), true);
+
+    /**
+     * 默认构造
+     */
+    public UrlBuilder() {
+        this("//$baseUrl$");
     }
 
-    public UrlBuilder(final String baseUrl, final String charsetName) {
-        this(baseUrl, charsetName, true);
+    /**
+     * @param _originalUrl
+     */
+    public UrlBuilder(final String _originalUrl) {
+        this(_originalUrl, Charset.defaultCharset().name());
+
     }
 
-    public UrlBuilder(final String baseUrl, final String charsetName, final boolean ignoreEmpty) {
+    /**
+     * @param _originalUrl
+     * @param _charsetName
+     */
+    public UrlBuilder(final String _originalUrl, final String _charsetName) {
+        this(_originalUrl, _charsetName, true);
+    }
+
+    /**
+     * @param _originalUrl
+     * @param _charsetName
+     * @param _ignoreEmpty
+     */
+    public UrlBuilder(final String _originalUrl, final String _charsetName, final boolean _ignoreEmpty) {
+        this.clean();
+
+        // 检查 originalUrl 是否符合要求
+        if (_originalUrl == null || _originalUrl.length() == 0)
+            throw new RuntimeException("originalUrl 不允许空!");
+
+        Matcher matcher = URL_PROTOCOL_PATTERN.matcher(_originalUrl);
+        if (!matcher.matches())
+            throw new RuntimeException("originalUrl 格式不匹配!");
+
+        if (matcher.groupCount() >= 1 && matcher.group(1) != null)
+            setProtocol(matcher.group(1));
+
+        if (matcher.groupCount() >= 2 && matcher.group(2) != null)
+            this.originalUrl = matcher.group(2);
+        else
+            this.originalUrl = _originalUrl;
+
+        // charsetName
+        if (_charsetName == null || _charsetName.length() == 0)
+            this.charset = Charset.defaultCharset();
+        else
+            this.charset = Charset.forName(_charsetName);
+
+        // ignoreEmpty
+        this.ignoreEmpty = _ignoreEmpty;
+
+        // queryMap
         try {
-            this.baseUrl = new URL(baseUrl);
-            this.ignoreEmpty = ignoreEmpty;
-            this.charset = Charset.forName(charsetName);
-            String queryString = this.baseUrl.getQuery();
+            String queryString = new URL(protocol.get() + "://" + this.originalUrl).getQuery();
             if (StringUtils.isNotEmpty(queryString))
-                queryMap = new LinkedHashMap<String, Object>(parseQuery(queryString));
+                queryMap = new LinkedHashMap<String, Object>(parseQuery(queryString, charset));
             else
                 queryMap = Collections.emptyMap();
         } catch (MalformedURLException e) {
@@ -66,10 +140,86 @@ public class UrlBuilder {
     }
 
     /**
+     * 清除原来的变量
+     */
+    private void clean() {
+        protocol.remove();
+        baseUrl.remove();
+        values.remove();
+    }
+
+    // ========================================================================
+
+    /**
+     * 为 protocol 赋值
+     *
+     * @param _protocol
+     */
+    public void setProtocol(final String _protocol) {
+        if (_protocol == null || _protocol.length() == 0)
+            return;
+        this.protocol.set(_protocol);
+    }
+
+    /**
+     * 为 baseUrl 赋值
+     *
+     * @param _baseUr
+     */
+    public void setBaseUrl(final String _baseUr) {
+        if (_baseUr == null || _baseUr.length() == 0)
+            return;
+        this.baseUrl.set(_baseUr);
+    }
+
+
+    /**
+     * 最多允许 50 个占位符
+     *
+     * @param value
+     */
+    public void setValue(int index, String value) {
+        if (index > 50 || index < 0)
+            throw new RuntimeException("占位符个数不允许超过50");
+
+        if (values.get().size() > index)
+            values.get().set(index, value);
+        else {
+            for (int i = values.get().size(); i <= index; i++) {
+                values.get().add("{" + i + "}");
+                if (i == index)
+                    values.get().set(i, value);
+            }
+        }
+    }
+
+    /**
+     * 最多允许 50 个占位符
+     *
+     * @param map
+     */
+    public void setValues(Map<String, String> map) {
+        if (map == null || map.size() == 0)
+            return;
+        for (Entry<String, String> entry : map.entrySet()) {
+            if (entry == null)
+                continue;
+            try {
+                setValue(Integer.parseInt(entry.getKey()), entry.getValue());
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    // ========================================================================
+
+
+    /**
      * @param query
      * @return
      */
-    private Map<String, Object> parseQuery(String query) {
+    public static Map<String, Object> parseQuery(String query, Charset charset) {
         String[] params = query.split("&");
         Map<String, Object> map = new LinkedHashMap<String, Object>(params.length);
         for (String param : params) {
@@ -78,7 +228,7 @@ public class UrlBuilder {
             String value = null;
             if (strings.length > 1) {
                 // 需要对数值进行 decode
-                value = decodeValue(strings[1]);
+                value = decodeValue(strings[1], charset);
             }
             map.put(name, value);
         }
@@ -86,18 +236,73 @@ public class UrlBuilder {
     }
 
     /**
+     * 处理 originalUrl 中的占位符
+     *
+     * @param originalUrl
+     * @return
+     */
+    public static String replaceBaseUrl(String originalUrl, String baseUrl) {
+        if (originalUrl == null || originalUrl.length() == 0
+                || baseUrl == null || baseUrl.length() == 0)
+            return originalUrl;
+
+        return URL_BASE_PATTERN.matcher(originalUrl).replaceAll(baseUrl);
+    }
+
+    /**
      * @param value
      * @return
      */
-    private String decodeValue(String value) {
+    public static String decodeValue(String value) {
+        return decodeValue(value, Charset.defaultCharset());
+    }
+
+    /**
+     * @param value
+     * @return
+     */
+    public static String decodeValue(String value, Charset charset) {
         try {
             if (value != null && value.length() > 0)
-                return URLDecoder.decode(value, this.charset.name());
+                return URLDecoder.decode(value, charset == null ? Charset.defaultCharset().name() : charset.name());
         } catch (UnsupportedEncodingException e) {
             // Nothing to do
             logger.warn(e.getMessage());
         }
         return value;
+    }
+
+    /**
+     * @param value
+     * @return
+     */
+    public static String encodeValue(String value) {
+        return encodeValue(value, Charset.defaultCharset());
+    }
+
+    /**
+     * @param value
+     * @return
+     */
+    public static String encodeValue(String value, Charset charset) {
+        try {
+            if (value != null && value.length() > 0)
+                return URLEncoder.encode(value, charset == null ? Charset.defaultCharset().name() : charset.name());
+        } catch (UnsupportedEncodingException e) {
+            // Nothing to do
+            logger.warn(e.getMessage());
+        }
+        return value;
+    }
+
+    /**
+     * 检查值是否含有占位符
+     *
+     * @param value
+     * @return
+     */
+    public static boolean hasPlaceholder(String value) {
+        return (value == null || value.length() == 0) ? false : PARAM_PLACEHOLDER_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -112,60 +317,36 @@ public class UrlBuilder {
      * @return
      */
     public Builder forPath(String path) {
-        return new Builder(baseUrl, path, charset.name(), ignoreEmpty, queryMap);
+        try {
+            return new Builder(new URL(protocol.get() + "://" + replaceBaseUrl(this.originalUrl, this.baseUrl.get())),
+                    path, charset, ignoreEmpty, queryMap, values.get());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    /**
-     * @param _values
-     */
-    public static void setValues(List<String> _values) {
-        if (values == null || _values.size() == 0)
-            values.get().clear();
-        else
-            values.set(_values);
-    }
+    // ========================================================================
 
     /**
-     * @param _values
-     */
-    public static void addValues(List<String> _values) {
-        if (values != null && _values.size() > 0)
-            values.get().addAll(_values);
-    }
-
-    /**
-     * @param value
-     */
-    public static void setValue(String value) {
-        values.get().clear();
-        if (value != null)
-            values.get().add(value);
-    }
-
-    /**
-     * @param value
-     */
-    public static void addValue(String value) {
-        if (value != null)
-            values.get().add(value);
-    }
-
-    /**
+     * Builder
      */
     public static class Builder {
 
         final URL baseUrl;
         String path;
-        String charsetName;
+        Charset charset;
         boolean ignoreEmpty;
-        final Map<String, Object> urlParams;
+        final Map<String, Object> queryMap;
+        final Map<String, Object> urlParams = new LinkedHashMap<String, Object>();
+        final List<String> values;
 
-        Builder(URL baseUrl, String path, String charsetName, boolean ignoreEmpty, Map<String, Object> queryMap) {
-            this.baseUrl = baseUrl;
-            this.path = path;
-            this.charsetName = charsetName;
-            this.ignoreEmpty = ignoreEmpty;
-            this.urlParams = new LinkedHashMap<String, Object>(queryMap);
+        Builder(URL _baseUrl, String _path, Charset _charset, boolean _ignoreEmpty, Map<String, Object> _queryMap, List<String> _values) {
+            this.baseUrl = _baseUrl;
+            this.path = _path;
+            this.charset = _charset;
+            this.ignoreEmpty = _ignoreEmpty;
+            this.queryMap = _queryMap;
+            this.values = _values;
         }
 
         public Builder setPath(String path) {
@@ -173,8 +354,9 @@ public class UrlBuilder {
             return this;
         }
 
-        public Builder setCharsetName(String charsetName) {
-            this.charsetName = charsetName;
+        public Builder setCharsetName(String _charsetName) {
+            if (_charsetName != null && _charsetName.length() > 0)
+                this.charset = Charset.forName(_charsetName);
             return this;
         }
 
@@ -212,8 +394,33 @@ public class UrlBuilder {
                 throw new RuntimeException(e);
             }
 
+
             StringBuilder query = new StringBuilder();
-            for (Entry<String, Object> entry : urlParams.entrySet()) {
+            // 添加原始参数表
+            appendQueryString(query, this.queryMap, false);
+            // 添加参数表
+            appendQueryString(query, this.urlParams, true);
+            if (query.length() > 0)
+                query.replace(0, 1, "?");
+            builder.append(query);
+
+            // 进行占位符替换
+            if (values != null && values.size() > 0)
+                return MessageFormat.format(builder.toString(), values.toArray());
+
+            return builder.toString();
+        }
+
+        /**
+         * @param query
+         * @param map
+         * @param isEncode 是否进行编码
+         */
+        private void appendQueryString(StringBuilder query, Map<String, Object> map, boolean isEncode) {
+            if (map == null || query == null)
+                return;
+
+            for (Entry<String, Object> entry : map.entrySet()) {
                 final String key = entry.getKey();
                 Object value = entry.getValue();
                 if (value == null)
@@ -221,60 +428,40 @@ public class UrlBuilder {
 
                 if (value instanceof Object[]) {
                     for (final Object v : (Object[]) value) {
-                        appendQueryString(key, v, query);
+                        appendQueryString(query, key, v, isEncode);
                     }
                 } else if (value instanceof Collection) {
                     for (final Object v : (Collection<?>) value) {
-                        appendQueryString(key, v, query);
+                        appendQueryString(query, key, v, isEncode);
                     }
                 } else
-                    appendQueryString(key, value, query);
+                    appendQueryString(query, key, value, isEncode);
             }
-            if (query.length() > 0)
-                query.replace(0, 1, "?");
-            builder.append(query);
-
-            if (values.get() != null && values.get().size() > 0)
-                return MessageFormat.format(builder.toString(), values.get().toArray());
-            return builder.toString();
         }
 
         /**
+         * @param query
          * @param key
-         * @param v
-         * @param sb
-         */
-        void appendQueryString(String key, Object v, StringBuilder sb) {
-            if (v == null)
-                return;
-
-            String value = String.valueOf(v);
-            if (ignoreEmpty && StringUtils.isBlank(value))
-                return;
-
-            sb.append("&").append(key).append("=").append(encodeUrl(value));
-        }
-
-        /**
          * @param value
-         * @return
          */
-        String encodeUrl(String value) {
-            try {
-                return URLEncoder.encode(value, StringUtils.isNotBlank(charsetName) ? charsetName : Charset.defaultCharset().name());
-            } catch (UnsupportedEncodingException e) {
-                // Nothing to do
-                logger.warn(e.getMessage());
-            }
-            return value;
+        private void appendQueryString(StringBuilder query, String key, Object value, boolean isEncode) {
+            if (value == null)
+                return;
+
+            String v = String.valueOf(value);
+            if (ignoreEmpty && StringUtils.isBlank(v))
+                return;
+
+            query.append("&").append(key).append("=").append(isEncode && !hasPlaceholder(v) ? encodeValue(v, charset) : v);
         }
+
 
         /**
          * @param contextPath
          * @param path
          * @return
          */
-        String prefixPath(String contextPath, String path) {
+        private String prefixPath(String contextPath, String path) {
             if (path == null && contextPath == null)
                 return "/";
             else if (path == null)
@@ -291,7 +478,7 @@ public class UrlBuilder {
          * @param container
          * @param o
          */
-        void append(List<Object> container, Object o) {
+        private void append(List<Object> container, Object o) {
             if (o instanceof Object[]) {
                 for (Object e : (Object[]) o) {
                     container.add(e);
@@ -330,7 +517,7 @@ public class UrlBuilder {
          * @param values
          * @return
          */
-        public Builder add(Map<String, Object> values) {
+        public Builder add(final Map<String, Object> values) {
             for (Entry<String, Object> entry : values.entrySet()) {
                 add(entry.getKey(), entry.getValue());
             }
@@ -351,19 +538,25 @@ public class UrlBuilder {
          * @param values
          * @return
          */
-        public Builder put(Map<String, ?> values) {
+        public Builder put(final Map<String, ?> values) {
             urlParams.putAll(values);
             return this;
         }
     }
 
+    /**
+     * @param args
+     */
     public static void main(String[] args) {
-        UrlBuilder ub = new UrlBuilder("http://www.naqichuan.com?cc=2&abcd=3");
-        System.out.println(ub.forPath("/n").build());
-        ub = new UrlBuilder("http://passport.{0}.{1}.naqichuan.com/{2}?cc=2&abcd=3&ccaa={1}");
-        ub.addValue("c");
-        ub.addValue("123");
-        ub.addValue("bbbb");
-        System.out.println(ub.forPath("/n{2}").build());
+        UrlBuilder ub = new UrlBuilder("//yun.$baseUrl$/{0}?param1={1}&param2={2}&callback=?");
+        ub.setProtocol("https");
+        ub.setBaseUrl("nqcx.org");
+        ub.setValue(0, "i/x");
+        ub.setValue(1, "0");
+        ub.setValue(2, UrlBuilder.encodeValue("黄保光"));
+        ub.setValue(3, "nqcx");
+        ub.setValue(4, "wq");
+
+        System.out.println(ub.forPath("/{3}").add("account", "{4}").build());
     }
 }
