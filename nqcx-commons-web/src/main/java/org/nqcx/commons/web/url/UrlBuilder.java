@@ -162,11 +162,13 @@ public class UrlBuilder {
      *
      * @param _protocol
      */
-    public void setProtocol(final String _protocol) {
+    public UrlBuilder setProtocol(final String _protocol) {
         if (_protocol == null || _protocol.length() == 0)
-            return;
+            return this;
         this.protocol.set(_protocol);
         this.protocolChanged.set(true);
+
+        return this;
     }
 
     /**
@@ -174,13 +176,13 @@ public class UrlBuilder {
      *
      * @param _baseUr
      */
-    public void setBaseUrl(final String _baseUr) {
+    public UrlBuilder setBaseUrl(final String _baseUr) {
         if (_baseUr == null || _baseUr.length() == 0)
-            return;
+            return this;
 
         // 检查 baseUr 是否符合要求
         if (_baseUr == null || _baseUr.length() == 0)
-            return;
+            return this;
 
         // protocol 未设置，并且 baseUr 包含 protocol，更新 protocol
         Matcher matcher = URL_PROTOCOL_PATTERN.matcher(_baseUr);
@@ -191,6 +193,8 @@ public class UrlBuilder {
             this.baseUrl.set(matcher.group(2));
         else
             this.baseUrl.set(_baseUr);
+
+        return this;
     }
 
 
@@ -199,7 +203,7 @@ public class UrlBuilder {
      *
      * @param value
      */
-    public void setValue(int index, String value) {
+    public UrlBuilder setValue(int index, String value) {
         if (index > 50 || index < 0)
             throw new RuntimeException("占位符个数不允许超过50");
 
@@ -212,6 +216,8 @@ public class UrlBuilder {
                     values.get().set(i, value);
             }
         }
+
+        return this;
     }
 
     /**
@@ -219,9 +225,10 @@ public class UrlBuilder {
      *
      * @param map
      */
-    public void setValues(Map<String, String> map) {
+    public UrlBuilder setValues(Map<String, String> map) {
         if (map == null || map.size() == 0)
-            return;
+            return this;
+
         for (Entry<String, String> entry : map.entrySet()) {
             if (entry == null)
                 continue;
@@ -231,6 +238,8 @@ public class UrlBuilder {
                 throw new RuntimeException(e);
             }
         }
+
+        return this;
     }
 
     // ========================================================================
