@@ -173,10 +173,16 @@ public abstract class WebSupport {
 
     /**
      * @return
-     * @author huangbg 2014年8月1日 下午5:49:40
      */
     protected WebContext getWebContext() {
         return WebContext.getWebContext();
+    }
+
+    /**
+     * @return
+     */
+    protected String getScheme() {
+        return getWebContext() == null ? null : getWebContext().getScheme();
     }
 
     /**
