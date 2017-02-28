@@ -48,6 +48,13 @@ public class UrlBuilder {
             return "http";
         }
     };
+    // 如果调用 setProtocol() 进行个赋值，设置该属性为 true，再调用 setBaseUrl() 时不对 protocol 进行更改
+    private final ThreadLocal<Boolean> protocolChanged = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return new Boolean(false);
+        }
+    };
 
     // 支持泛协议，支持 baseUrl 占位符，//$baseUrl$
     private final ThreadLocal<String> baseUrl = new ThreadLocal<String>() {
@@ -159,6 +166,7 @@ public class UrlBuilder {
         if (_protocol == null || _protocol.length() == 0)
             return;
         this.protocol.set(_protocol);
+        this.protocolChanged.set(true);
     }
 
     /**
@@ -169,7 +177,20 @@ public class UrlBuilder {
     public void setBaseUrl(final String _baseUr) {
         if (_baseUr == null || _baseUr.length() == 0)
             return;
-        this.baseUrl.set(_baseUr);
+
+        // 检查 baseUr 是否符合要求
+        if (_baseUr == null || _baseUr.length() == 0)
+            return;
+
+        // protocol 未设置，并且 baseUr 包含 protocol，更新 protocol
+        Matcher matcher = URL_PROTOCOL_PATTERN.matcher(_baseUr);
+        if (matcher.matches() && !protocolChanged.get().booleanValue() && matcher.groupCount() >= 1 && matcher.group(1) != null)
+            protocol.set(matcher.group(1));
+
+        if (matcher.matches() && matcher.groupCount() >= 2 && matcher.group(2) != null)
+            this.baseUrl.set(matcher.group(2));
+        else
+            this.baseUrl.set(_baseUr);
     }
 
 
