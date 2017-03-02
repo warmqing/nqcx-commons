@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,7 +91,7 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
      * @param request
      * @return
      */
-    protected String getLoginUrl(HttpServletRequest request) throws MalformedURLException {
+    protected String getLoginUrl(HttpServletRequest request) {
         return getLoginUrl(request, null);
     }
 
