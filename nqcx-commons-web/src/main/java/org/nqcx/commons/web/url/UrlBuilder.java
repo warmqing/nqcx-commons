@@ -244,6 +244,17 @@ public class UrlBuilder {
 
     // ========================================================================
 
+    /**
+     * 检查 url 是否包含 protocol
+     *
+     * @param originalUrl
+     * @return
+     */
+    public static boolean containProtocol(String originalUrl) {
+        Matcher matcher = URL_PROTOCOL_PATTERN.matcher(originalUrl);
+
+        return matcher.matches() && matcher.groupCount() >= 1 && matcher.group(1) != null;
+    }
 
     /**
      * @param query
@@ -334,6 +345,8 @@ public class UrlBuilder {
     public static boolean hasPlaceholder(String value) {
         return (value == null || value.length() == 0) ? false : PARAM_PLACEHOLDER_PATTERN.matcher(value).matches();
     }
+
+    // ========================================================================
 
     /**
      * @return
@@ -588,5 +601,7 @@ public class UrlBuilder {
         ub.setValue(4, "wq");
 
         System.out.println(ub.forPath("/{3}").add("account", "{4}").build());
+
+        System.out.println(containProtocol("https://a"));
     }
 }
