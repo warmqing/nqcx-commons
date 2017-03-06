@@ -41,18 +41,11 @@ public class UrlBuilder {
     private final static Pattern URL_BASE_PATTERN = Pattern.compile("(\\$\\s*baseUrl\\s*\\$)");
     private final static Pattern PARAM_PLACEHOLDER_PATTERN = Pattern.compile("\\{\\s*\\d+\\s*\\}");
 
-    // 泛协议，默认 http 协议
+    // 泛协议，默认 http 协议，如果调用 setProtocol() 进行个赋值，设置该属性不空，再调用 setBaseUrl() 时不对 protocol 进行更改
     private final ThreadLocal<String> protocol = new ThreadLocal<String>() {
         @Override
         protected String initialValue() {
             return "http";
-        }
-    };
-    // 如果调用 setProtocol() 进行个赋值，设置该属性为 true，再调用 setBaseUrl() 时不对 protocol 进行更改
-    private final ThreadLocal<Boolean> protocolChanged = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return new Boolean(false);
         }
     };
 
@@ -72,7 +65,10 @@ public class UrlBuilder {
         }
     };
 
+    // new UrlBuilder 时指定的 url，不包含 protocol
     private final String originalUrl;
+    // new UrlBuilder 时指定 url 的 protocol
+    private final String originalProtocol;
     private final Charset charset;
     private final boolean ignoreEmpty;
     private final Map<String, Object> queryMap;
@@ -118,7 +114,9 @@ public class UrlBuilder {
             throw new RuntimeException("originalUrl 格式不匹配!");
 
         if (matcher.groupCount() >= 1 && matcher.group(1) != null)
-            setProtocol(matcher.group(1));
+            originalProtocol = matcher.group(1);
+        else
+            originalProtocol = "http";
 
         if (matcher.groupCount() >= 2 && matcher.group(2) != null)
             this.originalUrl = matcher.group(2);
@@ -166,7 +164,6 @@ public class UrlBuilder {
         if (_protocol == null || _protocol.length() == 0)
             return this;
         this.protocol.set(_protocol);
-        this.protocolChanged.set(true);
 
         return this;
     }
@@ -186,7 +183,9 @@ public class UrlBuilder {
 
         // protocol 未设置，并且 baseUr 包含 protocol，更新 protocol
         Matcher matcher = URL_PROTOCOL_PATTERN.matcher(_baseUr);
-        if (matcher.matches() && !protocolChanged.get().booleanValue() && matcher.groupCount() >= 1 && matcher.group(1) != null)
+        if (matcher.matches() && (protocol.get() == null || protocol.get().length() == 0)
+                && matcher.groupCount() > 0
+                && matcher.group(1) != null && matcher.group(1).length() > 0)
             protocol.set(matcher.group(1));
 
         if (matcher.matches() && matcher.groupCount() >= 2 && matcher.group(2) != null)
