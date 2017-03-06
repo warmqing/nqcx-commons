@@ -45,7 +45,7 @@ public class UrlBuilder {
     private final ThreadLocal<String> protocol = new ThreadLocal<String>() {
         @Override
         protected String initialValue() {
-            return "http";
+            return null;
         }
     };
 
@@ -86,7 +86,6 @@ public class UrlBuilder {
      */
     public UrlBuilder(final String _originalUrl) {
         this(_originalUrl, Charset.defaultCharset().name());
-
     }
 
     /**
