@@ -113,9 +113,9 @@ public class UrlBuilder {
             throw new RuntimeException("originalUrl 格式不匹配!");
 
         if (matcher.groupCount() >= 1 && matcher.group(1) != null)
-            originalProtocol = matcher.group(1);
+            this.originalProtocol = matcher.group(1);
         else
-            originalProtocol = "http";
+            this.originalProtocol = "http";
 
         if (matcher.groupCount() >= 2 && matcher.group(2) != null)
             this.originalUrl = matcher.group(2);
@@ -133,7 +133,7 @@ public class UrlBuilder {
 
         // queryMap
         try {
-            String queryString = new URL(protocol.get() + "://" + this.originalUrl).getQuery();
+            String queryString = new URL(this.originalProtocol + "://" + this.originalUrl).getQuery();
             if (StringUtils.isNotEmpty(queryString))
                 queryMap = new LinkedHashMap<String, Object>(parseQuery(queryString, charset));
             else
@@ -359,7 +359,7 @@ public class UrlBuilder {
      */
     public Builder forPath(String path) {
         try {
-            return new Builder(new URL(((protocol.get() != null && protocol.get().length() > 0) ? protocol.get() : originalProtocol)
+            return new Builder(new URL(((protocol.get() != null && protocol.get().length() > 0) ? protocol.get() : this.originalProtocol)
                     + "://" + replaceBaseUrl(this.originalUrl, this.baseUrl.get())),
                     path, charset, ignoreEmpty, queryMap, values.get());
         } catch (MalformedURLException e) {
