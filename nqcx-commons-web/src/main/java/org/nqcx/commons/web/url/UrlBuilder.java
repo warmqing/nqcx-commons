@@ -360,7 +360,8 @@ public class UrlBuilder {
      */
     public Builder forPath(String path) {
         try {
-            return new Builder(new URL(protocol.get() + "://" + replaceBaseUrl(this.originalUrl, this.baseUrl.get())),
+            return new Builder(new URL(((protocol.get() != null && protocol.get().length() > 0) ? protocol.get() : originalProtocol)
+                    + "://" + replaceBaseUrl(this.originalUrl, this.baseUrl.get())),
                     path, charset, ignoreEmpty, queryMap, values.get());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
