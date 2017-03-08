@@ -280,8 +280,9 @@ public class UrlBuilder {
             String name = strings[0];
             String value = null;
             if (strings.length > 1) {
-                // 需要对数值进行 decode
-                value = decodeValue(strings[1], charset);
+                // 原始 url 中的参数值不进行 decode
+                value = strings[1];
+                // value = decodeValue(strings[1], charset);
             }
             map.put(name, value);
         }
