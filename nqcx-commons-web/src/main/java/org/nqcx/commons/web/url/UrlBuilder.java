@@ -53,7 +53,7 @@ public class UrlBuilder {
     private final ThreadLocal<String> baseUrl = new ThreadLocal<String>() {
         @Override
         protected String initialValue() {
-            return new String();
+            return null;
         }
     };
 
@@ -75,31 +75,37 @@ public class UrlBuilder {
 
 
     /**
-     * 默认构造
+     * 默认构造函数
      */
     public UrlBuilder() {
         this("//$baseUrl$");
     }
 
     /**
-     * @param _originalUrl
+     * 构造函数
+     *
+     * @param _originalUrl originalUrl
      */
     public UrlBuilder(final String _originalUrl) {
         this(_originalUrl, Charset.defaultCharset().name());
     }
 
     /**
-     * @param _originalUrl
-     * @param _charsetName
+     * 构造函数
+     *
+     * @param _originalUrl originalUrl
+     * @param _charsetName charsetName
      */
     public UrlBuilder(final String _originalUrl, final String _charsetName) {
         this(_originalUrl, _charsetName, true);
     }
 
     /**
-     * @param _originalUrl
-     * @param _charsetName
-     * @param _ignoreEmpty
+     * 构造函数
+     *
+     * @param _originalUrl originalUrl
+     * @param _charsetName charsetName
+     * @param _ignoreEmpty ignoreEmpty
      */
     public UrlBuilder(final String _originalUrl, final String _charsetName, final boolean _ignoreEmpty) {
         this.clean();
@@ -157,7 +163,8 @@ public class UrlBuilder {
     /**
      * 为 protocol 赋值
      *
-     * @param _protocol
+     * @param _protocol protocol
+     * @return UrlBuilder
      */
     public UrlBuilder setProtocol(final String _protocol) {
         if (_protocol == null || _protocol.length() == 0)
@@ -170,12 +177,10 @@ public class UrlBuilder {
     /**
      * 为 baseUrl 赋值
      *
-     * @param _baseUr
+     * @param _baseUr baseUr
+     * @return UrlBuilder
      */
     public UrlBuilder setBaseUrl(final String _baseUr) {
-        if (_baseUr == null || _baseUr.length() == 0)
-            return this;
-
         // 检查 baseUr 是否符合要求
         if (_baseUr == null || _baseUr.length() == 0)
             return this;
@@ -199,7 +204,8 @@ public class UrlBuilder {
     /**
      * 最多允许 50 个占位符
      *
-     * @param value
+     * @param value value
+     * @return UrlBuilder
      */
     public UrlBuilder setValue(int index, String value) {
         if (index > 50 || index < 0)
@@ -221,7 +227,8 @@ public class UrlBuilder {
     /**
      * 最多允许 50 个占位符
      *
-     * @param map
+     * @param map map
+     * @return UrlBuilder
      */
     public UrlBuilder setValues(Map<String, String> map) {
         if (map == null || map.size() == 0)
@@ -245,8 +252,8 @@ public class UrlBuilder {
     /**
      * 检查 url 是否包含 protocol
      *
-     * @param originalUrl
-     * @return
+     * @param originalUrl originalUrl
+     * @return boolean
      */
     public static boolean containProtocol(String originalUrl) {
         Matcher matcher = URL_PROTOCOL_PATTERN.matcher(originalUrl);
@@ -255,8 +262,8 @@ public class UrlBuilder {
     }
 
     /**
-     * @param query
-     * @return
+     * @param query query
+     * @return map
      */
     public static Map<String, Object> parseQuery(String query, Charset charset) {
         String[] params = query.split("&");
@@ -277,8 +284,8 @@ public class UrlBuilder {
     /**
      * 处理 originalUrl 中的占位符
      *
-     * @param originalUrl
-     * @return
+     * @param originalUrl originalUrl
+     * @return url
      */
     public static String replaceBaseUrl(String originalUrl, String baseUrl) {
         if (originalUrl == null || originalUrl.length() == 0
@@ -289,16 +296,21 @@ public class UrlBuilder {
     }
 
     /**
-     * @param value
-     * @return
+     * 字符串进行 url 解码
+     *
+     * @param value value
+     * @return string
      */
     public static String decodeValue(String value) {
         return decodeValue(value, Charset.defaultCharset());
     }
 
     /**
-     * @param value
-     * @return
+     * 字符串进行 url 解码
+     *
+     * @param value   value
+     * @param charset charset
+     * @return string
      */
     public static String decodeValue(String value, Charset charset) {
         try {
@@ -312,16 +324,21 @@ public class UrlBuilder {
     }
 
     /**
-     * @param value
-     * @return
+     * 字符串进行 url 编码
+     *
+     * @param value value
+     * @return string
      */
     public static String encodeValue(String value) {
         return encodeValue(value, Charset.defaultCharset());
     }
 
     /**
-     * @param value
-     * @return
+     * 字符串进行 url 编码
+     *
+     * @param value   value
+     * @param charset charset
+     * @return string
      */
     public static String encodeValue(String value, Charset charset) {
         try {
@@ -337,25 +354,25 @@ public class UrlBuilder {
     /**
      * 检查值是否含有占位符
      *
-     * @param value
-     * @return
+     * @param value value
+     * @return boolean
      */
     public static boolean hasPlaceholder(String value) {
-        return (value == null || value.length() == 0) ? false : PARAM_PLACEHOLDER_PATTERN.matcher(value).matches();
+        return value != null && value.length() > 0 && PARAM_PLACEHOLDER_PATTERN.matcher(value).matches();
     }
 
     // ========================================================================
 
     /**
-     * @return
+     * @return builder
      */
     public Builder forPath() {
         return forPath(null);
     }
 
     /**
-     * @param path
-     * @return
+     * @param path path
+     * @return builder
      */
     public Builder forPath(String path) {
         try {
@@ -412,14 +429,16 @@ public class UrlBuilder {
         /**
          * 取得参数表
          *
-         * @return
+         * @return map
          */
         public Map<String, Object> getParamMap() {
             return new HashMap<String, Object>(this.urlParams);
         }
 
         /**
-         * @return
+         * 执行构建 url
+         *
+         * @return String
          */
         public String build() {
             String path = prefixPath(baseUrl.getPath(), this.path);
@@ -456,8 +475,8 @@ public class UrlBuilder {
         }
 
         /**
-         * @param query
-         * @param map
+         * @param query    query
+         * @param map      map
          * @param isEncode 是否进行编码
          */
         private void appendQueryString(StringBuilder query, Map<String, Object> map, boolean isEncode) {
@@ -484,9 +503,9 @@ public class UrlBuilder {
         }
 
         /**
-         * @param query
-         * @param key
-         * @param value
+         * @param query query
+         * @param key   key
+         * @param value value
          */
         private void appendQueryString(StringBuilder query, String key, Object value, boolean isEncode) {
             if (value == null)
@@ -501,9 +520,9 @@ public class UrlBuilder {
 
 
         /**
-         * @param contextPath
-         * @param path
-         * @return
+         * @param contextPath contextPath
+         * @param path        path
+         * @return string
          */
         private String prefixPath(String contextPath, String path) {
             if (path == null && contextPath == null)
@@ -519,8 +538,8 @@ public class UrlBuilder {
         }
 
         /**
-         * @param container
-         * @param o
+         * @param container container
+         * @param o         o
          */
         private void append(List<Object> container, Object o) {
             if (o instanceof Object[]) {
@@ -538,9 +557,9 @@ public class UrlBuilder {
          * <p/>
          * 不覆盖原有参数值，允许多个同名参数
          *
-         * @param key
-         * @param value
-         * @return
+         * @param key   key
+         * @param value value
+         * @return Builder
          */
         public Builder add(final String key, final Object value) {
             if (StringUtils.isNotBlank(key)) {
@@ -568,8 +587,8 @@ public class UrlBuilder {
          * <p/>
          * 不覆盖原有参数值，允许多个同名参数
          *
-         * @param values
-         * @return
+         * @param values values
+         * @return Builder
          */
         public Builder add(final Map<String, ?> values) {
             if (values != null && values.size() > 0) {
@@ -585,9 +604,9 @@ public class UrlBuilder {
          * <p/>
          * 覆盖原有参数值
          *
-         * @param key
-         * @param value
-         * @return
+         * @param key   key
+         * @param value value
+         * @return Builder
          */
         public Builder put(final String key, final Object value) {
             if (StringUtils.isNotBlank(key)) {
@@ -605,8 +624,8 @@ public class UrlBuilder {
          * <p/>
          * 覆盖原有参数值
          *
-         * @param values
-         * @return
+         * @param values values
+         * @return Builder
          */
         public Builder put(final Map<String, ?> values) {
             if (values != null && values.size() > 0) {
@@ -619,7 +638,9 @@ public class UrlBuilder {
     }
 
     /**
-     * @param args
+     * main
+     *
+     * @param args args
      */
     public static void main(String[] args) {
         UrlBuilder ub = new UrlBuilder("//yun.$baseUrl$/{0}?param1={1}&param2={2}&callback=?");
