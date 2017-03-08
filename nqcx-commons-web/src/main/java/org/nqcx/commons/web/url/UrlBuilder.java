@@ -37,7 +37,8 @@ public class UrlBuilder {
 
     private final static Logger logger = LoggerFactory.getLogger(UrlBuilder.class);
 
-    private final static Pattern URL_PROTOCOL_PATTERN = Pattern.compile("^(file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp){0,1}:{0,1}//{0,1}(.*)");
+    private final static Pattern URL_PATTERN = Pattern.compile("^(file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp){0,1}:{0,1}//{0,1}(.*)");
+    private final static Pattern URL_PROTOCOL_PATTERN = Pattern.compile("file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp");
     private final static Pattern URL_BASE_PATTERN = Pattern.compile("(\\$\\s*baseUrl\\s*\\$)");
     private final static Pattern PARAM_PLACEHOLDER_PATTERN = Pattern.compile("\\{\\s*\\d+\\s*\\}");
 
@@ -116,7 +117,7 @@ public class UrlBuilder {
         if (_originalUrl == null || _originalUrl.length() == 0)
             throw new RuntimeException("originalUrl 不允许空!");
 
-        Matcher matcher = URL_PROTOCOL_PATTERN.matcher(_originalUrl);
+        Matcher matcher = URL_PATTERN.matcher(_originalUrl);
         if (!matcher.matches())
             throw new RuntimeException("originalUrl 格式不匹配!");
 
@@ -175,9 +176,8 @@ public class UrlBuilder {
      * @return UrlBuilder
      */
     public UrlBuilder setProtocol(final String _protocol) {
-        if (_protocol == null || _protocol.length() == 0)
-            return this;
-        this.protocol.set(_protocol);
+        if (StringUtils.isNotBlank(_protocol) && URL_PROTOCOL_PATTERN.matcher(_protocol).matches())
+            this.protocol.set(_protocol);
 
         return this;
     }
@@ -194,7 +194,7 @@ public class UrlBuilder {
             return this;
 
         // protocol 未设置，并且 baseUr 包含 protocol，更新 protocol
-        Matcher matcher = URL_PROTOCOL_PATTERN.matcher(_baseUr);
+        Matcher matcher = URL_PATTERN.matcher(_baseUr);
         if (matcher.matches() && (protocol.get() == null || protocol.get().length() == 0)
                 && matcher.groupCount() > 0
                 && matcher.group(1) != null && matcher.group(1).length() > 0)
@@ -207,7 +207,6 @@ public class UrlBuilder {
 
         return this;
     }
-
 
     /**
      * 最多允许 50 个占位符
@@ -264,7 +263,7 @@ public class UrlBuilder {
      * @return boolean
      */
     public static boolean containProtocol(String originalUrl) {
-        Matcher matcher = URL_PROTOCOL_PATTERN.matcher(originalUrl);
+        Matcher matcher = URL_PATTERN.matcher(originalUrl);
 
         return matcher.matches() && matcher.groupCount() >= 1 && matcher.group(1) != null;
     }
@@ -385,7 +384,7 @@ public class UrlBuilder {
     public Builder forPath(String path) {
         try {
             StringBuffer result = new StringBuffer();
-            result.append(protocol.get());
+            result.append(StringUtils.isBlank(protocol.get()) ? url.getProtocol() : protocol.get());
             result.append(":");
             if (url.getAuthority() != null && url.getAuthority().length() > 0) {
                 result.append("//");
@@ -659,7 +658,8 @@ public class UrlBuilder {
      * @param args args
      */
     public static void main(String[] args) {
-        UrlBuilder ub = new UrlBuilder("//yun.$baseUrl$/{0}?param1={1}&param2={2}&callback=?");
+//        UrlBuilder ub = new UrlBuilder("//yun.$baseUrl$/{0}?param1={1}&param2={2}&callback=?");
+        UrlBuilder ub = new UrlBuilder();
         ub.setProtocol("https");
         ub.setBaseUrl("nqcx.org");
         ub.setValue(0, "i/x");
