@@ -65,14 +65,16 @@ public class UrlBuilder {
         }
     };
 
-    // new UrlBuilder 时指定的 url，不包含 protocol
+    // 原始 url 字符串
     private final String originalUrl;
-    // new UrlBuilder 时指定 url 的 protocol
-    private final String originalProtocol;
+    // 原始 Url 对象
+    private final URL url;
+
     private final Charset charset;
     private final boolean ignoreEmpty;
-    private final Map<String, Object> queryMap;
 
+    // 参数表
+    private final Map<String, Object> queryMap;
 
     /**
      * 默认构造函数
@@ -118,15 +120,8 @@ public class UrlBuilder {
         if (!matcher.matches())
             throw new RuntimeException("originalUrl 格式不匹配!");
 
-        if (matcher.groupCount() >= 1 && matcher.group(1) != null)
-            this.originalProtocol = matcher.group(1);
-        else
-            this.originalProtocol = "http";
-
-        if (matcher.groupCount() >= 2 && matcher.group(2) != null)
-            this.originalUrl = matcher.group(2);
-        else
-            this.originalUrl = _originalUrl;
+        // 原始 url
+        this.originalUrl = _originalUrl;
 
         // charsetName
         if (_charsetName == null || _charsetName.length() == 0)
@@ -137,16 +132,29 @@ public class UrlBuilder {
         // ignoreEmpty
         this.ignoreEmpty = _ignoreEmpty;
 
-        // queryMap
+
+        String protocol = "http";
+        if (matcher.groupCount() >= 1 && matcher.group(1) != null)
+            protocol = matcher.group(1);
+
+        String noProtocolUrl = this.originalUrl;
+        if (matcher.groupCount() >= 2 && matcher.group(2) != null)
+            noProtocolUrl = matcher.group(2);
+
+
+        // url & queryMap
         try {
-            String queryString = new URL(this.originalProtocol + "://" + this.originalUrl).getQuery();
-            if (StringUtils.isNotEmpty(queryString))
-                queryMap = new LinkedHashMap<String, Object>(parseQuery(queryString, charset));
-            else
-                queryMap = Collections.emptyMap();
+            url = new URL(protocol + "://" + noProtocolUrl);
+
+            queryMap = new LinkedHashMap<String, Object>();
+            if (StringUtils.isNotEmpty(url.getQuery()))
+                queryMap.putAll(parseQuery(url.getQuery(), charset));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+
+        if (url == null)
+            throw new RuntimeException("originalUrl 格式不匹配!");
     }
 
     /**
@@ -376,8 +384,17 @@ public class UrlBuilder {
      */
     public Builder forPath(String path) {
         try {
-            return new Builder(new URL(((protocol.get() != null && protocol.get().length() > 0) ? protocol.get() : this.originalProtocol)
-                    + "://" + replaceBaseUrl(this.originalUrl, this.baseUrl.get())),
+            StringBuffer result = new StringBuffer();
+            result.append(protocol.get());
+            result.append(":");
+            if (url.getAuthority() != null && url.getAuthority().length() > 0) {
+                result.append("//");
+                result.append(url.getAuthority());
+            }
+            if (url.getPath() != null)
+                result.append(url.getPath());
+
+            return new Builder(new URL(replaceBaseUrl(result.toString(), this.baseUrl.get())),
                     path, charset, ignoreEmpty, queryMap, values.get());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
@@ -456,7 +473,6 @@ public class UrlBuilder {
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
-
 
             StringBuilder query = new StringBuilder();
             // 添加原始参数表
