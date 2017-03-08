@@ -367,10 +367,10 @@ public class UrlBuilder {
         }
     }
 
-    // ========================================================================
-
     /**
-     * Builder
+     * ========================================================================
+     * ===================          Builder 类       ==========================
+     * ========================================================================
      */
     public static class Builder {
 
@@ -378,7 +378,9 @@ public class UrlBuilder {
         String path;
         Charset charset;
         boolean ignoreEmpty;
+        // 原始参数构建 url 时不进行 encode
         final Map<String, Object> queryMap;
+        // 非原始参数构建 url 时需要进行 encode
         final Map<String, Object> urlParams = new LinkedHashMap<String, Object>();
         final List<String> values;
 
@@ -532,56 +534,86 @@ public class UrlBuilder {
         }
 
         /**
+         * 向参数表中增加一个参数
+         * <p/>
+         * 不覆盖原有参数值，允许多个同名参数
+         *
          * @param key
          * @param value
          * @return
          */
         public Builder add(final String key, final Object value) {
-            Object newValue;
-            if (urlParams.containsKey(key)) {
-                Object o = urlParams.get(key);
-                if (o == null) {
-                    newValue = value;
+            if (StringUtils.isNotBlank(key)) {
+                Object newValue;
+                if (urlParams.containsKey(key)) {
+                    Object o = urlParams.get(key);
+                    if (o == null) {
+                        newValue = value;
+                    } else {
+                        List<Object> container = new LinkedList<Object>();
+                        append(container, o);
+                        append(container, value);
+                        newValue = container;
+                    }
                 } else {
-                    List<Object> container = new LinkedList<Object>();
-                    append(container, o);
-                    append(container, value);
-                    newValue = container;
+                    newValue = value;
                 }
-            } else {
-                newValue = value;
+                urlParams.put(key, newValue);
             }
-            urlParams.put(key, newValue);
             return this;
         }
 
         /**
+         * 向参数表中增加多个参数
+         * <p/>
+         * 不覆盖原有参数值，允许多个同名参数
+         *
          * @param values
          * @return
          */
-        public Builder add(final Map<String, Object> values) {
-            for (Entry<String, Object> entry : values.entrySet()) {
-                add(entry.getKey(), entry.getValue());
+        public Builder add(final Map<String, ?> values) {
+            if (values != null && values.size() > 0) {
+                for (Entry<String, ?> entry : values.entrySet()) {
+                    add(entry.getKey(), entry.getValue());
+                }
             }
             return this;
         }
 
         /**
+         * 向参数表中设置一个参数
+         * <p/>
+         * 覆盖原有参数值
+         *
          * @param key
          * @param value
          * @return
          */
         public Builder put(final String key, final Object value) {
-            urlParams.put(key, value);
+            if (StringUtils.isNotBlank(key)) {
+                if (queryMap != null && queryMap.containsKey(key))
+                    queryMap.remove(key);
+
+                urlParams.put(key, value);
+            }
+
             return this;
         }
 
         /**
+         * 向参数表中设置多个参数
+         * <p/>
+         * 覆盖原有参数值
+         *
          * @param values
          * @return
          */
         public Builder put(final Map<String, ?> values) {
-            urlParams.putAll(values);
+            if (values != null && values.size() > 0) {
+                for (Entry<String, ?> entry : values.entrySet()) {
+                    put(entry.getKey(), entry.getValue());
+                }
+            }
             return this;
         }
     }
