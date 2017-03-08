@@ -36,7 +36,7 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
     }
 
     protected UrlBuilder homeUrl;
-    protected UrlBuilder loginUrl;
+    protected UrlBuilder authorizeUrl;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -105,15 +105,15 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
         UrlBuilder.Builder currentUrlBuilder = homeUrl.forPath(request.getServletPath());
         currentUrlBuilder.put(request.getParameterMap());
 
-        if (loginUrl == null)
+        if (authorizeUrl == null)
             return "";
-        UrlBuilder.Builder loginUrlBuilder = loginUrl.forPath();
+        UrlBuilder.Builder authorizeUrlBuilder = authorizeUrl.forPath();
 
         if (params != null && params.size() > 0)
-            loginUrlBuilder.put(params);
-        loginUrlBuilder.put("redirectUrl", generateRedirectUrl(currentUrlBuilder));
+            authorizeUrlBuilder.put(params);
+        authorizeUrlBuilder.put("redirectUrl", generateRedirectUrl(currentUrlBuilder));
 
-        return loginUrlBuilder.build();
+        return authorizeUrlBuilder.build();
     }
 
     /**
@@ -130,11 +130,31 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
         return currentUrlBuilder.build();
     }
 
+    /**
+     * 用于配置文件中配置注入
+     *
+     * @param homeUrl
+     */
     public void setHomeUrl(UrlBuilder homeUrl) {
         this.homeUrl = homeUrl;
     }
 
-    public void setLoginUrl(UrlBuilder loginUrl) {
-        this.loginUrl = loginUrl;
+    /**
+     * 用于配置文件中配置注入，用 setAuthorizeUrl() 代替
+     *
+     * @param authorizeUrl
+     */
+    @Deprecated
+    public void setLoginUrl(UrlBuilder authorizeUrl) {
+        this.authorizeUrl = authorizeUrl;
+    }
+
+    /**
+     * 用于配置文件中配置注入
+     *
+     * @param authorizeUrl
+     */
+    public void setAuthorizeUrl(UrlBuilder authorizeUrl) {
+        this.authorizeUrl = authorizeUrl;
     }
 }
