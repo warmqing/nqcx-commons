@@ -155,7 +155,8 @@ public class CookieUtils {
                         cookie.setMaxAge(0);
                         cookie.setValue(null);
                         cookie.setPath(nCookie.getPath());
-                        cookie.setDomain(nCookie.getDomain());
+                        if (nCookie.getDomain() != null && nCookie.getDomain().length() > 0)
+                            cookie.setDomain(nCookie.getDomain());
                         response.addCookie(cookie);
                     } else
                         setCookie(response, nCookie.getName(), null, 0);
