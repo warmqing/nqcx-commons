@@ -76,15 +76,26 @@ public class LoginContextInterceptor extends WebContextInterceptor {
     }
 
     /**
-     * 默认情况下，LoginContext 的值来源于解析登录cookie的值
+     * 默认情况下，LoginContext 的值来源于解析登录 cookieValue
      * <p/>
      * 特殊情况下可以覆盖该方法，通过其它途径取得 LoginContext，比如用 TicketContext 生成 LoginContext
      *
-     * @param value
+     * @param cookieValue value
+     * @param response    response
      * @return
      */
-    protected LoginContext getLoginContext(String value) {
-        return StringUtils.isBlank(value) ? null : LoginContext.parse(value);
+    protected LoginContext getLoginContext(String cookieValue, HttpServletResponse response) {
+        return this.getLoginContext(cookieValue);
+    }
+
+    /**
+     * 解析 cookieValue 并生成 LoginContext
+     *
+     * @param cookieValue
+     * @return
+     */
+    protected LoginContext getLoginContext(String cookieValue) {
+        return StringUtils.isBlank(cookieValue) ? null : LoginContext.parse(cookieValue);
     }
 
     /**
