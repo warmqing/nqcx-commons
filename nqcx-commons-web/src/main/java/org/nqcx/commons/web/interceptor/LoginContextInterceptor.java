@@ -21,13 +21,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginContextInterceptor extends WebContextInterceptor {
 
+    protected final static long SESSION_TIMEOUT = 30L;
+    protected final static int RATE = 2;
+
     /**
      * 需要注入
      */
     protected NqcxCookie loginCookie;
-
-    protected long sessionTimeout = 30L;
-    protected int rate = 2;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -49,7 +49,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
         long expires = loginContext.getExpires(); //过期时间
 
         // 如果没有设置过期时间，则使用默认的
-        long timeout = expires == 0 ? sessionTimeout * 60 * 1000 : expires - created;
+        long timeout = expires == 0 ? SESSION_TIMEOUT * 60 * 1000 : expires - created;
 
         // 如果已过期 login cookie，直接返回
         if (current - created >= timeout) {
@@ -59,7 +59,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
         }
 
         // 如果新cookie或是更改了登录或剩下的时间只有2/3，就需要重新派发cookie
-        if ((current - created) * 3 / rate > timeout) {
+        if ((current - created) * 3 / RATE > timeout) {
             // 写最后一次访问的cookie
             loginContext.setCreated(current);
             if (expires != 0)
@@ -73,6 +73,18 @@ public class LoginContextInterceptor extends WebContextInterceptor {
 
         LoginContext.setLoginContext(loginContext);
         return true;
+    }
+
+    /**
+     * 默认情况下，LoginContext 的值来源于解析登录cookie的值
+     * <p/>
+     * 特殊情况下可以覆盖该方法，通过其它途径取得 LoginContext，比如用 TicketContext 生成 LoginContext
+     *
+     * @param value
+     * @return
+     */
+    protected LoginContext getLoginContext(String value) {
+        return StringUtils.isBlank(value) ? null : LoginContext.parse(value);
     }
 
     /**
@@ -96,15 +108,6 @@ public class LoginContextInterceptor extends WebContextInterceptor {
         CookieUtils.removeCookie(request, response, loginCookie.getName());
     }
 
-    /**
-     * 解析登录cookie的值
-     *
-     * @param value
-     * @return
-     */
-    protected LoginContext getLoginContext(String value) {
-        return StringUtils.isBlank(value) ? null : LoginContext.parse(value);
-    }
 
     /**
      * 用于配置文件中配置注入

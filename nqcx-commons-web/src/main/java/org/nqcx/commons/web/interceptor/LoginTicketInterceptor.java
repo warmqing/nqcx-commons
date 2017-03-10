@@ -47,7 +47,7 @@ public class LoginTicketInterceptor extends WebContextInterceptor {
      * @param response
      */
     protected void parseTicketCookie(HttpServletRequest request, HttpServletResponse response) {
-        LoginTicket.setTicket(null);
+        LoginTicket.remove();
 
         if (ticketCookie == null)
             return;

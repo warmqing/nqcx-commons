@@ -52,7 +52,7 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
             } else {
                 logger.info("RemoteAddr [" + request.getRemoteAddr() + "] from normal way check login false!");
 
-                response.sendRedirect(getLoginUrl(request));
+                response.sendRedirect(getAuthorizeUrl(request));
             }
 
             return false;
@@ -88,18 +88,41 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
     }
 
     /**
+     * 使用 getAuthorizeUrl() 方法
+     *
      * @param request
      * @return
      */
-    protected String getLoginUrl(HttpServletRequest request) {
-        return getLoginUrl(request, null);
+    protected String getAuthorizeUrl(HttpServletRequest request) {
+        return getLoginUrl(request);
     }
 
     /**
      * @param request
      * @return
      */
+    @Deprecated
+    protected String getLoginUrl(HttpServletRequest request) {
+        return getLoginUrl(request, null);
+    }
+
+    /**
+     * 使用 getAuthorizeUrl() 方法
+     *
+     * @param request
+     * @return
+     */
+    @Deprecated
     protected String getLoginUrl(HttpServletRequest request, Map<String, String> params) {
+        return this.getAuthorizeUrl(request, params);
+    }
+
+
+    /**
+     * @param request
+     * @return
+     */
+    protected String getAuthorizeUrl(HttpServletRequest request, Map<String, String> params) {
         if (homeUrl == null)
             return "";
         UrlBuilder.Builder currentUrlBuilder = homeUrl.forPath(request.getServletPath());
