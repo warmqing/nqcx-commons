@@ -36,7 +36,7 @@ public class LoginContextInterceptor extends WebContextInterceptor {
         if (loginCookie == null)
             return true;
 
-        LoginContext loginContext = getLoginContext(CookieUtils.getCookieValue(request, loginCookie.getName()));
+        LoginContext loginContext = getLoginContext(CookieUtils.getCookieValue(request, loginCookie.getName()), response);
         if (loginContext == null || StringUtils.isBlank(loginContext.getAccount())) {
             // 没有 login cookie，直接返回
             removeLoginCookie(request, response);
