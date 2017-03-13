@@ -102,7 +102,8 @@ public class CookieUtils {
 
         StringBuilder cross = new StringBuilder(380);
         cross.append(name).append("=").append(value).append(";");
-        cross.append(" Domain=").append(nCookie.getDomain()).append(";");
+        if (nCookie.getDomain() != null && nCookie.getDomain().length() > 0)
+            cross.append(" Domain=").append(nCookie.getDomain()).append(";");
         if (nCookie.getExpiry() >= 0) {
             Calendar cal = Calendar.getInstance(Locale.US);
             cal.add(Calendar.SECOND, nCookie.getExpiry());
