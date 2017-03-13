@@ -9,6 +9,7 @@ package org.nqcx.commons.zk.simultaneous;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.data.Stat;
+import org.nqcx.commons.lang.consts.LoggerConst;
 import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.zk.Zk;
 import org.nqcx.commons.zk.ZkConfig;
@@ -25,7 +26,7 @@ import java.util.*;
  */
 public class SimultaneousZk extends Zk {
 
-    private final static Logger logger = LoggerFactory.getLogger(SimultaneousZk.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(LoggerConst.LOGGER_ZK_NAME);
 
     private final Timer timer = new Timer();
     private TimerTask task;
@@ -87,10 +88,10 @@ public class SimultaneousZk extends Zk {
                     if (!isMaster)
                         return;
 
-                    logger.info("我是 master，我将执行任务分配");
+                    LOGGER.info("我是 master，我将执行任务分配");
 
                     if (simultaneous == null) {
-                        logger.info("找不到任务任务分配程序，simultaneous: " + simultaneous);
+                        LOGGER.info("找不到任务任务分配程序，simultaneous: " + simultaneous);
                         return;
                     }
 
@@ -118,7 +119,7 @@ public class SimultaneousZk extends Zk {
                             }
                         }
                     } catch (Throwable e) {
-                        logger.error("", e);
+                        LOGGER.error("", e);
                     }
 
                 }
@@ -136,7 +137,7 @@ public class SimultaneousZk extends Zk {
 
                     @Override
                     public void process(WatchedEvent event) {
-                        logger.info("Root 监听到通知，KeeperState: {}，EventType: {}, root: {}",
+                        LOGGER.info("Root 监听到通知，KeeperState: {}，EventType: {}, root: {}",
                                 event.getState(), event.getType(), root);
 
                         if (Event.KeeperState.SyncConnected == event.getState()) {
@@ -207,7 +208,7 @@ public class SimultaneousZk extends Zk {
 
             this.isMaster = (czxid == nMinCzxid);
         } catch (Exception e) {
-            logger.error("", e);
+            LOGGER.error("", e);
         }
     }
 
@@ -233,13 +234,13 @@ public class SimultaneousZk extends Zk {
         boolean success = this.connectNode(this.zkNode.getPath(), this.zkNode.getData(), true, new Watcher() {
                     @Override
                     public void process(WatchedEvent event) {
-                        logger.info("Node 监听到通知，KeeperState: {}，EventType: {}, ZkNode: {}",
+                        LOGGER.info("Node 监听到通知，KeeperState: {}，EventType: {}, ZkNode: {}",
                                 event.getState(), event.getType(), zkNode);
 
                         if (Event.KeeperState.SyncConnected == event.getState()) {
                             if (Event.EventType.NodeDeleted == event.getType()) {
                                 // 重新连接节点
-                                logger.info("节点被删除，ZkNode: " + zkNode + ", 需要重新创建节点！");
+                                LOGGER.info("节点被删除，ZkNode: " + zkNode + ", 需要重新创建节点！");
                                 selfZkNode();
                                 return;
                             } else if (Event.EventType.NodeDataChanged == event.getType()) {
@@ -249,13 +250,13 @@ public class SimultaneousZk extends Zk {
                                 if (StringUtils.isNotBlank(data) && simultaneous != null) {
                                     zkNode.setData(data);
 
-                                    logger.info("节点数据有变化，正在执行业务处理过程...");
+                                    LOGGER.info("节点数据有变化，正在执行业务处理过程...");
                                     try {
                                         simultaneous.proccess(zkNode);
                                     } catch (Throwable e) {
-                                        logger.error("", e);
+                                        LOGGER.error("", e);
                                     }
-                                    logger.info("节点数据有变化，执行业务处理过程结束。");
+                                    LOGGER.info("节点数据有变化，执行业务处理过程结束。");
 
                                     zkNode.setData(null);
                                     setData(zkNode.getPath(), zkNode.getData());
@@ -287,7 +288,7 @@ public class SimultaneousZk extends Zk {
 
             this.zkNode.setCzxid(stat.getCzxid());
         } catch (Exception e) {
-            logger.error("", e);
+            LOGGER.error("", e);
         }
 
         // 执行一次选主
@@ -368,7 +369,6 @@ public class SimultaneousZk extends Zk {
     public static void main(String[] args) throws InterruptedException {
         ZkConfig zkConfig = new ZkConfig("localhost:2181,localhost:2182,localhost:2183", 20 * 1000);
         SimultaneousZk czk = new SimultaneousZk(zkConfig);
-//        czk.connectZk();
         czk.setRoot("/nqcx");
         czk.setTaskPeriod(10 * 1000);
 

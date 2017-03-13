@@ -9,6 +9,7 @@ package org.nqcx.commons.zk;
 import org.apache.commons.lang.StringUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+import org.nqcx.commons.lang.consts.LoggerConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Zk implements Watcher {
 
-    private final static Logger logger = LoggerFactory.getLogger(Zk.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(LoggerConst.LOGGER_ZK_NAME);
 
     private CountDownLatch connectedSemaphore = new CountDownLatch(1);
 
@@ -69,7 +70,7 @@ public class Zk implements Watcher {
             zookeeper = new ZooKeeper(this.zkConfig.getConnetString(), this.zkConfig.getSessionTimeout(), this);
             connectedSemaphore.await();
         } catch (Exception e) {
-            logger.error("创建连接失败", e);
+            LOGGER.error("创建连接失败", e);
         }
 
         return this;
@@ -77,22 +78,22 @@ public class Zk implements Watcher {
 
     @Override
     public void process(WatchedEvent event) {
-        logger.info("Zk 监听收到通知，KeeperState: {}, EventType: {}, Instance: {}", event.getState(), event.getType(), zookeeper);
+        LOGGER.info("Zk 监听收到通知，KeeperState: {}, EventType: {}, Instance: {}", event.getState(), event.getType(), zookeeper);
 
         if (Event.KeeperState.SyncConnected == event.getState()) {
             if (Event.EventType.None == event.getType()) {
                 //连接成功
                 connectedSemaphore.countDown();
-                logger.info("Zk 连接成功，KeeperState: {}, EventType: {}", event.getState(), event.getType());
+                LOGGER.info("Zk 连接成功，KeeperState: {}, EventType: {}", event.getState(), event.getType());
                 // 连接成功调用通知
                 connectedNotify();
             }
         } else if (Event.KeeperState.Expired == event.getState()) {
-            logger.info("Zk 连接过期，需要重新连接，KeeperState: {}, EventType: {}", event.getState(), event.getType());
+            LOGGER.info("Zk 连接过期，需要重新连接，KeeperState: {}, EventType: {}", event.getState(), event.getType());
             connectedSemaphore = new CountDownLatch(1);
             this.connectZk();
         } else if (Event.KeeperState.Disconnected == event.getState()) {
-            logger.info("Zk 失去连接，将自动重连，KeeperState: {}, EventType: {}", event.getState(), event.getType());
+            LOGGER.info("Zk 失去连接，将自动重连，KeeperState: {}, EventType: {}", event.getState(), event.getType());
 
             // 调用失去连接通知
             disconnectedNotify();
@@ -101,7 +102,7 @@ public class Zk implements Watcher {
         } else if (Event.KeeperState.AuthFailed == event.getState()) {
             throw new RuntimeException("Zk 连接验证失败，KeeperState: " + event.getState() + ", EventType: " + event.getType());
         } else {
-            logger.info("Zk nothing to do，KeeperState: {}, EventType: {}", event.getState(), event.getType());
+            LOGGER.info("Zk nothing to do，KeeperState: {}, EventType: {}", event.getState(), event.getType());
             // nothing to do
         }
     }
@@ -110,14 +111,14 @@ public class Zk implements Watcher {
      * 连接或重连接成功通知
      */
     protected void connectedNotify() {
-        logger.info("Zk 连接成功， 调用连接成功通知接口。");
+        LOGGER.info("Zk 连接成功， 调用连接成功通知接口。");
     }
 
     /**
      * 失去连接通知
      */
     protected void disconnectedNotify() {
-        logger.info("Zk 失去连接， 调用失去连接通知接口。");
+        LOGGER.info("Zk 失去连接， 调用失去连接通知接口。");
     }
 
     /**
@@ -143,7 +144,7 @@ public class Zk implements Watcher {
      */
     public boolean connectNode(String path, String data, boolean isEphemeral, Watcher watcher) {
         if (StringUtils.isBlank(path)) {
-            logger.error("连接节点失败");
+            LOGGER.error("连接节点失败");
             return false;
         }
 
@@ -158,7 +159,7 @@ public class Zk implements Watcher {
             // 为 path 增加 watcher，并返回结果
             return exists(path, watcher);
         } catch (Exception e) {
-            logger.error("连接节点失败", e);
+            LOGGER.error("连接节点失败", e);
         }
 
         return false;
@@ -202,7 +203,7 @@ public class Zk implements Watcher {
             if (this.exists(path))
                 return getZookeeper().getData(path, watcher, null);
         } catch (Exception e) {
-            logger.error("读取数据失败，path: " + path, e);
+            LOGGER.error("读取数据失败，path: " + path, e);
         }
 
         return null;
@@ -220,7 +221,7 @@ public class Zk implements Watcher {
             if (this.exists(path))
                 return getZookeeper().setData(path, data == null ? null : data.getBytes(), -1);
         } catch (Exception e) {
-            logger.error("更新数据失败，path: " + path, e);
+            LOGGER.error("更新数据失败，path: " + path, e);
         }
 
         return null;
@@ -236,7 +237,7 @@ public class Zk implements Watcher {
             if (this.exists(path))
                 getZookeeper().delete(path, -1);
         } catch (Exception e) {
-            logger.error("删除节点失败，path: " + path, e);
+            LOGGER.error("删除节点失败，path: " + path, e);
         }
     }
 
@@ -267,7 +268,7 @@ public class Zk implements Watcher {
         try {
             return getZookeeper().exists(path, watcher);
         } catch (Exception e) {
-            logger.error("", e);
+            LOGGER.error("", e);
         }
 
         return null;
@@ -296,9 +297,9 @@ public class Zk implements Watcher {
             if (this.exists(path))
                 return getZookeeper().getChildren(path, watcher);
         } catch (KeeperException e) {
-            logger.error("", e);
+            LOGGER.error("", e);
         } catch (InterruptedException e) {
-            logger.error("", e);
+            LOGGER.error("", e);
         }
 
         return null;
@@ -312,7 +313,7 @@ public class Zk implements Watcher {
             if (zookeeper != null)
                 zookeeper.close();
         } catch (InterruptedException e) {
-            logger.error("", e);
+            LOGGER.error("", e);
         }
     }
 
