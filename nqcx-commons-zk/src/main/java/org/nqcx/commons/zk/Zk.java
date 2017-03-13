@@ -29,16 +29,26 @@ public class Zk implements Watcher {
     private ZooKeeper zookeeper;
     private ZkConfig zkConfig;
 
+    /**
+     * 默认构造函数
+     */
     public Zk() {
 
     }
 
+    /**
+     * 构造函数
+     *
+     * @param zkConfig
+     */
     public Zk(ZkConfig zkConfig) {
         this.zkConfig = zkConfig;
     }
 
     /**
      * 取得 zk 实例
+     *
+     * @return
      */
     public Zk connectZk() {
         if (zkConfig == null)
@@ -49,6 +59,9 @@ public class Zk implements Watcher {
 
     /**
      * 创建ZK连接
+     *
+     * @param zkConfig
+     * @return
      */
     private Zk connectZk(ZkConfig zkConfig) {
         this.setZkConfig(zkConfig);
@@ -64,36 +77,31 @@ public class Zk implements Watcher {
 
     @Override
     public void process(WatchedEvent event) {
-        logger.info("Zk 监听收到通知，KeeperState: {}, EventType: {}, Instance: {}",
-                event.getState(), event.getType(), zookeeper);
+        logger.info("Zk 监听收到通知，KeeperState: {}, EventType: {}, Instance: {}", event.getState(), event.getType(), zookeeper);
 
         if (Event.KeeperState.SyncConnected == event.getState()) {
-
             if (Event.EventType.None == event.getType()) {
                 //连接成功
                 connectedSemaphore.countDown();
-                logger.info("Zk 连接成功，KeeperState: {}, EventType: {}",
-                        event.getState(), event.getType());
+                logger.info("Zk 连接成功，KeeperState: {}, EventType: {}", event.getState(), event.getType());
                 // 连接成功调用通知
                 connectedNotify();
             }
         } else if (Event.KeeperState.Expired == event.getState()) {
-            logger.info("Zk 连接过期，需要重新连接，KeeperState: {}, EventType: {}",
-                    event.getState(), event.getType());
+            logger.info("Zk 连接过期，需要重新连接，KeeperState: {}, EventType: {}", event.getState(), event.getType());
             connectedSemaphore = new CountDownLatch(1);
             this.connectZk();
         } else if (Event.KeeperState.Disconnected == event.getState()) {
-            logger.info("Zk 失去连接，将自动重连，KeeperState: {}, EventType: {}",
-                    event.getState(), event.getType());
-            // zk 会自动重连
+            logger.info("Zk 失去连接，将自动重连，KeeperState: {}, EventType: {}", event.getState(), event.getType());
 
             // 调用失去连接通知
             disconnectedNotify();
+
+            // zk 会自动重连，无需单独处理
         } else if (Event.KeeperState.AuthFailed == event.getState()) {
             throw new RuntimeException("Zk 连接验证失败，KeeperState: " + event.getState() + ", EventType: " + event.getType());
         } else {
-            logger.info("Zk nothing to do，KeeperState: {}, EventType: {}",
-                    event.getState(), event.getType());
+            logger.info("Zk nothing to do，KeeperState: {}, EventType: {}", event.getState(), event.getType());
             // nothing to do
         }
     }
@@ -105,6 +113,9 @@ public class Zk implements Watcher {
         logger.info("Zk 连接成功， 调用连接成功通知接口。");
     }
 
+    /**
+     * 失去连接通知
+     */
     protected void disconnectedNotify() {
         logger.info("Zk 失去连接， 调用失去连接通知接口。");
     }
@@ -276,9 +287,9 @@ public class Zk implements Watcher {
     /**
      * 监听子节点
      *
-     * @param path
-     * @param watcher
-     * @return
+     * @param path    节点 path
+     * @param watcher watcher
+     * @return 返回节点 path 的 wathc 列表
      */
     protected List<String> watchChild(String path, Watcher watcher) {
         try {

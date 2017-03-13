@@ -6,13 +6,13 @@
 
 package org.nqcx.commons.zk.simultaneous;
 
-import org.nqcx.commons.zk.Zk;
-import org.nqcx.commons.zk.ZkConfig;
-import org.nqcx.commons.zk.ZkNode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.data.Stat;
 import org.nqcx.commons.util.StringUtils;
+import org.nqcx.commons.zk.Zk;
+import org.nqcx.commons.zk.ZkConfig;
+import org.nqcx.commons.zk.ZkNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -312,8 +312,8 @@ public class SimultaneousZk extends Zk {
 
         long max = 0;
         if (nodes != null && nodes.size() > 0) {
-            long n = 0;
-            String[] nodeArray = null;
+            long n;
+            String[] nodeArray;
             for (String node : nodes) {
                 if (node == null)
                     continue;
@@ -361,34 +361,34 @@ public class SimultaneousZk extends Zk {
     }
 
 
-//    /**
-//     * @param args
-//     * @throws InterruptedException
-//     */
-//    public static void main(String[] args) throws InterruptedException {
-//        ZkConfig zkConfig = new ZkConfig("192.168.0.196:2181,192.168.0.196:2182,192.168.0.196:2183", 20 * 1000);
-//        SimultaneousZk czk = new SimultaneousZk(zkConfig);
-////        czk.connectZk();
-//        czk.setRoot("/nqcx");
-//        czk.setTaskPeriod(10 * 1000);
-//
-//        czk.setSimultaneous(new Simultaneous() {
-//            @Override
-//            public void assign(List<ZkNode> zkNodes) {
-//                System.out.println("******************" + zkNodes);
-//                for (ZkNode zkNode : zkNodes) {
-//                    zkNode.setData("1");
-//                }
-//            }
-//
-//            @Override
-//            public void proccess(ZkNode zkNode) {
-//                System.out.println("==================" + zkNode);
-//            }
-//        });
-//
-//        czk.init();
-//
-//        Thread.sleep(10 * 60 * 1000);
-//    }
+    /**
+     * @param args
+     * @throws InterruptedException
+     */
+    public static void main(String[] args) throws InterruptedException {
+        ZkConfig zkConfig = new ZkConfig("localhost:2181,localhost:2182,localhost:2183", 20 * 1000);
+        SimultaneousZk czk = new SimultaneousZk(zkConfig);
+//        czk.connectZk();
+        czk.setRoot("/nqcx");
+        czk.setTaskPeriod(10 * 1000);
+
+        czk.setSimultaneous(new Simultaneous() {
+            @Override
+            public void assign(List<ZkNode> zkNodes) {
+                System.out.println("******************" + zkNodes);
+                for (ZkNode zkNode : zkNodes) {
+                    zkNode.setData("1");
+                }
+            }
+
+            @Override
+            public void proccess(ZkNode zkNode) {
+                System.out.println("==================" + zkNode);
+            }
+        });
+
+        czk.init();
+
+        Thread.sleep(10 * 60 * 1000);
+    }
 }
