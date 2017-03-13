@@ -6,6 +6,7 @@
 
 package org.nqcx.commons.zk.simultaneous;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.data.Stat;
@@ -88,10 +89,12 @@ public class SimultaneousZk extends Zk {
                     if (!isMaster)
                         return;
 
-                    LOGGER.info("我是 master，我将执行任务分配");
+                    StopWatch clock = new StopWatch();
+                    clock.start(); //计时开始
 
+                    LOGGER.info("Master Node: 正在执行任务分配...");
                     if (simultaneous == null) {
-                        LOGGER.info("找不到任务任务分配程序，simultaneous: " + simultaneous);
+                        LOGGER.info("Master Node: 找不到任务任务分配程序，Node: " + zkNode);
                         return;
                     }
 
@@ -109,6 +112,7 @@ public class SimultaneousZk extends Zk {
                         zkNode.setPath(root + "/" + children);
                     }
 
+                    LOGGER.info("Master Node: 可分配任务的 Node count: " + (zkNodes == null ? 0 : zkNodes.size()));
                     try {
                         // 执行分配任务
                         simultaneous.assign(zkNodes);
@@ -121,6 +125,9 @@ public class SimultaneousZk extends Zk {
                     } catch (Throwable e) {
                         LOGGER.error("", e);
                     }
+
+                    clock.stop();  //计时结束
+                    LOGGER.info("Master Node: 分配任务结束，共用时: " + clock.getTime());
 
                 }
             }, 1000, taskPeriod);
@@ -137,7 +144,7 @@ public class SimultaneousZk extends Zk {
 
                     @Override
                     public void process(WatchedEvent event) {
-                        LOGGER.info("Root 监听到通知，KeeperState: {}，EventType: {}, root: {}",
+                        LOGGER.info("Root Node: 监听到通知，KeeperState: {}，EventType: {}, root: {}",
                                 event.getState(), event.getType(), root);
 
                         if (Event.KeeperState.SyncConnected == event.getState()) {
@@ -234,13 +241,13 @@ public class SimultaneousZk extends Zk {
         boolean success = this.connectNode(this.zkNode.getPath(), this.zkNode.getData(), true, new Watcher() {
                     @Override
                     public void process(WatchedEvent event) {
-                        LOGGER.info("Node 监听到通知，KeeperState: {}，EventType: {}, ZkNode: {}",
+                        LOGGER.info("Node: 监听到通知，KeeperState: {}，EventType: {}, ZkNode: {}",
                                 event.getState(), event.getType(), zkNode);
 
                         if (Event.KeeperState.SyncConnected == event.getState()) {
                             if (Event.EventType.NodeDeleted == event.getType()) {
                                 // 重新连接节点
-                                LOGGER.info("节点被删除，ZkNode: " + zkNode + ", 需要重新创建节点！");
+                                LOGGER.info("Node: 节点被删除，ZkNode: " + zkNode + ", 需要重新创建节点！");
                                 selfZkNode();
                                 return;
                             } else if (Event.EventType.NodeDataChanged == event.getType()) {
@@ -250,13 +257,13 @@ public class SimultaneousZk extends Zk {
                                 if (StringUtils.isNotBlank(data) && simultaneous != null) {
                                     zkNode.setData(data);
 
-                                    LOGGER.info("节点数据有变化，正在执行业务处理过程...");
+                                    LOGGER.info("Node: 节点数据有变化，正在执行业务处理过程...");
                                     try {
                                         simultaneous.proccess(zkNode);
                                     } catch (Throwable e) {
                                         LOGGER.error("", e);
                                     }
-                                    LOGGER.info("节点数据有变化，执行业务处理过程结束。");
+                                    LOGGER.info("Node: 节点数据有变化，执行业务处理过程结束。");
 
                                     zkNode.setData(null);
                                     setData(zkNode.getPath(), zkNode.getData());
