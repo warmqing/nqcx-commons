@@ -257,13 +257,16 @@ public class SimultaneousZk extends Zk {
                                 if (StringUtils.isNotBlank(data) && simultaneous != null) {
                                     zkNode.setData(data);
 
+                                    StopWatch clock = new StopWatch();
+                                    clock.start(); //计时开始
                                     LOGGER.info("Node: 节点数据有变化，正在执行业务处理过程...");
                                     try {
                                         simultaneous.proccess(zkNode);
                                     } catch (Throwable e) {
                                         LOGGER.error("", e);
                                     }
-                                    LOGGER.info("Node: 节点数据有变化，执行业务处理过程结束。");
+                                    clock.stop();  //计时结束
+                                    LOGGER.info("Node: 节点数据有变化，执行业务处理过程结束。共用时: " + clock.getTime());
 
                                     zkNode.setData(null);
                                     setData(zkNode.getPath(), zkNode.getData());
