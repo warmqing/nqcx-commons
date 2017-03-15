@@ -8,6 +8,7 @@
 
 package org.nqcx.commons.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.nqcx.commons.lang.o.DTO;
 import org.nqcx.commons.lang.page.PageIO;
 import org.nqcx.commons.util.MapBuilder;
@@ -248,7 +249,7 @@ public abstract class WebSupport {
         if (dto.isSuccess())
             parseSuccess(mb, dto);
         else
-            parseError(mb, dto.getResultMap());
+            parseError(mb, dto);
 
         return mb.build();
     }
@@ -257,16 +258,16 @@ public abstract class WebSupport {
      * 解析错误结果
      *
      * @param mapBuilder
-     * @param errorMap
+     * @param dto
      */
-    private void parseError(MapBuilder mapBuilder, Map<String, Object> errorMap) {
-        if (errorMap == null || errorMap.isEmpty())
+    private void parseError(MapBuilder mapBuilder, DTO dto) {
+        Map<String, Object> errorMap;
+        if (mapBuilder == null || dto == null || (errorMap = dto.getResultMap()) == null || errorMap.isEmpty())
             return;
         else if (errorMap.size() == 1)
             parseErrorJson(mapBuilder, errorMap.entrySet().iterator().next());
-        else {
+        else
             parseMultipleErrorJson(mapBuilder, errorMap.entrySet());
-        }
     }
 
     /**
@@ -275,32 +276,127 @@ public abstract class WebSupport {
      * @param mapBuilder
      * @param entry
      */
-    private void parseErrorJson(MapBuilder mapBuilder, Map.Entry<String, Object> entry) {
+    protected void parseErrorJson(MapBuilder mapBuilder, Map.Entry<String, Object> entry) {
         mapBuilder.putMap(putError(entry.getKey()));
     }
 
     /**
-     * 处理多个错误
+     * 处理多个错误，errorCode 使用默认错误码“10”
+     * multipleError 的 multipleErrorCode 使用 Entry.key
+     * multipleError 的 multipleErrorText 使用 Entry.value
+     * <p/>
+     * 参数:
+     * <pre>
+     *      entrySet {key="1", value="错误1"}
+     *      entrySet {key="2", value="错误2"}
+     *      entrySet {key="3", value="错误3"}
+     * </pre>
+     * 转换结果:
+     * <pre>
+     * {
+     *     success: false,
+     *     errorCode: "10",
+     *     errorText: "操作数据出错",
+     *     multipleError: [
+     *         {
+     *             multipleErrorCode: "1",
+     *             multipleErrorText: "错误1"
+     *         },
+     *         {
+     *             multipleErrorCode: "2",
+     *             multipleErrorText: "错误2"
+     *         },
+     *         {
+     *             multipleErrorCode: "3",
+     *             multipleErrorText: "错误3"
+     *         }
+     *     ]
+     * }
+     * </pre>
      *
-     * @param mapBuilder
-     * @param entrySet
+     * @param mapBuilder mapBuilder
+     * @param entrySet   entrySet
      */
-    private void parseMultipleErrorJson(MapBuilder mapBuilder, Set<Map.Entry<String, Object>> entrySet) {
+    protected void parseMultipleErrorJson(MapBuilder mapBuilder, Set<Map.Entry<String, Object>> entrySet) {
+        if (mapBuilder == null || entrySet == null)
+            return;
         mapBuilder.putMap(putError("10")).put(ERROR_MULTIPLE, convertMultipleErrorJsonArray(entrySet));
     }
 
     /**
-     * 转换多个错误到 array
+     * 处理多个错误，errorCode 使用参数中的错误码 errorCode
+     * multipleError 的 multipleErrorCode 全部使用 “1X”
+     * multipleError 的 multipleErrorText 使用参数 errors[index] 中的值
+     * <p/>
+     * 参数:
+     * <pre>
+     *     errorCode="11"
+     *     errors {"错误1","错误2","错误3"}
+     * </pre>
+     * 转换结果:
+     * <pre>
+     * {
+     *     success: false,
+     *     errorCode: "11",
+     *     errorText: "操作的数据不存在",
+     *     multipleError: [
+     *         {
+     *             multipleErrorCode: "1X",
+     *             multipleErrorText: "错误1"
+     *         },
+     *         {
+     *             multipleErrorCode: "1X",
+     *             multipleErrorText: "错误2"
+     *         },
+     *         {
+     *             multipleErrorCode: "1X",
+     *             multipleErrorText: "错误3"
+     *         }
+     *     ]
+     * }
+     * </pre>
      *
-     * @param entrySet
-     * @return
-     * @author 黄保光 Sep 29, 2013 4:30:37 PM
+     * @param mapBuilder mapBuilder
+     * @param errorCode  errorCode
+     * @param errors     errors
+     */
+    protected void parseMultipleErrorJson(MapBuilder mapBuilder, String errorCode, List<String> errors) {
+        if (mapBuilder == null)
+            return;
+        if (StringUtils.isBlank(errorCode))
+            errorCode = "10";
+
+        mapBuilder.putMap(putError(errorCode)).put(ERROR_MULTIPLE, convertMultipleErrorJsonArray(errors));
+    }
+
+    /**
+     * 转换多个 Entry 错误为 array
+     *
+     * @param entrySet entrySet
+     * @return list
+     * @author 黄保光
      */
     private List<Object> convertMultipleErrorJsonArray(Set<Map.Entry<String, Object>> entrySet) {
         List<Object> list = new ArrayList<Object>();
-        for (Map.Entry<String, Object> error : entrySet) {
-            list.add(MapBuilder.newInstance().put(ERROR_MULTIPLE_CODE, error.getKey())
-                    .put(ERROR_MULTIPLE_TEXT, error.getValue()).build());
+        if (entrySet != null) {
+            for (Map.Entry<String, Object> error : entrySet)
+                list.add(MapBuilder.newInstance().put(ERROR_MULTIPLE_CODE, error.getKey()).put(ERROR_MULTIPLE_TEXT, error.getValue()).build());
+        }
+        return list;
+    }
+
+    /**
+     * 将多个 List 型的 error 转成 List<>Map><>String,String</></>
+     *
+     * @param errors
+     * @return
+     * @author 黄保光 Sep 29, 2013 12:37:41 PM
+     */
+    protected List<Object> convertMultipleErrorJsonArray(List<String> errors) {
+        List<Object> list = new ArrayList<Object>();
+        if (errors != null && errors.size() == 0) {
+            for (String error : errors)
+                list.add(MapBuilder.newInstance().put(ERROR_MULTIPLE_CODE, "1X").put(ERROR_MULTIPLE_TEXT, error).build());
         }
         return list;
     }
