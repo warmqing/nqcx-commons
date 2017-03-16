@@ -42,6 +42,29 @@ public class SignBuilder {
         return null;
     }
 
+
+    /**
+     * 根据字符串取签名
+     *
+     * @param text
+     * @param key
+     * @param charset
+     * @return
+     */
+    public static String buildSign(String text, String key, String charset) {
+        if (charset == null || charset.length() == 0)
+            charset = CHARESET;
+        // 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串再与安全校验码直接连接起来，最后取签名
+        try {
+            if (text != null)
+                return MD5Utils.md5Hex((text + key).getBytes(charset));
+        } catch (UnsupportedEncodingException e) {
+            logger.warn(e.getMessage());
+        }
+
+        return null;
+    }
+
     /**
      * 把数组所有元素排序，并按照“参数=参数值”的模式用“&”字符拼接成字符串
      *
