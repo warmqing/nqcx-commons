@@ -427,6 +427,20 @@ public class UrlBuilder {
             this.values = _values;
         }
 
+        /**
+         * 扩展 path
+         *
+         * @param path
+         * @return
+         */
+        public Builder apendPath(String path) {
+            if (this.path == null)
+                this.path = path;
+            else if (path != null)
+                this.path = this.path + path;
+            return this;
+        }
+
         public Builder setPath(String path) {
             this.path = path;
             return this;
