@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 nqcx.org All right reserved. This software is the confidential and proprietary information
+ * Copyright 2017 nqcx.org All right reserved. This software is the confidential and proprietary information
  * of nqcx.org ("Confidential Information"). You shall not disclose such Confidential Information and shall use
  * it only in accordance with the terms of the license agreement you entered into with nqcx.org.
  */
@@ -7,18 +7,16 @@
 package org.nqcx.commons.lang.enums;
 
 /**
- * Gender enum object
- *
- * @author naqichuan 14-10-11 9:23
+ * @author naqichuan 17/4/4 13:48
  */
-public enum GenderEO implements EnumIO {
+public enum StatusEO implements EnumIO {
 
-    NONE(0, ""), MALE(1, "男"), FEMALE(2, "女");
+    NONE(0, "无"), AVAILABLE(1, "可用"), DISABLE(2, "不可用"), DELETED(3, "已删除");
 
     private int value;
     private String text;
 
-    GenderEO(int value, String text) {
+    StatusEO(int value, String text) {
         this.value = value;
         this.text = text;
     }
@@ -33,24 +31,24 @@ public enum GenderEO implements EnumIO {
         return text;
     }
 
-
     /**
      * 判断自身是否与参数里的枚举相等
      *
-     * @param genderEO genderEO
+     * @param statusEO statusEO
      * @return boolean
      */
-    public boolean is(GenderEO genderEO) {
-        return this == genderEO;
+    public boolean is(StatusEO statusEO) {
+        return this == statusEO;
     }
 
-
     /**
-     * @param value value
-     * @return boolean
+     * 通过 value 取得枚举实例
+     *
+     * @param value
+     * @return
      */
-    public static GenderEO get(int value) {
-        for (GenderEO p : GenderEO.values()) {
+    public static StatusEO get(int value) {
+        for (StatusEO p : StatusEO.values()) {
             if (p.getValue() == value)
                 return p;
         }
