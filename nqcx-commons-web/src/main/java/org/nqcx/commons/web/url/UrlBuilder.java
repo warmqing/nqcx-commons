@@ -149,7 +149,7 @@ public class UrlBuilder {
 
             queryMap = new LinkedHashMap<String, Object>();
             if (StringUtils.isNotEmpty(url.getQuery()))
-                queryMap.putAll(parseQuery(url.getQuery(), charset));
+                queryMap.putAll(parseQuery(url.getQuery()));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -272,7 +272,7 @@ public class UrlBuilder {
      * @param query query
      * @return map
      */
-    public static Map<String, Object> parseQuery(String query, Charset charset) {
+    public static Map<String, Object> parseQuery(String query) {
         String[] params = query.split("&");
         Map<String, Object> map = new LinkedHashMap<String, Object>(params.length);
         for (String param : params) {
@@ -282,7 +282,6 @@ public class UrlBuilder {
             if (strings.length > 1) {
                 // 原始 url 中的参数值不进行 decode
                 value = strings[1];
-                // value = decodeValue(strings[1], charset);
             }
             map.put(name, value);
         }

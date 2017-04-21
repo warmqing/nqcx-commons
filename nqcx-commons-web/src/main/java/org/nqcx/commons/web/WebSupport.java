@@ -21,9 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -515,13 +515,49 @@ public abstract class WebSupport {
             }
         }
     }
+    // ========================================================================
+
+    /**
+     * 读取 request body 内容为字符串
+     *
+     * @param request request
+     * @return String
+     */
+    protected String requestBody(HttpServletRequest request) {
+        return requestBody(request, DEFAULT_CHARSET_NAME);
+    }
+
+    /**
+     * 读取 request body 内容为字符串
+     *
+     * @param request     request
+     * @param charsetName charsetName
+     * @return String
+     */
+    protected String requestBody(HttpServletRequest request, String charsetName) {
+        StringBuffer sb = new StringBuffer();
+
+        try {
+            InputStream is = request.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is, charsetName);
+            BufferedReader br = new BufferedReader(isr);
+            String s;
+            while ((s = br.readLine()) != null)
+                sb.append(s);
+        } catch (IOException e) {
+            logger.warn("requestBody error, {}", e.getMessage());
+        }
+
+        return sb.toString();
+    }
 
     // ========================================================================
 
     /**
      * 跳转到错误页
      *
-     * @param dto
+     * @param response response
+     * @param dto      dto
      */
     protected void sendRedirectErrorResult(HttpServletResponse response, DTO dto) {
         String errorCode = "1";
