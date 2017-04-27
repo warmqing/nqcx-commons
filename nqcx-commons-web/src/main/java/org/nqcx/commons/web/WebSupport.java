@@ -551,6 +551,127 @@ public abstract class WebSupport {
         return sb.toString();
     }
 
+    /**
+     * 从 request 中取原始参数表。
+     * <p/>
+     * 参数来源 url, header, request body 等。
+     *
+     * @param request request
+     * @return map map
+     */
+    protected Map<String, String[]> parseParamsFromRequest(HttpServletRequest request) {
+        String contentType = request.getContentType();
+        if (contentType != null)
+            contentType = contentType.trim();
+
+        // 解析来源于 form 表单（post）或 get 方式传送的参数
+        Map<String, String[]> originParams = new HashMap<String, String[]>();
+        if (request.getParameterMap() != null)
+            originParams.putAll(request.getParameterMap());
+
+        // GET 请求直接结束方法，不需要解析 request body
+        if ("GET".equalsIgnoreCase(request.getMethod())
+                || ("POST".equalsIgnoreCase(request.getMethod()) && contentType.contains("application/x-www-form-urlencoded")))
+            return originParams;
+
+        // 其它方式的请求需要解析 responseBody 的参数
+        String responseBody = requestBody(request);
+        if (StringUtils.isBlank(responseBody))
+            return originParams;
+
+        // json 格式，不支持复杂的 json 格式，两层以下如果是对象，直接转类字符串，如果是数组对象也转，字符串数组
+        if (contentType.contains("application/json")) {
+            // 解析 Json
+            appendRequestBodyJsonParamsToMap(originParams, JsonUtils.jsonToMap(responseBody));
+        } else {
+            // 解析用 & 拼接的 key=value 字符串
+            appendRequestBodyParamsToMap(originParams, responseBody);
+        }
+
+        return originParams;
+    }
+
+    /**
+     * 将 json 格式参数转成的 Map<String, Object> 添加到 paramMap 中
+     *
+     * @param paramMap   paramMap
+     * @param bodyParams bodyParams
+     */
+    private void appendRequestBodyJsonParamsToMap(Map<String, String[]> paramMap, Map<String, Object> bodyParams) {
+        if (paramMap == null || bodyParams == null || bodyParams.size() == 0)
+            return;
+
+        for (Map.Entry<String, Object> entry : bodyParams.entrySet()) {
+            final String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value == null)
+                continue;
+
+            if (value instanceof Object[]) {
+                for (final Object v : (Object[]) value) {
+                    appendParamMap(paramMap, key, v);
+                }
+            } else if (value instanceof Collection) {
+                for (final Object v : (Collection<?>) value) {
+                    appendParamMap(paramMap, key, v);
+                }
+            } else
+                appendParamMap(paramMap, key, value);
+        }
+    }
+
+
+    /**
+     * 用 & 拼接的 key=value 字符串解析成 Map<String, String[]>，并添加到 paramMap 中
+     *
+     * @param paramMap    paramMap
+     * @param requestBody requestBody String
+     */
+    private void appendRequestBodyParamsToMap(Map<String, String[]> paramMap, String requestBody) {
+        if (paramMap == null || StringUtils.isBlank(requestBody) || requestBody.indexOf("=") == -1)
+            return;
+
+        String[] paramKeyValue;
+        String paramKey;
+
+        String[] params = requestBody.split("&");
+        for (String param : params) {
+            if (StringUtils.isBlank(param) || param.indexOf("=") == -1
+                    || (paramKeyValue = param.split("=")) == null || paramKeyValue.length < 1
+                    || StringUtils.isBlank(paramKey = paramKeyValue[0]))
+                continue;
+
+            appendParamMap(paramMap, paramKey, (paramKeyValue.length == 1 ? null : paramKeyValue[1]));
+        }
+    }
+
+
+    /**
+     * 追回参数表
+     *
+     * @param paramMap paramMap
+     * @param key      key
+     * @param value    value
+     */
+    private void appendParamMap(Map<String, String[]> paramMap, String key, Object value) {
+        String paramValue;
+        String[] existValues;
+
+        if (value == null) {
+            paramValue = "";
+        } else
+            paramValue = String.valueOf(value).trim();
+
+        String[] newKeyValue;
+        if ((existValues = paramMap.get(key)) != null) {
+            System.arraycopy(existValues, 0, (newKeyValue = new String[existValues.length + 1]), 0, existValues.length);
+            newKeyValue[newKeyValue.length - 1] = paramValue;
+        } else
+            newKeyValue = new String[]{paramValue};
+
+        paramMap.put(key, newKeyValue);
+    }
+
     // ========================================================================
 
     /**
