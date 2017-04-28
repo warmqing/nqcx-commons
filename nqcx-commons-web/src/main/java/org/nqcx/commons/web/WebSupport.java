@@ -39,6 +39,7 @@ public abstract class WebSupport {
     protected final static String ERROR_MULTIPLE = "multipleError";
     protected final static String ERROR_MULTIPLE_CODE = "multipleErrorCode";
     protected final static String ERROR_MULTIPLE_TEXT = "multipleErrorText";
+    protected final static String NOT_FOUND = "NOT FOUND";
 
     protected final static String DEFAULT_CHARSET_NAME = "UTF-8";
 
