@@ -6,8 +6,12 @@
 
 package org.nqcx.commons.util.security;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 
@@ -16,7 +20,7 @@ import java.security.Key;
  */
 public class AESUtils {
 
-    private final static String DEFAULT_CHARSET = "UTF-8";
+    public final static String DEFAULT_CHARSET = "UTF-8";
     private final static String DEFAULT_KEY = "HP1ozhw3WrhSIo2X";
 
     /**
@@ -39,6 +43,32 @@ public class AESUtils {
     public static String encrypt(String text, String key) {
         try {
             return HexUtils.toHexString(encrypt(text.getBytes(DEFAULT_CHARSET), key));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 加密
+     *
+     * @param text
+     * @return
+     */
+    public static String encryptBase64(String text) {
+        return encryptBase64(text, DEFAULT_KEY);
+    }
+
+    /**
+     * 加密
+     *
+     * @param text
+     * @param key
+     * @return
+     */
+    public static String encryptBase64(String text, String key) {
+        try {
+            return (new BASE64Encoder()).encodeBuffer(encrypt(text.getBytes(DEFAULT_CHARSET), key));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -104,6 +134,32 @@ public class AESUtils {
     /**
      * 解密
      *
+     * @param text
+     * @return
+     */
+    public static String decryptBase64(String text) {
+        return decryptBase64(text, DEFAULT_KEY);
+    }
+
+    /**
+     * 解密
+     *
+     * @param text
+     * @param key
+     * @return
+     */
+    public static String decryptBase64(String text, String key) {
+        try {
+            return new String(decrypt(new BASE64Decoder().decodeBuffer(text), key), DEFAULT_CHARSET);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 解密
+     *
      * @param bytes
      * @return
      */
@@ -163,9 +219,9 @@ public class AESUtils {
 //        System.out.println(idDecrypt);
 
 
-        String aa = decrypt("341dcf3a5f19eafffa76b41d33bd47d0", "62csRnq0lFiq7uAF");
-        System.out.println(aa);
-        String bb = encrypt("1", "1IphGIeSwIOPRLlX");
+        String bb = encryptBase64("1111111111111111111111111111111111dfa1", "1IphGIeSwIOPRLlX");
         System.out.println(bb);
-    }
+        String aa = decryptBase64("HjBJmW/HNCPn/layAatb4g==", "1IphGIeSwIOPRLlX");
+        System.out.println(aa);
+       }
 }
