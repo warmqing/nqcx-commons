@@ -248,7 +248,7 @@ public class JsonUtils {
     public static <T> List<T> jsonToList(String json, Class<? extends T> clazz) {
         try {
             return mapper.readValue(((json == null || (json = json.trim()).equals("") || !validJson(json)) ? "[]" : json),
-                    TypeFactory.defaultInstance().constructArrayType(clazz));
+                    TypeFactory.defaultInstance().constructCollectionType(List.class, clazz));
         } catch (Exception e) {
             logger.warn(e.getMessage());
         }

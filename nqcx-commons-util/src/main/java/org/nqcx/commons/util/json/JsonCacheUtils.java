@@ -157,7 +157,7 @@ public class JsonCacheUtils {
     public static <T> List<T> jsonToList(String json, Class<? extends T> clazz) {
         try {
             return (List<T>) jsonToObject(((json == null || (json = json.trim()).equals("") || !validJson(json)) ? "[]" : json),
-                    objectMapper.getTypeFactory().constructParametricType(List.class, clazz));
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
         } catch (Exception e) {
             logger.error("", e);
         }
