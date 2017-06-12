@@ -37,8 +37,9 @@ public class UrlBuilder {
 
     private final static Logger logger = LoggerFactory.getLogger(UrlBuilder.class);
 
-    private final static Pattern URL_PATTERN = Pattern.compile("^(file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp){0,1}:{0,1}//{0,1}(.*)");
-    private final static Pattern URL_PROTOCOL_PATTERN = Pattern.compile("file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp");
+    public final static Pattern URL_PATTERN = Pattern.compile("^(file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp){0,1}:{0,1}//{0,1}(.*)");
+    public final static Pattern URL_PROTOCOL_PATTERN = Pattern.compile("file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp");
+
     private final static Pattern URL_BASE_PATTERN = Pattern.compile("(\\$\\s*baseUrl\\s*\\$)");
     private final static Pattern PARAM_PLACEHOLDER_PATTERN = Pattern.compile("\\{\\s*\\d+\\s*\\}");
 
