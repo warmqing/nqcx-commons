@@ -20,6 +20,12 @@ public class SolrCloudClientFactory {
     private String defaultCollection;
     private final Map<String, CloudSolrClient> clientMap = new HashMap<String, CloudSolrClient>();
 
+    /**
+     * 获取solrcoud客户端
+     * @param collection
+     * @param newInstance
+     * @return
+     */
     public CloudSolrClient getCloudSolrClient(SolrCollection collection, boolean newInstance) {
 
         if (newInstance)
@@ -31,6 +37,12 @@ public class SolrCloudClientFactory {
         return clientMap.get(collection.getColletion());
     }
 
+    /**
+     * 设置client参数
+     * @param client
+     * @param collection
+     * @return
+     */
     private CloudSolrClient fillClientParams(CloudSolrClient client, SolrCollection collection) {
         if(client == null)
             return null;
