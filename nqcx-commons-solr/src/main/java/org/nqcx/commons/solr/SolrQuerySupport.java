@@ -14,6 +14,7 @@ import org.nqcx.commons.lang.o.DTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -134,6 +135,8 @@ public abstract class SolrQuerySupport extends SolrSupport {
 
             dto.setSuccess(true);
         } catch (SolrServerException e) {
+            logger.error("", e);
+        } catch (IOException e) {
             logger.error("", e);
         }
     }
