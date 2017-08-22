@@ -19,11 +19,11 @@ import java.util.Map;
 /**
  * @Author Jiangsiqi on 2017/8/17 19:18.
  */
-public abstract class SolrQueryBuilder {
+public class SolrQueryBuilder {
 
     private final static Logger logger = LoggerFactory.getLogger(SolrQueryBuilder.class);
 
-    public SolrQuery DTO2Query(DTO dto, SolrQuery query) {
+    public static SolrQuery dto2query(DTO dto, SolrQuery query) {
 
         if (dto == null)
             return null;
@@ -32,13 +32,13 @@ public abstract class SolrQueryBuilder {
             query = new SolrQuery();
 
         Map<String, Object> fields = dto.getParamsMap();
-        if (fields != null & fields.size() > 0) {
 
+        if (fields == null) {
+            query = new SolrQuery().setQuery("*:*");
+        } else {
             StringBuffer sb = new StringBuffer();
             Object object = null;
-
             for (Map.Entry<String, Object> field : fields.entrySet()) {
-
                 object = field.getValue();
                 if (object == null)
                     continue;
@@ -71,12 +71,9 @@ public abstract class SolrQueryBuilder {
                     }
                 } else
                     sb.append(field.getKey() + ":" + object);
-
             }
-
             query.setQuery(sb.toString());
         }
-
 
         // 分页
         if (dto.getPage() != null) {
@@ -93,25 +90,13 @@ public abstract class SolrQueryBuilder {
             }
         }
         return query;
-
-//        try {
-//            QueryResponse qrsp = getServer().query(query);
-//            if (dto.getPage() != null)
-//                dto.getPage().setTotalCount(qrsp.getResults().getNumFound());
-//
-//            if (type == null)
-//                dto.setList(qrsp.getResults());
-//            else
-//                dto.setList(qrsp.getBeans(type));
-//
-//            dto.setSuccess(true);
-//        } catch (SolrServerException e) {
-//            logger.error("", e);
-//        }
     }
 
-    public SolrQuery DTO2Query(DTO dto) {
-
-        return this.DTO2Query(dto, null);
+    /**
+     * @param dto
+     * @return
+     */
+    public static SolrQuery dto2query(DTO dto) {
+        return dto2query(dto, null);
     }
 }
