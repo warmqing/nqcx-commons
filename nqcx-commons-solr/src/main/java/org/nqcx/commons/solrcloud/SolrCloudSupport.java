@@ -5,6 +5,7 @@
  */
 package org.nqcx.commons.solrcloud;
 
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -98,9 +99,37 @@ public abstract class SolrCloudSupport {
      * @param type
      * @param <T>
      */
-    public <T> void searchBeans(DTO dto, Class<T> type) {
+    public <T> DTO searchBeans(DTO dto, Class<T> type, SolrQuery query) {
         if (getClient() == null)
-            return;
+            return null;
+
+        try {
+            QueryResponse qrsp = getClient().query(SolrQueryBuilder.dto2query(dto, query));
+            if (dto.getPage() != null)
+                dto.getPage().setTotalCount(qrsp.getResults().getNumFound());
+
+            if (type == null)
+                dto.setList(qrsp.getResults());
+            else
+                dto.setList(qrsp.getBeans(type));
+
+            dto.setSuccess(true);
+            return dto;
+        } catch (Exception e) {
+            throw new SolrCloudSupportException("SolrIndexSupport searchBeans error", e);
+        }
+    }
+
+    /**
+     *
+     * @param dto
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public <T> DTO searchBeans(DTO dto, Class<T> type) {
+        if (getClient() == null)
+            return null;
 
         try {
             QueryResponse qrsp = getClient().query(SolrQueryBuilder.dto2query(dto));
@@ -113,6 +142,7 @@ public abstract class SolrCloudSupport {
                 dto.setList(qrsp.getBeans(type));
 
             dto.setSuccess(true);
+            return dto;
         } catch (Exception e) {
             throw new SolrCloudSupportException("SolrIndexSupport searchBeans error", e);
         }
