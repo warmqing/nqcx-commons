@@ -17,11 +17,12 @@ public class SolrCloudClientFactory {
     private String zkHost; // the zk server connect string
     private int zkConnectTimeout = 10000;
     private int zkClientTimeout = 10000;
-    private String defaultCollection;
+    private String defaultCollection = "_default";
     private final Map<String, CloudSolrClient> clientMap = new HashMap<String, CloudSolrClient>();
 
     /**
      * 获取solrcoud客户端
+     *
      * @param collection
      * @param newInstance
      * @return
@@ -31,24 +32,26 @@ public class SolrCloudClientFactory {
         if (newInstance)
             return fillClientParams(new CloudSolrClient(zkHost), collection);
 
-        if (!clientMap.containsKey(collection.getColletion()))
-            clientMap.put(collection.getColletion(), fillClientParams(new CloudSolrClient(zkHost), collection));
+        String key = (collection == null ? defaultCollection : collection.getColletion());
+        if (!clientMap.containsKey(key))
+            clientMap.put(key, fillClientParams(new CloudSolrClient(zkHost), collection));
 
-        return clientMap.get(collection.getColletion());
+        return clientMap.get(key);
     }
 
     /**
      * 设置client参数
+     *
      * @param client
      * @param collection
      * @return
      */
     private CloudSolrClient fillClientParams(CloudSolrClient client, SolrCollection collection) {
-        if(client == null)
+        if (client == null)
             return null;
         client.setZkConnectTimeout(zkConnectTimeout);
         client.setZkClientTimeout(zkClientTimeout);
-        client.setDefaultCollection(collection == null ? null : collection.getColletion());
+        client.setDefaultCollection(collection == null ? defaultCollection : collection.getColletion());
         return client;
     }
 
