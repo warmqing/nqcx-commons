@@ -22,6 +22,7 @@ public class SolrCloudClientFactory {
 
     /**
      * 获取solrcoud客户端
+     *
      * @param collection
      * @param newInstance
      * @return
@@ -39,12 +40,13 @@ public class SolrCloudClientFactory {
 
     /**
      * 设置client参数
+     *
      * @param client
      * @param collection
      * @return
      */
     private CloudSolrClient fillClientParams(CloudSolrClient client, SolrCollection collection) {
-        if(client == null)
+        if (client == null)
             return null;
         client.setZkConnectTimeout(zkConnectTimeout);
         client.setZkClientTimeout(zkClientTimeout);

@@ -5,14 +5,12 @@
  */
 package org.nqcx.commons.solrcloud;
 
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.nqcx.commons.lang.o.DTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,11 +25,22 @@ public abstract class SolrCloudSupport {
 
     private final static Logger logger = LoggerFactory.getLogger(SolrQueryBuilder.class);
 
+    /**
+     * 获取solrcloud客户端
+     *
+     * @return
+     */
     public CloudSolrClient getClient() {
         return this.getSolrCloudClientFactory() == null ? null : this.getSolrCloudClientFactory().getCloudSolrClient(getSolrCollection(), false);
     }
 
 
+    /**
+     * 添加单个文档
+     *
+     * @param bean
+     * @param <T>
+     */
     public <T> void addBean(T bean) {
         try {
             getClient().addBean(bean);
@@ -43,6 +52,8 @@ public abstract class SolrCloudSupport {
 
 
     /**
+     * 添加文档集合
+     *
      * @param beans
      * @param <T>
      */
@@ -51,11 +62,13 @@ public abstract class SolrCloudSupport {
             getClient().addBeans(beans);
             getClient().optimize();
         } catch (Exception e) {
-            throw new SolrCloudSupportException("SolrIndexSupport addBeans error", e);
+            throw new SolrCloudSupportException("SolrCloudSupport addBeans error", e);
         }
     }
 
     /**
+     * 根据id删除文档
+     *
      * @param id
      */
     public void deleteOne(String id) {
@@ -63,11 +76,13 @@ public abstract class SolrCloudSupport {
             getClient().deleteById(id);
             getClient().optimize();
         } catch (Exception e) {
-            throw new SolrCloudSupportException("SolrIndexSupport deleteOne error", e);
+            throw new SolrCloudSupportException("SolrCloudSupport deleteOne error", e);
         }
     }
 
     /**
+     * 批量删除文档
+     *
      * @param ids
      */
     public void deleteMulti(List<String> ids) {
@@ -75,19 +90,19 @@ public abstract class SolrCloudSupport {
             getClient().deleteById(ids);
             getClient().optimize();
         } catch (Exception e) {
-            throw new SolrCloudSupportException("SolrIndexSupport deleteMulti error", e);
+            throw new SolrCloudSupportException("SolrCloudSupport deleteMulti error", e);
         }
     }
 
     /**
-     * 删除全部
+     * 删除全部文档
      */
     public void deleteAll() {
         try {
             getClient().deleteByQuery("*:*");
             getClient().optimize();
         } catch (Exception e) {
-            throw new SolrCloudSupportException("SolrIndexSupport deleteAll error", e);
+            throw new SolrCloudSupportException("SolrCloudSupport deleteAll error", e);
         }
     }
 
