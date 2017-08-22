@@ -5,6 +5,7 @@
  */
 package org.nqcx.commons.solrcloud;
 
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.nqcx.commons.lang.o.DTO;
