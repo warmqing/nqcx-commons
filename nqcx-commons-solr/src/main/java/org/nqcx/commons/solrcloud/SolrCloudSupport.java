@@ -131,36 +131,18 @@ public abstract class SolrCloudSupport {
             dto.setSuccess(true);
             return dto;
         } catch (Exception e) {
-            throw new SolrCloudSupportException("SolrIndexSupport searchBeans error", e);
+            throw new SolrCloudSupportException("SolrCloudSupport searchBeans error", e);
         }
     }
 
     /**
-     *
      * @param dto
      * @param type
      * @param <T>
      * @return
      */
     public <T> DTO searchBeans(DTO dto, Class<T> type) {
-        if (getClient() == null)
-            return null;
-
-        try {
-            QueryResponse qrsp = getClient().query(SolrQueryBuilder.dto2query(dto));
-            if (dto.getPage() != null)
-                dto.getPage().setTotalCount(qrsp.getResults().getNumFound());
-
-            if (type == null)
-                dto.setList(qrsp.getResults());
-            else
-                dto.setList(qrsp.getBeans(type));
-
-            dto.setSuccess(true);
-            return dto;
-        } catch (Exception e) {
-            throw new SolrCloudSupportException("SolrIndexSupport searchBeans error", e);
-        }
+        return this.searchBeans(dto, type, null);
     }
 
 }

@@ -67,7 +67,7 @@ public class SolrQueryBuilder {
                     SolrDate solrDate = (SolrDate) object;
                     if (solrDate.getBegintime() != null && solrDate.getEndtime() != null) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
-                        sb.append(field.getKey() + "createdate:[" + sdf.format(solrDate.getBegintime()) + " TO " + sdf.format(solrDate.getEndtime()) + "]");
+                        sb.append(field.getKey() + ":[" + sdf.format(solrDate.getBegintime()) + " TO " + sdf.format(solrDate.getEndtime()) + "]");
                     }
                 } else
                     sb.append(field.getKey() + ":" + object);
