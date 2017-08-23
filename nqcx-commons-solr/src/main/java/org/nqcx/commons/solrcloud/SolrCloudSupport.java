@@ -131,7 +131,7 @@ public abstract class SolrCloudSupport {
             dto.setSuccess(true);
             return dto;
         } catch (Exception e) {
-            throw new SolrCloudSupportException("SolrIndexSupport searchBeans error", e);
+            throw new SolrCloudSupportException("SolrCloudSupport searchBeans error", e);
         }
     }
 
