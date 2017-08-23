@@ -52,7 +52,7 @@ public class SolrQueryBuilder {
                         sb.append("(");
                         for (int i = 0; i < valueList.size(); i++) {
                             if (i > 0)
-                                sb.append(" OR ");
+                                sb.append(" AND ");
                             sb.append(field.getKey() + ":" + valueList.get(i));
                         }
                         sb.append(")");
