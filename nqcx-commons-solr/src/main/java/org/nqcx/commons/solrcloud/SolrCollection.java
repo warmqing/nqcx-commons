@@ -12,7 +12,7 @@ package org.nqcx.commons.solrcloud;
  * @author wangqing 17/8/18 上午11:05
  */
 public enum SolrCollection {
-     BOOK("book");
+    BOOK("book");
 
     private String colletion;
 
