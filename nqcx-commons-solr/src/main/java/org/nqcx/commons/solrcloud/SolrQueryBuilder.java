@@ -8,13 +8,12 @@
 
 package org.nqcx.commons.solrcloud;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.nqcx.commons.lang.o.DTO;
 import org.nqcx.commons.solr.SolrSort;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.SimpleDateFormat;
+import org.nqcx.commons.util.date.DateFormatUtils;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +22,7 @@ import java.util.Map;
  */
 public class SolrQueryBuilder {
 
-    private final static Logger logger = LoggerFactory.getLogger(SolrQueryBuilder.class);
+    private final static String SOLR_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:sss'Z'";
 
     public static SolrQuery dto2query(DTO dto, SolrQuery query) {
 
@@ -67,9 +66,17 @@ public class SolrQueryBuilder {
                     sb.append(field.getKey() + "[\"\" TO * ]");
                 } else if (object instanceof SolrDate) {
                     SolrDate solrDate = (SolrDate) object;
-                    if (solrDate.getBegintime() != null && solrDate.getEndtime() != null) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
-                        sb.append(field.getKey() + ":[" + sdf.format(solrDate.getBegintime()) + " TO " + sdf.format(solrDate.getEndtime()) + "]");
+
+                    if (solrDate != null && StringUtils.isNotBlank(field.getKey())
+                            && (solrDate.getBegintime() != null || solrDate.getEndtime() != null)) {
+                        String b = "*";
+                        String e = "*";
+                        if (solrDate.getBegintime() != null)
+                            b = DateFormatUtils.format(solrDate.getBegintime(),SOLR_DATE_PATTERN);
+                        if (solrDate.getEndtime() != null)
+                            e = DateFormatUtils.format(solrDate.getEndtime(),SOLR_DATE_PATTERN);
+
+                        sb.append(MessageFormat.format(" {0}:[{1} TO {2}] ", field.getKey(), b, e));
                     }
                 } else
                     sb.append(field.getKey() + ":" + object);
@@ -100,5 +107,28 @@ public class SolrQueryBuilder {
      */
     public static SolrQuery dto2query(DTO dto) {
         return dto2query(dto, null);
+    }
+
+    public static void main(String[] args) {
+        String p1 = "aa";
+        String p2 = null;
+
+        String des = "{0} :[ {1} TO {2}]";
+        String key = "sq";
+        String a = "*";
+        String b = "*";
+
+        if (p1 == null && p2 == null) {
+            // nothing to do
+            return;
+        }
+
+        if (p1 != null)
+            a = p1;
+        if (p2 != null)
+            b = p2;
+
+        System.out.println(MessageFormat.format(des, key, a, b));
+
     }
 }
