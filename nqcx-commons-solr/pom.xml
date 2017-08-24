@@ -20,6 +20,11 @@
             <artifactId>nqcx-commons-lang</artifactId>
             <version>${project.version}</version>
         </dependency>
+       <dependency>
+            <groupId>org.nqcx.commons</groupId>
+            <artifactId>nqcx-commons-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- ########## 2rd party library ########## -->
 
