@@ -109,26 +109,4 @@ public class SolrQueryBuilder {
         return dto2query(dto, null);
     }
 
-    public static void main(String[] args) {
-        String p1 = "aa";
-        String p2 = null;
-
-        String des = "{0} :[ {1} TO {2}]";
-        String key = "sq";
-        String a = "*";
-        String b = "*";
-
-        if (p1 == null && p2 == null) {
-            // nothing to do
-            return;
-        }
-
-        if (p1 != null)
-            a = p1;
-        if (p2 != null)
-            b = p2;
-
-        System.out.println(MessageFormat.format(des, key, a, b));
-
-    }
 }
