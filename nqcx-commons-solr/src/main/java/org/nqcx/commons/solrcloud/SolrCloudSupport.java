@@ -1,8 +1,11 @@
 /*
- * Copyright 2017  ChineseAll Inc. All right reserved. This software is the confidential and proprietary information of ChineseAll Inc.
- * ("Confidential Information"). You shall not disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into with ChineseAll Inc.
+ * Copyright 2017 nqcx.org All right reserved. This software is the
+ * confidential and proprietary information of nqcx.org ("Confidential
+ * Information"). You shall not disclose such Confidential Information and shall
+ * use it only in accordance with the terms of the license agreement you entered
+ * into with nqcx.org.
  */
+
 package org.nqcx.commons.solrcloud;
 
 import org.apache.solr.client.solrj.SolrQuery;
@@ -131,36 +134,18 @@ public abstract class SolrCloudSupport {
             dto.setSuccess(true);
             return dto;
         } catch (Exception e) {
-            throw new SolrCloudSupportException("SolrIndexSupport searchBeans error", e);
+            throw new SolrCloudSupportException("SolrCloudSupport searchBeans error", e);
         }
     }
 
     /**
-     *
      * @param dto
      * @param type
      * @param <T>
      * @return
      */
     public <T> DTO searchBeans(DTO dto, Class<T> type) {
-        if (getClient() == null)
-            return null;
-
-        try {
-            QueryResponse qrsp = getClient().query(SolrQueryBuilder.dto2query(dto));
-            if (dto.getPage() != null)
-                dto.getPage().setTotalCount(qrsp.getResults().getNumFound());
-
-            if (type == null)
-                dto.setList(qrsp.getResults());
-            else
-                dto.setList(qrsp.getBeans(type));
-
-            dto.setSuccess(true);
-            return dto;
-        } catch (Exception e) {
-            throw new SolrCloudSupportException("SolrIndexSupport searchBeans error", e);
-        }
+        return this.searchBeans(dto, type, null);
     }
 
 }
