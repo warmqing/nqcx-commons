@@ -8,12 +8,14 @@
 
 package org.nqcx.commons.solrcloud;
 
+import org.nqcx.commons.lang.o.EntityBO;
+
 import java.util.Date;
 
 /**
  * @Author Jiangsiqi on 2017/8/17 15:35.
  */
-public class SolrDate {
+public class SolrDate extends EntityBO {
 
     private Date begintime;
 
