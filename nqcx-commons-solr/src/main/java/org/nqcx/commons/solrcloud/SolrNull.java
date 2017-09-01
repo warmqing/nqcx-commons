@@ -8,10 +8,12 @@
 
 package org.nqcx.commons.solrcloud;
 
+import org.nqcx.commons.lang.o.EntityBO;
+
 /**
  * @Author Jiangsiqi on 2017/8/17 14:44.
  */
-public class SolrNull {
+public class SolrNull extends EntityBO {
 
     private boolean isNull = true;
 
