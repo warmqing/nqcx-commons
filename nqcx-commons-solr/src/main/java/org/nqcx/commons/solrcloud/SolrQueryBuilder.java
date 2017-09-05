@@ -13,6 +13,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.nqcx.commons.lang.o.DTO;
 import org.nqcx.commons.solr.SolrSort;
 import org.nqcx.commons.util.date.DateFormatUtils;
+
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -47,16 +48,10 @@ public class SolrQueryBuilder {
                 if (sb.length() > 0)
                     sb.append(" AND ");
 
-                if (object instanceof List) {
-                    List<String> valueList = (List<String>) object;
-                    if (valueList != null && valueList.size() > 0) {
-                        sb.append("(");
-                        for (int i = 0; i < valueList.size(); i++) {
-                            if (i > 0)
-                                sb.append(" OR ");
-                            sb.append(field.getKey() + ":" + valueList.get(i));
-                        }
-                        sb.append(")");
+                if (object instanceof SolrList) {
+                    SolrList solrList = (SolrList) object;
+                    if (solrList != null && solrList.size() > 0) {
+                        sb.append(solrList.getQueryString(field.getKey()));
                     }
                 } else if (object instanceof SolrNull) {
                     SolrNull solrNull = (SolrNull) object;
@@ -72,9 +67,9 @@ public class SolrQueryBuilder {
                         String b = "*";
                         String e = "*";
                         if (solrDate.getBegintime() != null)
-                            b = DateFormatUtils.format(solrDate.getBegintime(),SOLR_DATE_PATTERN);
+                            b = DateFormatUtils.format(solrDate.getBegintime(), SOLR_DATE_PATTERN);
                         if (solrDate.getEndtime() != null)
-                            e = DateFormatUtils.format(solrDate.getEndtime(),SOLR_DATE_PATTERN);
+                            e = DateFormatUtils.format(solrDate.getEndtime(), SOLR_DATE_PATTERN);
 
                         sb.append(MessageFormat.format(" {0}:[{1} TO {2}] ", field.getKey(), b, e));
                     }
