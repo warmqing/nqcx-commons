@@ -13,6 +13,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.nqcx.commons.lang.o.DTO;
 import org.nqcx.commons.solr.SolrSort;
 import org.nqcx.commons.util.date.DateFormatUtils;
+
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,15 @@ public class SolrQueryBuilder {
                         }
                         sb.append(")");
                     }
+                } else if (object instanceof SolrList) {
+                    SolrList solrList = (SolrList) object;
+                    if (solrList != null && solrList.size() > 0) {
+                        if (solrList.isAnd()) {
+                            SolrList sl = new SolrList();
+                            String q = sl.getQueryString(field.getKey());
+                            sb.append(q);
+                        }
+                    }
                 } else if (object instanceof SolrNull) {
                     SolrNull solrNull = (SolrNull) object;
                     if (solrNull.isTrue()) {
@@ -72,9 +82,9 @@ public class SolrQueryBuilder {
                         String b = "*";
                         String e = "*";
                         if (solrDate.getBegintime() != null)
-                            b = DateFormatUtils.format(solrDate.getBegintime(),SOLR_DATE_PATTERN);
+                            b = DateFormatUtils.format(solrDate.getBegintime(), SOLR_DATE_PATTERN);
                         if (solrDate.getEndtime() != null)
-                            e = DateFormatUtils.format(solrDate.getEndtime(),SOLR_DATE_PATTERN);
+                            e = DateFormatUtils.format(solrDate.getEndtime(), SOLR_DATE_PATTERN);
 
                         sb.append(MessageFormat.format(" {0}:[{1} TO {2}] ", field.getKey(), b, e));
                     }
