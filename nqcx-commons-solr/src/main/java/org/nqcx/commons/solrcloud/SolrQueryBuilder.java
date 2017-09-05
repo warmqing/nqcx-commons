@@ -48,25 +48,10 @@ public class SolrQueryBuilder {
                 if (sb.length() > 0)
                     sb.append(" AND ");
 
-                if (object instanceof List) {
-                    List<String> valueList = (List<String>) object;
-                    if (valueList != null && valueList.size() > 0) {
-                        sb.append("(");
-                        for (int i = 0; i < valueList.size(); i++) {
-                            if (i > 0)
-                                sb.append(" OR ");
-                            sb.append(field.getKey() + ":" + valueList.get(i));
-                        }
-                        sb.append(")");
-                    }
-                } else if (object instanceof SolrList) {
+                if (object instanceof SolrList) {
                     SolrList solrList = (SolrList) object;
                     if (solrList != null && solrList.size() > 0) {
-                        if (solrList.isAnd()) {
-                            SolrList sl = new SolrList();
-                            String q = sl.getQueryString(field.getKey());
-                            sb.append(q);
-                        }
+                        sb.append(solrList.getQueryString(field.getKey()));
                     }
                 } else if (object instanceof SolrNull) {
                     SolrNull solrNull = (SolrNull) object;
