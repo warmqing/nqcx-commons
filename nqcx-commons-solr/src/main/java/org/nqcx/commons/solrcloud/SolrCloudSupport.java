@@ -27,7 +27,7 @@ public abstract class SolrCloudSupport {
 
     public abstract SolrCloudClientFactory getSolrCloudClientFactory();
 
-    private final static Logger logger = LoggerFactory.getLogger(SolrQueryBuilder.class);
+    private final static Logger logger = LoggerFactory.getLogger(SolrCloudSupport.class);
 
     /**
      * 获取solrcloud客户端
@@ -48,7 +48,6 @@ public abstract class SolrCloudSupport {
     public <T> void addBean(T bean) {
         try {
             getClient().addBean(bean);
-            getClient().optimize();
         } catch (Exception e) {
             throw new SolrCloudSupportException("SolrCloudSupport addBean error", e);
         }
@@ -64,7 +63,6 @@ public abstract class SolrCloudSupport {
     public <T> void addBeans(Collection<T> beans) {
         try {
             getClient().addBeans(beans);
-            getClient().optimize();
         } catch (Exception e) {
             throw new SolrCloudSupportException("SolrCloudSupport addBeans error", e);
         }
@@ -78,7 +76,6 @@ public abstract class SolrCloudSupport {
     public void deleteOne(String id) {
         try {
             getClient().deleteById(id);
-            getClient().optimize();
         } catch (Exception e) {
             throw new SolrCloudSupportException("SolrCloudSupport deleteOne error", e);
         }
@@ -92,7 +89,6 @@ public abstract class SolrCloudSupport {
     public void deleteMulti(List<String> ids) {
         try {
             getClient().deleteById(ids);
-            getClient().optimize();
         } catch (Exception e) {
             throw new SolrCloudSupportException("SolrCloudSupport deleteMulti error", e);
         }
@@ -104,7 +100,6 @@ public abstract class SolrCloudSupport {
     public void deleteAll() {
         try {
             getClient().deleteByQuery("*:*");
-            getClient().optimize();
         } catch (Exception e) {
             throw new SolrCloudSupportException("SolrCloudSupport deleteAll error", e);
         }
