@@ -29,7 +29,7 @@ public class SolrList extends ArrayList {
         this.and = and;
     }
 
-    public boolean isAnd() {
+    public boolean getAnd() {
         return and;
     }
 
