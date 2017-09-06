@@ -49,7 +49,7 @@ public class SolrQueryBuilder {
 
                 if (object instanceof SolrList) {
                     SolrList solrList = (SolrList) object;
-                    if (solrList != null && solrList.size() > 0) {
+                    if (solrList != null) {
                         sb.append(solrList.getQueryString(field.getKey()));
                     }
                 } else if (object instanceof SolrNull) {

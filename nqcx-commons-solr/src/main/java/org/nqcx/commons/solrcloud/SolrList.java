@@ -6,29 +6,28 @@
 
 package org.nqcx.commons.solrcloud;
 
+import org.nqcx.commons.lang.o.EntityBO;
+
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * @Author Jiangsiqi on 2017/9/5 10:30.
  */
-public class SolrList extends ArrayList {
-
+public class SolrList extends EntityBO {
 
     private boolean and = false;
 
+    private final List<String> list = new ArrayList<String>();
+
     public SolrList() {
-        super();
     }
 
     public SolrList(boolean and) {
-        super();
         this.and = and;
     }
 
-    public boolean getAnd() {
+    public boolean isAnd() {
         return and;
     }
 
@@ -37,26 +36,26 @@ public class SolrList extends ArrayList {
     }
 
     public SolrList addValue(String e) {
-        super.add(e);
+        list.add(e);
         return this;
     }
 
-    public SolrList addAllValues(Collection<String> c) {
-        super.addAll(c);
+    public SolrList addAllValues(List<String> c) {
+        list.addAll(c);
         return this;
     }
 
     public String getQueryString(String key) {
-        Iterator<String> it = super.iterator();
         StringBuffer sb = new StringBuffer();
-        sb.append("(");
-        while (it.hasNext()) {
-            String value = it.next();
-            if (sb.length() > 1)
-                sb.append(and ? " AND " : " OR ");
-            sb.append(key + ":" + value);
+        if (list.size() > 0){
+            sb.append("(");
+            for (String value : list) {
+                if (sb.length() > 1)
+                    sb.append(and ? " AND " : " OR ");
+                sb.append(key + ":" + value);
+            }
+            sb.append(")");
         }
-        sb.append(")");
         return sb.toString();
     }
 
