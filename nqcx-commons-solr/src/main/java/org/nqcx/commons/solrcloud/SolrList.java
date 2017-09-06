@@ -6,7 +6,6 @@
 
 package org.nqcx.commons.solrcloud;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -29,7 +28,7 @@ public class SolrList extends ArrayList {
         this.and = and;
     }
 
-    public boolean isAnd() {
+    public boolean getAnd() {
         return and;
     }
 

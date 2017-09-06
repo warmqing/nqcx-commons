@@ -15,7 +15,6 @@ import org.nqcx.commons.solr.SolrSort;
 import org.nqcx.commons.util.date.DateFormatUtils;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Map;
 
 /**
