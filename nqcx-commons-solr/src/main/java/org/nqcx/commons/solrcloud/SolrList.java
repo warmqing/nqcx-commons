@@ -6,7 +6,6 @@
 
 package org.nqcx.commons.solrcloud;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
