@@ -57,7 +57,7 @@ public class SolrQueryBuilder {
                     if (solrNull.isTrue()) {
                         sb.append("-");
                     }
-                    sb.append(field.getKey() + "[\"\" TO * ]");
+                    sb.append(field.getKey() + ":" + "[\"\" TO * ]");
                 } else if (object instanceof SolrDate) {
                     SolrDate solrDate = (SolrDate) object;
 
