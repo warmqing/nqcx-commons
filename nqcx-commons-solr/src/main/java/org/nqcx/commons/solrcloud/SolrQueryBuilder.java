@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class SolrQueryBuilder {
 
-    private final static String SOLR_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:sss'Z'";
+    private final static String SOLR_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
     public static SolrQuery dto2query(DTO dto, SolrQuery query) {
 
