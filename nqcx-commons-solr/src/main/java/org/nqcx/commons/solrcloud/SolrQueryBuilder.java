@@ -15,6 +15,7 @@ import org.nqcx.commons.solr.SolrSort;
 import org.nqcx.commons.util.date.DateFormatUtils;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,8 +89,13 @@ public class SolrQueryBuilder {
         if (dto.getSort() != null && dto.getSort() instanceof SolrSort) {
             query.clearSorts();
             SolrSort ss = (SolrSort) dto.getSort();
-            for (SolrQuery.SortClause sc : ss.getSearchOrder()) {
-                query.addSort(sc);
+            List<SolrQuery.SortClause> sortClauseList = null;
+            if(ss != null && (sortClauseList = ss.getSearchOrder()) != null && sortClauseList.size() > 0) {
+                for (SolrQuery.SortClause sc : sortClauseList) {
+                    if(sc == null)
+                        continue;
+                    query.addSort(sc);
+                }
             }
         }
         return query;
