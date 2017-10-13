@@ -30,7 +30,7 @@ public class SolrCloudClientFactory {
      * @param newInstance
      * @return
      */
-    public CloudSolrClient getCloudSolrClient(SolrCollection collection, boolean newInstance) {
+    public CloudSolrClient getCloudSolrClient(SolrCloudCollection collection, boolean newInstance) {
 
         if (newInstance)
             return fillClientParams(new CloudSolrClient(zkHost), collection);
@@ -49,7 +49,7 @@ public class SolrCloudClientFactory {
      * @param collection
      * @return
      */
-    private CloudSolrClient fillClientParams(CloudSolrClient client, SolrCollection collection) {
+    private CloudSolrClient fillClientParams(CloudSolrClient client, SolrCloudCollection collection) {
         if (client == null)
             return null;
         client.setZkConnectTimeout(zkConnectTimeout);

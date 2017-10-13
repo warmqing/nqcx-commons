@@ -11,17 +11,11 @@ package org.nqcx.commons.solrcloud;
 /**
  * @author wangqing 17/8/18 上午11:05
  */
-public enum SolrCollection {
-    BOOK("book"), AUDIO("audio");
+public interface SolrCloudCollection {
 
-
-    private String colletion;
-
-    private SolrCollection(String colletion) {
-        this.colletion = colletion;
-    }
-
-    public String getColletion() {
-        return colletion;
-    }
+    /**
+     * 获取collection
+     * @return
+     */
+    String getColletion();
 }

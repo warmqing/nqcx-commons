@@ -23,7 +23,7 @@ import java.util.List;
  */
 public abstract class SolrCloudSupport {
 
-    public abstract SolrCollection getSolrCollection();
+    public abstract SolrCloudCollection getSolrCollection();
 
     public abstract SolrCloudClientFactory getSolrCloudClientFactory();
 
