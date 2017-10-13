@@ -17,6 +17,16 @@ import java.util.List;
  */
 public class SolrSort extends SortBO {
 
+    public SolrSort() {
+    }
+
+    public SolrSort(SortBO sortBO) {
+        if (sortBO == null)
+            return;
+        this.sort = sortBO.getSort();
+        this.fileds = sortBO.getFileds();
+    }
+
     /**
      * 取得搜索排序字段列表
      *
