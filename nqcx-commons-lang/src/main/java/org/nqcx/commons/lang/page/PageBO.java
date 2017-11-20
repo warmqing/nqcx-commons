@@ -24,7 +24,8 @@ public class PageBO extends EntityBO implements PageIO {
     private long page = 1L;
     // 每页显示记录数（默认值20）
     private long pageSize = 20L;
-
+    // 偏移值（默认值0）
+    private long offset = 0L;
     private long showPage = 10L; //每页显示页数
     private long[][] showArray; //二维长度为2  [*][1] 数值 [*][2]页类型 －1记录总数 0当前页 1上一页 2首页 3普通页 4末页 5下一页
 
@@ -149,6 +150,12 @@ public class PageBO extends EntityBO implements PageIO {
     }
 
     @Override
+    public PageIO setOffset(long offset) {
+        this.offset = offset;
+        return this;
+    }
+
+    @Override
     public PageIO setTotalCount(long totalCount) {
         calculate(0, 0, totalCount);
         return this;
@@ -175,8 +182,13 @@ public class PageBO extends EntityBO implements PageIO {
     }
 
     @Override
+    public long getOffset() {
+        return offset;
+    }
+
+    @Override
     public long getStartIndex() {
-        return (this.getPage() - 1) * this.getPageSize();
+        return (this.getPage() - 1) * this.getPageSize() + this.getOffset();
     }
 
     @Override
