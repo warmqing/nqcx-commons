@@ -33,11 +33,11 @@ public class PageBO extends EntityBO implements PageIO {
     }
 
     public PageBO(long _page) {
-        calculate(_page, 0, 0, 0);
+        calculate(_page, 0, 0, -1);
     }
 
     public PageBO(long _page, long _pageSize) {
-        calculate(_page, _pageSize, 0, 0);
+        calculate(_page, _pageSize, 0, -1);
     }
 
     /**
@@ -50,7 +50,7 @@ public class PageBO extends EntityBO implements PageIO {
             this.page = _page;
         if (_pageSize > 0)
             pageSize = _pageSize;
-        if (_offset > 0)
+        if (_offset >= 0)
             offset = _offset > totalCount ? totalCount : _offset;  //偏移量不能超过记录总数
         long totalPages = this.getTotalPage();
         // 当显示页为0时显示第一页
@@ -140,13 +140,13 @@ public class PageBO extends EntityBO implements PageIO {
 
     @Override
     public PageIO setPage(long page) {
-        calculate(page, 0, -1, 0);
+        calculate(page, 0, -1, -1);
         return this;
     }
 
     @Override
     public PageIO setPageSize(long pageSize) {
-        calculate(0, pageSize, -1, 0);
+        calculate(0, pageSize, -1, -1);
         return this;
     }
 
@@ -158,7 +158,7 @@ public class PageBO extends EntityBO implements PageIO {
 
     @Override
     public PageIO setTotalCount(long totalCount) {
-        calculate(0, 0, totalCount, 0);
+        calculate(0, 0, totalCount, -1);
         return this;
     }
 
