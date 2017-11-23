@@ -33,24 +33,25 @@ public class PageBO extends EntityBO implements PageIO {
     }
 
     public PageBO(long _page) {
-        calculate(_page, 0, 0);
+        calculate(_page, 0, 0, 0);
     }
 
     public PageBO(long _page, long _pageSize) {
-        calculate(_page, _pageSize, 0);
+        calculate(_page, _pageSize, 0, 0);
     }
 
     /**
      * calculate
      */
-    private void calculate(long _page, long _pageSize, long _totalCount) {
+    private void calculate(long _page, long _pageSize, long _totalCount, long _offset) {
         if (_totalCount >= 0)
             totalCount = _totalCount;
         if (_page > 0)
             this.page = _page;
         if (_pageSize > 0)
             pageSize = _pageSize;
-
+        if (_offset > 0)
+            offset = _offset > totalCount ? totalCount : _offset;  //偏移量不能超过记录总数
         long totalPages = this.getTotalPage();
         // 当显示页为0时显示第一页
         if (this.page <= 0)
@@ -139,25 +140,25 @@ public class PageBO extends EntityBO implements PageIO {
 
     @Override
     public PageIO setPage(long page) {
-        calculate(page, 0, -1);
+        calculate(page, 0, -1, 0);
         return this;
     }
 
     @Override
     public PageIO setPageSize(long pageSize) {
-        calculate(0, pageSize, -1);
+        calculate(0, pageSize, -1, 0);
         return this;
     }
 
     @Override
     public PageIO setOffset(long offset) {
-        this.offset = offset;
+        calculate(page, 0, -1, offset);
         return this;
     }
 
     @Override
     public PageIO setTotalCount(long totalCount) {
-        calculate(0, 0, totalCount);
+        calculate(0, 0, totalCount, 0);
         return this;
     }
 
@@ -168,7 +169,7 @@ public class PageBO extends EntityBO implements PageIO {
 
     @Override
     public long getTotalPage() {
-        return (totalCount + this.getPageSize() - 1) / this.getPageSize();
+        return (totalCount - this.getOffset() + this.getPageSize() - 1) / this.getPageSize();
     }
 
     @Override
@@ -193,7 +194,7 @@ public class PageBO extends EntityBO implements PageIO {
 
     @Override
     public long getEndIndex() {
-        return this.getPage() * this.getPageSize();
+        return this.getPage() * this.getPageSize() + this.getOffset();
     }
 
     @Override
@@ -226,7 +227,7 @@ public class PageBO extends EntityBO implements PageIO {
         pb.setTotalCount(188);
         pb.setPage(10);
         pb.setPageSize(55);
-
+        pb.setOffset(6);
         System.out.println(pb.getTotalPage());
         System.out.println(pb.getPageSize());
         System.out.println(pb.getPage());
