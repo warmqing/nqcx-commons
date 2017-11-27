@@ -51,7 +51,7 @@ public class PageBO extends EntityBO implements PageIO {
         if (_pageSize > 0)
             pageSize = _pageSize;
         if (_offset >= 0)
-            offset = _offset > totalCount ? totalCount : _offset;  //偏移量不能超过记录总数
+            offset = _offset;
         long totalPages = this.getTotalPage();
         // 当显示页为0时显示第一页
         if (this.page <= 0)
@@ -169,7 +169,7 @@ public class PageBO extends EntityBO implements PageIO {
 
     @Override
     public long getTotalPage() {
-        return (totalCount - this.getOffset() + this.getPageSize() - 1) / this.getPageSize();
+        return ((totalCount - this.getOffset() > 0 ? totalCount - this.getOffset() : 0) + this.getPageSize() - 1) / this.getPageSize();
     }
 
     @Override
