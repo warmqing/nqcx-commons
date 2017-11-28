@@ -23,8 +23,6 @@ import org.springframework.context.NoSuchMessageException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.*;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
@@ -466,6 +464,7 @@ public abstract class WebSupport {
         mapBuilder.put("totalCount", pageIO.getTotalCount());
         mapBuilder.put("pageSize", pageIO.getPageSize());
         mapBuilder.put("totalPage", pageIO.getTotalPage());
+        mapBuilder.put("offset", pageIO.getOffset());
     }
 
     // ========================================================================
