@@ -466,6 +466,7 @@ public abstract class WebSupport {
         mapBuilder.put("totalCount", pageIO.getTotalCount());
         mapBuilder.put("pageSize", pageIO.getPageSize());
         mapBuilder.put("totalPage", pageIO.getTotalPage());
+        mapBuilder.put("offset", pageIO.getOffset());
     }
 
     // ========================================================================
