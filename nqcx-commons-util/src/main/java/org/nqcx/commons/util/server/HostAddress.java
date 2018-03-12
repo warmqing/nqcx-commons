@@ -90,6 +90,24 @@ public class HostAddress {
     }
 
     /**
+     * ipv4 all string
+     *
+     * @return
+     */
+    public static String ipv4AllString() {
+        StringBuilder ipsBuilder = new StringBuilder();
+
+        Set<String> ips = ipv4All();
+        while (!ips.isEmpty() && ips.iterator().hasNext()) {
+            if (ipsBuilder.length() != 0)
+                ipsBuilder.append(",");
+            ipsBuilder.append(ips.iterator().next());
+        }
+
+        return ipsBuilder.length() == 0 ? IPV4_LOCAL : ipsBuilder.toString();
+    }
+
+    /**
      * ipv6 all
      *
      * @return set

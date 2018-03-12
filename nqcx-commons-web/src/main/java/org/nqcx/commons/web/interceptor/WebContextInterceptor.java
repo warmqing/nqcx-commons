@@ -1,6 +1,6 @@
-/* 
- * Copyright 2014 nqcx.org All right reserved. This software is the 
- * confidential and proprietary information of nqcx.org ("Confidential 
+/*
+ * Copyright 2014 nqcx.org All right reserved. This software is the
+ * confidential and proprietary information of nqcx.org ("Confidential
  * Information"). You shall not disclose such Confidential Information and shall
  * use it only in accordance with the terms of the license agreement you entered
  * into with nqcx.org.
@@ -10,6 +10,7 @@ package org.nqcx.commons.web.interceptor;
 
 import org.nqcx.commons.lang.consts.LoggerConst;
 import org.nqcx.commons.util.StringUtils;
+import org.nqcx.commons.util.server.HostAddress;
 import org.nqcx.commons.web.WebContext;
 import org.nqcx.commons.web.WebSupport;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class WebContextInterceptor extends WebSupport implements HandlerInterceptor {
 
-    private final static Logger logger = LoggerFactory.getLogger(WebContextInterceptor.class);
+    //    private final static Logger logger = LoggerFactory.getLogger(WebContextInterceptor.class);
     private final static Logger access_logger = LoggerFactory.getLogger(LoggerConst.LOGGER_ACCESS_NAME);
 
     protected static final String XHR_OBJECT_NAME = "XMLHttpRequest";
@@ -35,6 +36,8 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     protected static final String HEADER_REAL_IP = "X-Real-IP";
 
     protected LocaleResolver localeResolver;
+    protected String serverAddr = HostAddress.ipv4AllString();
+    protected String webAppName = "none";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -81,18 +84,14 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         // 取 userAgent
         webContext.setUserAgent(request.getHeader("User-Agent"));
 
-        access_logger.info("remoteAddr: {}, method: {}, scheme: {}, secure: {}, isAjax: {}, uri: {}, locale: {}, sessionId: {}, url: {}, referer: {}, User-Agent: {}",
-                webContext.getRemoteAddr(),
-                webContext.getMethod(),
-                webContext.getScheme(),
-                webContext.isSecure(),
-                webContext.isAjax(),
-                webContext.getRequestURI(),
-                webContext.getLocale(),
-                webContext.getSessionId(),
-                webContext.getUrl(),
-                webContext.getReferer(),
-                webContext.getUserAgent());
+        access_logger.info("{serverAddr: \"{}\", webAppName: \"{}\"," +
+                        " remoteAddr: \"{}\", method: \"{}\", scheme: \"{}\", secure: \"{}\", isAjax: \"{}\"," +
+                        " uri: \"{}\", locale: \"{}\", sessionId: \"{}\", url: \"{}\"," +
+                        " referer: \"{}\", User-Agent: \"{}\"}",
+                serverAddr, webAppName,
+                webContext.getRemoteAddr(), webContext.getMethod(), webContext.getScheme(), webContext.isSecure(), webContext.isAjax(),
+                webContext.getRequestURI(), webContext.getLocale(), webContext.getSessionId(), webContext.getUrl(),
+                webContext.getReferer(), webContext.getUserAgent());
 
         return true;
     }
@@ -121,7 +120,7 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip))
             ip = request.getRemoteAddr();
 
-        if (StringUtils.isNotBlank(ip) && ip.indexOf(",") != -1)
+        if (StringUtils.isNotBlank(ip) && ip.contains(","))
             ip = ip.substring(ip.lastIndexOf(",") + 1, ip.length()).trim();
 
         return ip;
@@ -140,9 +139,18 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     /**
      * 用于配置文件中配置注入
      *
-     * @param localeResolver
+     * @param localeResolver localeResolver
      */
     public void setLocaleResolver(LocaleResolver localeResolver) {
         this.localeResolver = localeResolver;
+    }
+
+    /**
+     * 用于配置文件中配置注入
+     *
+     * @param webAppName 应用名称
+     */
+    public void setWebAppName(String webAppName) {
+        this.webAppName = webAppName;
     }
 }
