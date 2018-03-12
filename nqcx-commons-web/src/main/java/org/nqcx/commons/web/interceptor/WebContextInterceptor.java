@@ -10,7 +10,6 @@ package org.nqcx.commons.web.interceptor;
 
 import org.nqcx.commons.lang.consts.LoggerConst;
 import org.nqcx.commons.util.StringUtils;
-import org.nqcx.commons.util.server.HostAddress;
 import org.nqcx.commons.web.WebContext;
 import org.nqcx.commons.web.WebSupport;
 import org.slf4j.Logger;
@@ -21,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static org.nqcx.commons.util.StringUtils.*;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:50:15
@@ -86,8 +87,8 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
                         " uri: \"{}\", locale: \"{}\", sessionId: \"{}\", url: \"{}\"," +
                         " referer: \"{}\", User-Agent: \"{}\"",
                 webContext.getRemoteAddr(), webContext.getMethod(), webContext.getScheme(), webContext.isSecure(), webContext.isAjax(),
-                webContext.getRequestURI(), webContext.getLocale(), webContext.getSessionId(), webContext.getUrl(),
-                webContext.getReferer(), webContext.getUserAgent());
+                webContext.getRequestURI(), webContext.getLocale(), trimToEmpty(webContext.getSessionId()), webContext.getUrl(),
+                trimToEmpty(webContext.getReferer()), trimToEmpty(webContext.getUserAgent()));
 
         return true;
     }
