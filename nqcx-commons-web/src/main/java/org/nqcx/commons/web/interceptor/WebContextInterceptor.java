@@ -36,8 +36,6 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     protected static final String HEADER_REAL_IP = "X-Real-IP";
 
     protected LocaleResolver localeResolver;
-    protected String serverAddr = HostAddress.ipv4AllString();
-    protected String webAppName = "none";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -84,11 +82,9 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         // 取 userAgent
         webContext.setUserAgent(request.getHeader("User-Agent"));
 
-        access_logger.info("{serverAddr: \"{}\", webAppName: \"{}\"," +
-                        " remoteAddr: \"{}\", method: \"{}\", scheme: \"{}\", secure: \"{}\", isAjax: \"{}\"," +
+        access_logger.info("remoteAddr: \"{}\", method: \"{}\", scheme: \"{}\", secure: \"{}\", isAjax: \"{}\"," +
                         " uri: \"{}\", locale: \"{}\", sessionId: \"{}\", url: \"{}\"," +
                         " referer: \"{}\", User-Agent: \"{}\"}",
-                serverAddr, webAppName,
                 webContext.getRemoteAddr(), webContext.getMethod(), webContext.getScheme(), webContext.isSecure(), webContext.isAjax(),
                 webContext.getRequestURI(), webContext.getLocale(), webContext.getSessionId(), webContext.getUrl(),
                 webContext.getReferer(), webContext.getUserAgent());
@@ -143,14 +139,5 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
      */
     public void setLocaleResolver(LocaleResolver localeResolver) {
         this.localeResolver = localeResolver;
-    }
-
-    /**
-     * 用于配置文件中配置注入
-     *
-     * @param webAppName 应用名称
-     */
-    public void setWebAppName(String webAppName) {
-        this.webAppName = webAppName;
     }
 }
