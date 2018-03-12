@@ -89,6 +89,7 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
                 webContext.getRemoteAddr(), webContext.getMethod(), webContext.getScheme(), webContext.isSecure(), webContext.isAjax(),
                 webContext.getRequestURI(), webContext.getLocale(), trimToEmpty(webContext.getSessionId()), webContext.getUrl(),
                 trimToEmpty(webContext.getReferer()), trimToEmpty(webContext.getUserAgent()));
+        
         return true;
     }
 
