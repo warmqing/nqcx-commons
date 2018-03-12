@@ -84,7 +84,7 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
 
         access_logger.info("remoteAddr: \"{}\", method: \"{}\", scheme: \"{}\", secure: \"{}\", isAjax: \"{}\"," +
                         " uri: \"{}\", locale: \"{}\", sessionId: \"{}\", url: \"{}\"," +
-                        " referer: \"{}\", User-Agent: \"{}\"}",
+                        " referer: \"{}\", User-Agent: \"{}\"",
                 webContext.getRemoteAddr(), webContext.getMethod(), webContext.getScheme(), webContext.isSecure(), webContext.isAjax(),
                 webContext.getRequestURI(), webContext.getLocale(), webContext.getSessionId(), webContext.getUrl(),
                 webContext.getReferer(), webContext.getUserAgent());
