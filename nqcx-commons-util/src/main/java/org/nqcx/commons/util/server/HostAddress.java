@@ -21,10 +21,10 @@ public class HostAddress {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HostAddress.class);
 
-    private final static String IPV4_LOCAL = "127.0.0.1";
-    private final static String IPV4_ALL = "127.0.0.1";
-    private final static String IPV6_LOCAL = "0:0:0:0:0:0:0:1";
-    private final static String IPV6_ALL = "0:0:0:0:0:0:0:0";
+    public final static String IPV4_LOCAL = "127.0.0.1";
+    public final static String IPV4_ALL = "127.0.0.1";
+    public final static String IPV6_LOCAL = "0:0:0:0:0:0:0:1";
+    public final static String IPV6_ALL = "0:0:0:0:0:0:0:0";
 
     /**
      * 取得全部IP地址

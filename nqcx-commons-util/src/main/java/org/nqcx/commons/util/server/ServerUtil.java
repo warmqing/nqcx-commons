@@ -11,12 +11,6 @@ package org.nqcx.commons.util.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -34,8 +28,9 @@ public class ServerUtil {
     public static String serverIp() {
         String serverip = "0.0.0.0";
         try {
-            InetAddress inet = InetAddress.getLocalHost();
-            serverip = inet.getHostAddress();
+            Set<String> ips = HostAddress.ipv4All();
+            if (!ips.isEmpty())
+                return ips.iterator().next();
         } catch (Exception e) {
             logger.error("", e);
         }
@@ -48,25 +43,7 @@ public class ServerUtil {
      * @return
      */
     public static Set<String> serverIps() {
-        try {
-            Set<String> ips = new HashSet<String>();
-            Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
-            InetAddress ip = null;
-            while (allNetInterfaces.hasMoreElements()) {
-                NetworkInterface netInterface = allNetInterfaces.nextElement();
-                Enumeration<InetAddress> addresses = netInterface.getInetAddresses();
-                while (addresses.hasMoreElements()) {
-                    ip = addresses.nextElement();
-                    if (ip != null && ip instanceof Inet4Address) {
-                        ips.add(ip.getHostAddress());
-                    }
-                }
-            }
-            return ips;
-        } catch (SocketException e) {
-            logger.error("", e);
-        }
-        return null;
+        return HostAddress.ipv4All();
     }
 
     public static void main(String[] args) {
