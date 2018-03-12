@@ -90,7 +90,6 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
                 webContext.getRequestURI(), webContext.getLocale(), trimToEmpty(webContext.getSessionId()), webContext.getUrl(),
                 trimToEmpty(webContext.getReferer()), trimToEmpty(webContext.getUserAgent()));
 
-
         return true;
     }
 
