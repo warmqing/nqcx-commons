@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.net.*;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -97,11 +98,11 @@ public class HostAddress {
     public static String ipv4AllString() {
         StringBuilder ipsBuilder = new StringBuilder();
 
-        Set<String> ips = ipv4All();
-        while (!ips.isEmpty() && ips.iterator().hasNext()) {
+        Iterator<String> it = ipv4All().iterator();
+        while (it.hasNext()) {
             if (ipsBuilder.length() != 0)
                 ipsBuilder.append(",");
-            ipsBuilder.append(ips.iterator().next());
+            ipsBuilder.append(it.next());
         }
 
         return ipsBuilder.length() == 0 ? IPV4_LOCAL : ipsBuilder.toString();
@@ -120,6 +121,7 @@ public class HostAddress {
     public static void main(String[] args) {
         System.out.println("all: " + all());
         System.out.println("IPv4 all: " + ipv4All());
+        System.out.println("IPv4 all string: " + ipv4AllString());
         System.out.println("IPv4: " + ipv4());
         System.out.println("IPv6 all: " + ipv6All());
     }
