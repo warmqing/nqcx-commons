@@ -83,13 +83,13 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         // 取 userAgent
         webContext.setUserAgent(request.getHeader("User-Agent"));
 
-        access_logger.info("\"remoteAddr\": \"{}\", \"method\": \"{}\", \"scheme\": \"{}\", \"secure\": \"{}\", \"isAjax\": \"{}\"," +
-                        " \"uri\": \"{}\", \"locale\": \"{}\", \"sessionId\": \"{}\", \"url\": \"{}\"," +
-                        " \"referer\": \"{}\", \"User-Agent\": \"{}\"",
-                webContext.getRemoteAddr(), webContext.getMethod(), webContext.getScheme(), webContext.isSecure(), webContext.isAjax(),
-                webContext.getRequestURI(), webContext.getLocale(), trimToEmpty(webContext.getSessionId()), webContext.getUrl(),
-                trimToEmpty(webContext.getReferer()), trimToEmpty(webContext.getUserAgent()));
-        
+        access_logger.info("\"remoteAddr\": \"{}\", \"serverName\": \"{}\", \"method\": \"{}\", \"scheme\": \"{}\", \"secure\": \"{}\"," +
+                        " \"isAjax\": \"{}\", \"uri\": \"{}\", \"locale\": \"{}\", \"sessionId\": \"{}\"," +
+                        " \"url\": \"{}\", \"referer\": \"{}\", \"User-Agent\": \"{}\"",
+                webContext.getRemoteAddr(), webContext.getServerName(), webContext.getMethod(), webContext.getScheme(), webContext.isSecure(),
+                webContext.isAjax(), webContext.getRequestURI(), webContext.getLocale(), trimToEmpty(webContext.getSessionId()),
+                webContext.getUrl(), trimToEmpty(webContext.getReferer()), trimToEmpty(webContext.getUserAgent()));
+
         return true;
     }
 
