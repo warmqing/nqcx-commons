@@ -11,7 +11,7 @@
     <artifactId>nqcx-commons-3rd</artifactId>
     <packaging>jar</packaging>
 
-    <name>ca-commons-3rd</name>
+    <name>nqcx-commons-3rd</name>
     <url>http://nqcx.org</url>
 
     <dependencies>
