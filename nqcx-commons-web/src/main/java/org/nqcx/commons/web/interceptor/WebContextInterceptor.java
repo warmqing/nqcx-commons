@@ -28,7 +28,6 @@ import static org.nqcx.commons.util.StringUtils.*;
  */
 public class WebContextInterceptor extends WebSupport implements HandlerInterceptor {
 
-    //    private final static Logger logger = LoggerFactory.getLogger(WebContextInterceptor.class);
     private final static Logger access_logger = LoggerFactory.getLogger(LoggerConst.LOGGER_ACCESS_NAME);
 
     protected static final String XHR_OBJECT_NAME = "XMLHttpRequest";
@@ -41,7 +40,7 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         WebContext.remove();
-        WebContext webContext = getWebContext();
+        WebContext webContext = getWebContext().start();
 
         // 取 scheme
         webContext.setScheme(request.getScheme());
@@ -82,13 +81,6 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         webContext.setReferer(request.getHeader("referer"));
         // 取 userAgent
         webContext.setUserAgent(request.getHeader("User-Agent"));
-
-        access_logger.info("\"remoteAddr\": \"{}\", \"serverName\": \"{}\", \"method\": \"{}\", \"scheme\": \"{}\", \"secure\": \"{}\"," +
-                        " \"isAjax\": \"{}\", \"uri\": \"{}\", \"locale\": \"{}\", \"sessionId\": \"{}\"," +
-                        " \"url\": \"{}\", \"referer\": \"{}\", \"User-Agent\": \"{}\"",
-                webContext.getRemoteAddr(), webContext.getServerName(), webContext.getMethod(), webContext.getScheme(), webContext.isSecure(),
-                webContext.isAjax(), webContext.getRequestURI(), webContext.getLocale(), trimToEmpty(webContext.getSessionId()),
-                webContext.getUrl(), trimToEmpty(webContext.getReferer()), trimToEmpty(webContext.getUserAgent()));
 
         return true;
     }
@@ -131,6 +123,17 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
                                 Object handler, Exception ex) throws Exception {
+        WebContext webContext = getWebContext().end();
+
+        access_logger.info("\"start\": \"{}\", \"end\": \"{}\", \"remoteAddr\": \"{}\", \"serverName\": \"{}\"," +
+                        " \"method\": \"{}\", \"scheme\": \"{}\", \"secure\": \"{}\"," +
+                        " \"isAjax\": \"{}\", \"uri\": \"{}\", \"locale\": \"{}\", \"sessionId\": \"{}\"," +
+                        " \"url\": \"{}\", \"referer\": \"{}\", \"data\": \"{}\", \"User-Agent\": \"{}\"",
+                webContext.getStart(), webContext.getEnd(), webContext.getRemoteAddr(), webContext.getServerName(),
+                webContext.getMethod(), webContext.getScheme(), webContext.isSecure(), webContext.isAjax(),
+                webContext.getRequestURI(), webContext.getLocale(), trimToEmpty(webContext.getSessionId()),
+                webContext.getUrl(), trimToEmpty(webContext.getReferer()), trimToEmpty(webContext.getData()),
+                trimToEmpty(webContext.getUserAgent()));
     }
 
     /**

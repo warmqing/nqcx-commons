@@ -1,6 +1,6 @@
-/* 
- * Copyright 2014 nqcx.org All right reserved. This software is the 
- * confidential and proprietary information of nqcx.org ("Confidential 
+/*
+ * Copyright 2014 nqcx.org All right reserved. This software is the
+ * confidential and proprietary information of nqcx.org ("Confidential
  * Information"). You shall not disclose such Confidential Information and shall
  * use it only in accordance with the terms of the license agreement you entered
  * into with nqcx.org.
@@ -8,6 +8,7 @@
 
 package org.nqcx.commons.web;
 
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -42,6 +43,10 @@ public class WebContext {
     private String url;
     private String referer;
     private String userAgent;
+
+    private long start; // 开始时间
+    private long end; //结束时间
+    private String data; // 其它数据
 
     public String getScheme() {
         return scheme;
@@ -179,12 +184,46 @@ public class WebContext {
         this.userAgent = userAgent;
     }
 
+    public long getStart() {
+        return start;
+    }
+
+    public void setStart(long start) {
+        this.start = start;
+    }
+
+    public long getEnd() {
+        return end;
+    }
+
+    public void setEnd(long end) {
+        this.end = end;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     public static void setWebContext(WebContext webContext) {
         holder.set(webContext);
     }
 
     public static WebContext getWebContext() {
         return holder.get();
+    }
+
+    public WebContext start() {
+        this.start = (new Date()).getTime();
+        return this;
+    }
+
+    public WebContext end() {
+        this.end = (new Date()).getTime();
+        return this;
     }
 
     public static void remove() {
