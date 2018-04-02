@@ -214,6 +214,8 @@ public class WebContext {
 
         if (this.data != null && this.data.length() > 0)
             this.data += ", ";
+        else
+            this.data = "";
         this.data += data;
     }
 
