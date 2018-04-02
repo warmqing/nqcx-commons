@@ -208,6 +208,15 @@ public class WebContext {
         this.data = data;
     }
 
+    public void appendData(String data) {
+        if (data == null || data.length() == 0)
+            return;
+
+        if (this.data != null && this.data.length() > 0)
+            this.data += ", ";
+        this.data += data;
+    }
+
     public static void setWebContext(WebContext webContext) {
         holder.set(webContext);
     }
