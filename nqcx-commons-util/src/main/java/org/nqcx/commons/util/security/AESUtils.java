@@ -12,10 +12,13 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
+import java.security.SecureRandom;
 
 /**
  * @author naqichuan 2014年8月14日 上午11:49:38
@@ -97,17 +100,28 @@ public class AESUtils {
      * @throws Exception
      */
     public static byte[] encrypt(byte[] bytes, String key) {
+        return (bytes == null || key == null) ? null : encrypt(bytes, key.getBytes());
+    }
+
+    /**
+     * 加密
+     *
+     * @param bytes
+     * @param keyBytes
+     * @return
+     * @throws Exception
+     */
+    public static byte[] encrypt(byte[] bytes, byte[] keyBytes) {
         byte[] byteFina = null;
         Cipher cipher;
         try {
             cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, getKey(key));
+            cipher.init(Cipher.ENCRYPT_MODE, getKey(keyBytes));
             byteFina = cipher.doFinal(bytes);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            cipher = null;
         }
+
         return byteFina;
     }
 
@@ -179,36 +193,47 @@ public class AESUtils {
      * @throws Exception
      */
     public static byte[] decrypt(byte[] bytes, String key) {
+        return (bytes == null || key == null) ? null : decrypt(bytes, key.getBytes());
+    }
+
+    /**
+     * 解密
+     *
+     * @param bytes
+     * @param keyBytes
+     * @return
+     * @throws Exception
+     */
+    public static byte[] decrypt(byte[] bytes, byte[] keyBytes) {
         byte[] byteFina = null;
         Cipher cipher;
         try {
             cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, getKey(key));
+            cipher.init(Cipher.DECRYPT_MODE, getKey(keyBytes));
             byteFina = cipher.doFinal(bytes);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            cipher = null;
         }
+
         return byteFina;
     }
 
     /**
-     * @param key
-     * @return
+     * @param keyBytes keyBytes
+     * @return kye
      */
-    private static Key getKey(String key) {
-        if (key == null || key.length() == 0)
-            key = DEFAULT_KEY;
+    private static Key getKey(byte[] keyBytes) {
+        if (keyBytes == null || keyBytes.length == 0)
+            keyBytes = DEFAULT_KEY.getBytes();
         try {
-            return new SecretKeySpec(key.getBytes(), "AES");
+            return new SecretKeySpec(keyBytes, "AES");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 //        HashMap<String, Object> map = new HashMap<String, Object>();
 //        map.put("bookId", "1111112");
 //        map.put("bs", "basic");
@@ -225,5 +250,5 @@ public class AESUtils {
         System.out.println(bb);
         String aa = decryptBase64("HjBJmW/HNCPn/layAatb4g==", "1IphGIeSwIOPRLlX");
         System.out.println(aa);
-       }
+    }
 }
