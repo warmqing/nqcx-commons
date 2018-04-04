@@ -31,6 +31,7 @@ public class WebContext {
     private String contextPath;
     private String servletPath;
     private String requestURI;
+    private String params;
     private StringBuffer requestURL;
 
     private String realPath;
@@ -103,6 +104,14 @@ public class WebContext {
 
     public void setRequestURI(String requestURI) {
         this.requestURI = requestURI;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 
     public StringBuffer getRequestURL() {

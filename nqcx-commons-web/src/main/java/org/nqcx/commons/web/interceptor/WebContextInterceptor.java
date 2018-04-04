@@ -21,6 +21,12 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.Map;
+
 import static org.nqcx.commons.util.StringUtils.*;
 
 /**
@@ -28,7 +34,8 @@ import static org.nqcx.commons.util.StringUtils.*;
  */
 public class WebContextInterceptor extends WebSupport implements HandlerInterceptor {
 
-    private final static Logger access_logger = LoggerFactory.getLogger(LoggerConst.LOGGER_ACCESS_NAME);
+    private final static Logger ACCESS_LOGGER = LoggerFactory.getLogger(LoggerConst.LOGGER_ACCESS_NAME);
+    private final static Logger LOGGER = LoggerFactory.getLogger(WebContextInterceptor.class);
 
     protected static final String XHR_OBJECT_NAME = "XMLHttpRequest";
     protected static final String HEADER_REQUEST_WITH = "x-requested-with";
@@ -37,57 +44,95 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
 
     protected LocaleResolver localeResolver;
 
+
+    /*
+     * ========================================================================
+     * ===================          以下是拦截器方法       ======================
+     * ========================================================================
+     */
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         WebContext.remove();
-        WebContext webContext = getWebContext().start();
+        WebContext wc = getWebContext().start();
 
         // 取 scheme
-        webContext.setScheme(request.getScheme());
+        wc.setScheme(request.getScheme());
         // 取 secure
-        webContext.setSecure(request.isSecure());
+        wc.setSecure(request.isSecure());
         // 取 server name
-        webContext.setServerName(request.getServerName());
+        wc.setServerName(request.getServerName());
         // 取 port
-        webContext.setPort(request.getServerPort());
+        wc.setPort(request.getServerPort());
         // 取 contextPath
-        webContext.setContextPath(request.getContextPath());
+        wc.setContextPath(request.getContextPath());
         // 取 servletPath
-        webContext.setServletPath(request.getServletPath());
+        wc.setServletPath(request.getServletPath());
         // 取 requestURI
-        webContext.setRequestURI(request.getRequestURI());
+        wc.setRequestURI(request.getRequestURI());
+        // 取 params
+        wc.setParams(getParamsFromRequest(request));
         // 取 requestURL
-        webContext.setRequestURL(request.getRequestURL());
+        wc.setRequestURL(request.getRequestURL());
 
         // 取 realPath
-        webContext.setRealPath(request.getSession().getServletContext().getRealPath("/"));
+        wc.setRealPath(request.getSession().getServletContext().getRealPath("/"));
 
         // 取 remoteAddr
-        webContext.setRemoteAddr(this.getRemoteAddrFromRequest(request));
+        wc.setRemoteAddr(this.getRemoteAddrFromRequest(request));
         // 取 method
-        webContext.setMethod(request.getMethod());
+        wc.setMethod(request.getMethod());
         // 判断是否 ajax 访问
-        webContext.setAjax(this.isAjaxFromRequest(request));
+        wc.setAjax(this.isAjaxFromRequest(request));
         // 取 locale
-        webContext.setLocale(localeResolver == null ? null : localeResolver.resolveLocale(request));
+        wc.setLocale(localeResolver == null ? null : localeResolver.resolveLocale(request));
         // 取 sessionId
-        webContext.setSessionId(request.getRequestedSessionId());
+        wc.setSessionId(request.getRequestedSessionId());
         // 取 url
         StringBuffer url = new StringBuffer(request.getRequestURL());
         if (request.getQueryString() != null)
             url.append("?").append(request.getQueryString());
-        webContext.setUrl(url.toString());
+        wc.setUrl(url.toString());
         // 取 referer
-        webContext.setReferer(request.getHeader("referer"));
+        wc.setReferer(request.getHeader("referer"));
         // 取 userAgent
-        webContext.setUserAgent(request.getHeader("User-Agent"));
+        wc.setUserAgent(request.getHeader("User-Agent"));
 
         return true;
     }
 
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response,
+                           Object handler, ModelAndView modelAndView) {
+        getWebContext().post();
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+                                Object handler, Exception ex) {
+        WebContext wc = getWebContext().end();
+
+        ACCESS_LOGGER.info("\"start\": \"{}\", \"post\": \"{}\",  \"end\": \"{}\", \"remoteAddr\": \"{}\"," +
+                        " \"serverName\": \"{}\", \"method\": \"{}\", \"scheme\": \"{}\", \"secure\": \"{}\"," +
+                        " \"isAjax\": \"{}\", \"uri\": \"{}\", \"locale\": \"{}\", \"sessionId\": \"{}\"," +
+                        " \"url\": \"{}\", \"referer\": \"{}\", \"params\": \"{}\"," +
+                        " \"data\": \"{}\", \"User-Agent\": \"{}\"",
+                wc.getStart(), wc.getPost(), wc.getEnd(), wc.getRemoteAddr(),
+                wc.getServerName(), wc.getMethod(), wc.getScheme(), wc.isSecure(),
+                wc.isAjax(), wc.getRequestURI(), wc.getLocale(), trimToEmpty(wc.getSessionId()),
+                wc.getUrl(), trimToEmpty(wc.getReferer()), trimToEmpty(wc.getParams()),
+                trimToEmpty(wc.getData()), trimToEmpty(wc.getUserAgent()));
+    }
+
+    /*
+     * ========================================================================
+     * ===================       以下是 request 处理方法       ==================
+     * ========================================================================
+     */
+
     /**
-     * @param request
-     * @return
+     * @param request request
+     * @return boolean
      * @author naqichuan Oct 14, 2013 4:04:03 PM
      */
     protected boolean isAjaxFromRequest(HttpServletRequest request) {
@@ -115,27 +160,90 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         return ip;
     }
 
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response,
-                           Object handler, ModelAndView modelAndView) {
-        getWebContext().post();
+    /**
+     * 取参数表
+     *
+     * @param request request
+     * @return string
+     */
+    protected String getParamsFromRequest(HttpServletRequest request) {
+        StringBuilder query = new StringBuilder();
+
+        appendParamsString(query, parseParamsFromRequest(request), false, false);
+
+        if (query.length() > 0 && query.indexOf("&") == 0)
+            query.replace(0, 1, "");
+
+        return query.toString();
     }
 
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) {
-        WebContext webContext = getWebContext().end();
+    /**
+     * 生成参数字符串
+     *
+     * @param query       query
+     * @param map         map
+     * @param ignoreEmpty 忽略空值（""）
+     * @param isEncode    是否进行编码
+     */
+    protected void appendParamsString(StringBuilder query, Map<String, String[]> map, boolean ignoreEmpty, boolean isEncode) {
+        if (map == null || query == null)
+            return;
 
-        access_logger.info("\"start\": \"{}\", \"end\": \"{}\", \"remoteAddr\": \"{}\", \"serverName\": \"{}\"," +
-                        " \"method\": \"{}\", \"scheme\": \"{}\", \"secure\": \"{}\"," +
-                        " \"isAjax\": \"{}\", \"uri\": \"{}\", \"locale\": \"{}\", \"sessionId\": \"{}\"," +
-                        " \"url\": \"{}\", \"referer\": \"{}\", \"data\": \"{}\", \"User-Agent\": \"{}\"",
-                webContext.getStart(), webContext.getEnd(), webContext.getRemoteAddr(), webContext.getServerName(),
-                webContext.getMethod(), webContext.getScheme(), webContext.isSecure(), webContext.isAjax(),
-                webContext.getRequestURI(), webContext.getLocale(), trimToEmpty(webContext.getSessionId()),
-                webContext.getUrl(), trimToEmpty(webContext.getReferer()), trimToEmpty(webContext.getData()),
-                trimToEmpty(webContext.getUserAgent()));
+        for (Map.Entry<String, String[]> entry : map.entrySet()) {
+            final String key = entry.getKey();
+            String[] value = entry.getValue();
+            if (value == null)
+                continue;
+
+            for (final String v : value) {
+                appendParamsString(query, key, v, ignoreEmpty, isEncode);
+            }
+        }
     }
+
+    /**
+     * 生成参数字符串
+     *
+     * @param query       query
+     * @param key         key
+     * @param value       value
+     * @param ignoreEmpty 忽略空值（""）
+     * @param isEncode    是否进行编码
+     */
+    protected void appendParamsString(StringBuilder query, String key, String value, boolean ignoreEmpty, boolean isEncode) {
+        if (value == null)
+            return;
+
+        String v = String.valueOf(value);
+        if (ignoreEmpty && StringUtils.isBlank(v))
+            return;
+
+        query.append("&").append(key).append("=").append(isEncode ? encodeValue(v, Charset.forName(DEFAULT_CHARSET_NAME)) : v);
+    }
+
+    /**
+     * 字符串进行 url 编码
+     *
+     * @param value   value
+     * @param charset charset
+     * @return string
+     */
+    protected String encodeValue(String value, Charset charset) {
+        try {
+            if (value != null && value.length() > 0)
+                return URLEncoder.encode(value, charset == null ? Charset.defaultCharset().name() : charset.name());
+        } catch (UnsupportedEncodingException e) {
+            // Nothing to do
+            LOGGER.warn(e.getMessage());
+        }
+        return value;
+    }
+
+    /*
+     * ========================================================================
+     * ===================        以下是注入处理方法       ======================
+     * ========================================================================
+     */
 
     /**
      * 用于配置文件中配置注入
