@@ -117,12 +117,13 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response,
-                           Object handler, ModelAndView modelAndView) throws Exception {
+                           Object handler, ModelAndView modelAndView) {
+        getWebContext().post();
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) throws Exception {
+                                Object handler, Exception ex) {
         WebContext webContext = getWebContext().end();
 
         access_logger.info("\"start\": \"{}\", \"end\": \"{}\", \"remoteAddr\": \"{}\", \"serverName\": \"{}\"," +

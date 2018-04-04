@@ -44,8 +44,9 @@ public class WebContext {
     private String referer;
     private String userAgent;
 
-    private long start; // 开始时间
-    private long end; //结束时间
+    private long start; // 开始时间，before HandlerAdapter invokes the handler
+    private long post; // 业务时间，Before the DispatcherServlet renders the view
+    private long end; //结束时间，After rendering the view
     private String data; // 其它数据
 
     public String getScheme() {
@@ -196,6 +197,14 @@ public class WebContext {
         return end;
     }
 
+    public long getPost() {
+        return post;
+    }
+
+    public void setPost(long post) {
+        this.post = post;
+    }
+
     public void setEnd(long end) {
         this.end = end;
     }
@@ -229,6 +238,11 @@ public class WebContext {
 
     public WebContext start() {
         this.start = (new Date()).getTime();
+        return this;
+    }
+
+    public WebContext post() {
+        this.post = (new Date()).getTime();
         return this;
     }
 
