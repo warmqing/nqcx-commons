@@ -1,6 +1,6 @@
-/* 
- * Copyright 2014 nqcx.org All right reserved. This software is the 
- * confidential and proprietary information of nqcx.org ("Confidential 
+/*
+ * Copyright 2014 nqcx.org All right reserved. This software is the
+ * confidential and proprietary information of nqcx.org ("Confidential
  * Information"). You shall not disclose such Confidential Information and shall
  * use it only in accordance with the terms of the license agreement you entered
  * into with nqcx.org.
@@ -13,6 +13,7 @@ import org.nqcx.commons.web.login.LoginContext;
 import org.nqcx.commons.web.url.UrlBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,6 +62,16 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
         logger.info("Account [" + loginContext.getAccount() + "] check login true!");
 
         return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+        // ignore
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        // ignore
     }
 
     /**
