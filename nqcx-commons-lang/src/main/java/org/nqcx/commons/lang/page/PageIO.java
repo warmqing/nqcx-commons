@@ -34,6 +34,12 @@ public interface PageIO {
     PageIO setPageSize(long pageSize);
 
     /**
+     * @param offset 起始偏移值
+     * @return
+     */
+    PageIO setOffset(long offset);
+
+    /**
      * 取得记录总数
      *
      * @return 返回 long 型的记录总数
@@ -60,6 +66,13 @@ public interface PageIO {
      * @return 每页记录数
      */
     long getPageSize();
+
+    /**
+     * 取得起始偏移值
+     *
+     * @return
+     */
+    long getOffset();
 
     /**
      * 取得记录起始位置，在 SQL 中调用 从0开始
