@@ -11,7 +11,7 @@
     <artifactId>nqcx-commons-mq</artifactId>
     <packaging>jar</packaging>
 
-    <name>nqcx-commons-lang</name>
+    <name>nqcx-commons-mq</name>
     <url>http://nqcx.org</url>
 
     <dependencies>
