@@ -111,17 +111,28 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
                                 Object handler, Exception ex) {
         WebContext wc = getWebContext().end();
+        if (requireAccessLog(wc)) {
+            ACCESS_LOGGER.info("\"start\": \"{}\", \"post\": \"{}\",  \"end\": \"{}\", \"remoteAddr\": \"{}\"," +
+                            " \"serverName\": \"{}\", \"method\": \"{}\", \"scheme\": \"{}\", \"secure\": \"{}\"," +
+                            " \"isAjax\": \"{}\", \"uri\": \"{}\", \"locale\": \"{}\", \"sessionId\": \"{}\"," +
+                            " \"url\": \"{}\", \"referer\": \"{}\", \"params\": \"{}\"," +
+                            " \"data\": \"{}\", \"User-Agent\": \"{}\"",
+                    wc.getStart(), wc.getPost(), wc.getEnd(), wc.getRemoteAddr(),
+                    wc.getServerName(), wc.getMethod(), wc.getScheme(), wc.isSecure(),
+                    wc.isAjax(), wc.getRequestURI(), wc.getLocale(), trimToEmpty(wc.getSessionId()),
+                    wc.getUrl(), trimToEmpty(wc.getReferer()), trimToEmpty(wc.getParams()),
+                    trimToEmpty(wc.getData()), trimToEmpty(wc.getUserAgent()));
+        }
+    }
 
-        ACCESS_LOGGER.info("\"start\": \"{}\", \"post\": \"{}\",  \"end\": \"{}\", \"remoteAddr\": \"{}\"," +
-                        " \"serverName\": \"{}\", \"method\": \"{}\", \"scheme\": \"{}\", \"secure\": \"{}\"," +
-                        " \"isAjax\": \"{}\", \"uri\": \"{}\", \"locale\": \"{}\", \"sessionId\": \"{}\"," +
-                        " \"url\": \"{}\", \"referer\": \"{}\", \"params\": \"{}\"," +
-                        " \"data\": \"{}\", \"User-Agent\": \"{}\"",
-                wc.getStart(), wc.getPost(), wc.getEnd(), wc.getRemoteAddr(),
-                wc.getServerName(), wc.getMethod(), wc.getScheme(), wc.isSecure(),
-                wc.isAjax(), wc.getRequestURI(), wc.getLocale(), trimToEmpty(wc.getSessionId()),
-                wc.getUrl(), trimToEmpty(wc.getReferer()), trimToEmpty(wc.getParams()),
-                trimToEmpty(wc.getData()), trimToEmpty(wc.getUserAgent()));
+    /**
+     * 是否需要输出 access log，如果应用中需要特殊处理访问日志，覆盖该方法
+     *
+     * @param webContext WebContext
+     * @return 返回 true 为需要输出日志
+     */
+    protected boolean requireAccessLog(WebContext webContext) {
+        return true;
     }
 
     /*
