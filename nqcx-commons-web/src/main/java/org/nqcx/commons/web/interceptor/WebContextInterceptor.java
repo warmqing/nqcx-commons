@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.nqcx.commons.util.StringUtils.*;
@@ -180,7 +181,12 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     protected String getParamsFromRequest(HttpServletRequest request) {
         StringBuilder query = new StringBuilder();
 
-        appendParamsString(query, parseParamsFromRequest(request), false, false);
+        // 解析来源于 form 表单（post）或 get 方式传送的参数
+        Map<String, String[]> originParams = new HashMap<String, String[]>();
+        if (request.getParameterMap() != null)
+            originParams.putAll(request.getParameterMap());
+
+        appendParamsString(query, originParams, false, false);
 
         if (query.length() > 0 && query.indexOf("&") == 0)
             query.replace(0, 1, "");

@@ -1,6 +1,6 @@
-/* 
- * Copyright 2014 nqcx.org All right reserved. This software is the 
- * confidential and proprietary information of nqcx.org ("Confidential 
+/*
+ * Copyright 2014 nqcx.org All right reserved. This software is the
+ * confidential and proprietary information of nqcx.org ("Confidential
  * Information"). You shall not disclose such Confidential Information and shall
  * use it only in accordance with the terms of the license agreement you entered
  * into with nqcx.org.
@@ -573,7 +573,7 @@ public abstract class WebSupport {
 
         // GET 请求直接结束方法，不需要解析 request body
         if ("GET".equalsIgnoreCase(request.getMethod())
-                || ("POST".equalsIgnoreCase(request.getMethod()) && contentType.contains("application/x-www-form-urlencoded")))
+                || ("POST".equalsIgnoreCase(request.getMethod()) && contentType != null && contentType.contains("application/x-www-form-urlencoded")))
             return originParams;
 
         // 其它方式的请求需要解析 responseBody 的参数
@@ -582,7 +582,7 @@ public abstract class WebSupport {
             return originParams;
 
         // json 格式，不支持复杂的 json 格式，两层以下如果是对象，直接转类字符串，如果是数组对象也转，字符串数组
-        if (contentType.contains("application/json")) {
+        if (contentType != null && contentType.contains("application/json")) {
             // 解析 Json
             appendRequestBodyJsonParamsToMap(originParams, JsonUtils.jsonToMap(responseBody));
         } else {
