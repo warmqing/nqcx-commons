@@ -12,6 +12,9 @@ import org.nqcx.commons.lang.consts.LoggerConst;
 import org.nqcx.commons.util.StringUtils;
 import org.nqcx.commons.web.WebContext;
 import org.nqcx.commons.web.WebSupport;
+import org.nqcx.commons.web.cookie.CookieUtils;
+import org.nqcx.commons.web.cookie.NqcxCookie;
+import org.nqcx.commons.web.login.LoginContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,17 +23,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-import static org.nqcx.commons.util.StringUtils.*;
+import static org.nqcx.commons.util.StringUtils.trimToEmpty;
 
 /**
+ * 该拦截器用于记录访问日志，所有系统都需要引入该拦截器
+ *
  * @author naqichuan 2014年8月14日 上午11:50:15
  */
 public class WebContextInterceptor extends WebSupport implements HandlerInterceptor {
@@ -44,7 +48,7 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
     protected static final String HEADER_REAL_IP = "X-Real-IP";
 
     protected LocaleResolver localeResolver;
-
+    protected NqcxCookie identityCookie;
 
     /*
      * ========================================================================
@@ -99,6 +103,9 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
         // 取 userAgent
         wc.setUserAgent(request.getHeader("User-Agent"));
 
+        // 处理 identity
+        processIdentity(wc, request, response);
+
         return true;
     }
 
@@ -134,6 +141,38 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
      */
     protected boolean requireAccessLog(WebContext webContext) {
         return true;
+    }
+
+    /*
+     * ========================================================================
+     * ===================     以下是 identity 处理方法    ======================
+     * ========================================================================
+     */
+
+    /**
+     * 处理用户唯一标识，用于追踪用户，当前情况下尽量避免同一系统使用多个一级域名的情况，这会导致追踪不准
+     *
+     * @param request request
+     */
+    protected void processIdentity(WebContext webContext, HttpServletRequest request, HttpServletResponse response) {
+        if (identityCookie == null || webContext == null)
+            return;
+
+        String identity = CookieUtils.getCookieValue(request, identityCookie.getName());
+        if (StringUtils.isBlank(identity)) {
+            // 发放新 cookie
+            CookieUtils.setCookie(response, identityCookie.getName(), (identity = newIdentitye()));
+        }
+        webContext.appendData("identity: " + identity);
+    }
+
+    /**
+     * 生成新的 identity
+     *
+     * @return String
+     */
+    public static String newIdentitye() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     /*
@@ -269,5 +308,14 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
      */
     public void setLocaleResolver(LocaleResolver localeResolver) {
         this.localeResolver = localeResolver;
+    }
+
+    /**
+     * 用于配置文件中配置注入
+     *
+     * @param identityCookie identityCookie
+     */
+    public void setIdentityCookie(NqcxCookie identityCookie) {
+        this.identityCookie = identityCookie;
     }
 }

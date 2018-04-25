@@ -98,15 +98,6 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
         return LoginContext.getLoginContext();
     }
 
-    /**
-     * 使用 getAuthorizeUrl() 方法
-     *
-     * @param request
-     * @return
-     */
-    protected String getAuthorizeUrl(HttpServletRequest request) {
-        return getLoginUrl(request);
-    }
 
     /**
      * @param request
@@ -114,7 +105,7 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
      */
     @Deprecated
     protected String getLoginUrl(HttpServletRequest request) {
-        return getLoginUrl(request, null);
+        return getAuthorizeUrl(request);
     }
 
     /**
@@ -128,6 +119,15 @@ public class LoginRequiredInterceptor extends WebContextInterceptor {
         return this.getAuthorizeUrl(request, params);
     }
 
+    /**
+     * 使用 getAuthorizeUrl() 方法
+     *
+     * @param request
+     * @return
+     */
+    protected String getAuthorizeUrl(HttpServletRequest request) {
+        return getAuthorizeUrl(request, null);
+    }
 
     /**
      * @param request
