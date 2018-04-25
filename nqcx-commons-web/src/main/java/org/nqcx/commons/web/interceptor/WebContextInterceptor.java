@@ -151,6 +151,7 @@ public class WebContextInterceptor extends WebSupport implements HandlerIntercep
 
     /**
      * 处理用户唯一标识，用于追踪用户，当前情况下尽量避免同一系统使用多个一级域名的情况，这会导致追踪不准
+     * 如果应用中需要特殊处理，覆盖该方法
      *
      * @param request request
      */
